@@ -38,3 +38,18 @@ Thumbs.db
 
 # dotCover
 *.dotCover
+
+# lib/ ignores
+/lib/*/doc/
+/lib/*/.libs/
+/lib/*/tests/.libs/
+/lib/*/tests/cmidiin
+/lib/*/tests/midiclock_in
+/lib/*/tests/midiclock_out
+/lib/*/tests/midiout
+/lib/*/tests/midiprobe
+/lib/*/tests/qmidiin
+/lib/*/tests/sysextest
+/lib/**/*.o
+/lib/**/*.lo
+/lib/**/*.la
