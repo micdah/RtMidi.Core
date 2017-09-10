@@ -24,6 +24,8 @@ namespace RtMidi.Core.Tests
             inputDevice.SetCallback(HandleRtMidiCallback, IntPtr.Zero);
 
             Console.ReadLine();
+
+            inputDevice.Close();
         }
 
         static void HandleRtMidiCallback(double timestamp, string message, IntPtr userData)

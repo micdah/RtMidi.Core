@@ -42,8 +42,8 @@ namespace RtMidi.Core
 
         public byte[] GetMessage()
         {
-            IntPtr ptr;
-            int size = (int)RtMidi.rtmidi_in_get_message(Handle, out ptr);
+            UIntPtr length = UIntPtr.Zero;
+            int size = (int)RtMidi.rtmidi_in_get_message(Handle, out IntPtr ptr, ref length);
             byte[] buf = new byte[size];
             Marshal.Copy(ptr, buf, 0, size);
             return buf;
