@@ -15,7 +15,7 @@ namespace RtMidi.Core
         public static RtMidiApi[] GetAvailableApis()
         {
             int enumSize = RtMidi.rtmidi_sizeof_rtmidi_api();
-            IntPtr ptr = IntPtr.Zero;
+            var ptr = IntPtr.Zero;
             int size = RtMidi.rtmidi_get_compiled_api(ref ptr);
             ptr = Marshal.AllocHGlobal(size * enumSize);
             RtMidi.rtmidi_get_compiled_api(ref ptr);
