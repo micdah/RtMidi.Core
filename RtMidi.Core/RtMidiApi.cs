@@ -2,7 +2,7 @@
 
 namespace RtMidi.Core
 {
-    enum RtMidiApi
+    public enum RtMidiApi
     {
         /// <summary>
         /// Search for a working compiled API

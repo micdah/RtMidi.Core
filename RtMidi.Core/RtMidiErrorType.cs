@@ -1,6 +1,6 @@
 ﻿namespace RtMidi.Core
 {
-    enum RtMidiErrorType
+    public enum RtMidiErrorType
     {
         RT_ERROR_WARNING,
         RT_ERROR_DEBUG_WARNING,
