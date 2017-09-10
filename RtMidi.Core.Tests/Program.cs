@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml.Linq;
 using System.Linq;
+using System.Text;
 
 namespace RtMidi.Core.Tests
 {
@@ -30,7 +31,9 @@ namespace RtMidi.Core.Tests
 
         static void HandleRtMidiCallback(double timestamp, string message, IntPtr userData)
         {
-            Console.WriteLine($"Input:{message} ({timestamp})");
+            var bytes = Encoding.UTF8.GetBytes(message);
+            var msg = string.Join(" ", bytes.Select(b => $"{b:X2}"));
+            Console.WriteLine($"Input:{msg} ({timestamp})");
         }
     }
 }
