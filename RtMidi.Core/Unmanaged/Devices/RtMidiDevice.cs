@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using RtMidiPtr = System.IntPtr;
 using RtMidi.Core.Unmanaged.API;
 
@@ -10,12 +9,6 @@ namespace RtMidi.Core.Unmanaged.Devices
     /// </summary>
     public abstract class RtMidiDevice : IDisposable
     {
-        // no idea when to use it...
-        public static void Error(RtMidiErrorType errorType, string message)
-        {
-            RtMidiC.Error(errorType, message);
-        }
-
         RtMidiPtr handle;
         bool is_port_open;
 

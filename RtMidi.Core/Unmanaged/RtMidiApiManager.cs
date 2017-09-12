@@ -50,6 +50,7 @@ namespace RtMidi.Core.Unmanaged
                         Marshal.Copy(apisPtr, longs, 0, longs.Length);
                         return longs.Select(l => (RtMidiApi)l);
                     default:
+                        Log.Error("Unexpected size {Size} of RtMidiApi enum", enumSize);
                         throw new NotSupportedException($"Unexpected size of RtMidiApi enum {enumSize}");
                 }
             }
