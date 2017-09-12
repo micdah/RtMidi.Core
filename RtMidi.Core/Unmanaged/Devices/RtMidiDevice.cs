@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using RtMidiPtr = System.IntPtr;
+using RtMidi.Core.Unmanaged.API;
 
-namespace RtMidi.Core
+namespace RtMidi.Core.Unmanaged.Devices
 {
     public abstract class RtMidiDevice : IDisposable
     {
         // no idea when to use it...
         public static void Error(RtMidiErrorType errorType, string message)
         {
-            RtMidi.rtmidi_error(errorType, message);
+            RtMidiC.rtmidi_error(errorType, message);
         }
 
         public static RtMidiApi[] GetAvailableApis()
         {
-            int enumSize = RtMidi.rtmidi_sizeof_rtmidi_api();
+            int enumSize = RtMidiC.rtmidi_sizeof_rtmidi_api();
             var ptr = IntPtr.Zero;
-            int size = RtMidi.rtmidi_get_compiled_api(ref ptr);
+            int size = RtMidiC.rtmidi_get_compiled_api(ref ptr);
             ptr = Marshal.AllocHGlobal(size * enumSize);
-            RtMidi.rtmidi_get_compiled_api(ref ptr);
+            RtMidiC.rtmidi_get_compiled_api(ref ptr);
             RtMidiApi[] ret = new RtMidiApi[size];
             switch (enumSize)
             {
@@ -67,7 +68,7 @@ namespace RtMidi.Core
 
         public int PortCount
         {
-            get { return (int)RtMidi.rtmidi_get_port_count(handle); }
+            get { return (int)RtMidiC.rtmidi_get_port_count(handle); }
         }
 
         public void Dispose()
@@ -80,21 +81,21 @@ namespace RtMidi.Core
             if (is_port_open)
             {
                 is_port_open = false;
-                RtMidi.rtmidi_close_port(handle);
+                RtMidiC.rtmidi_close_port(handle);
             }
             ReleaseDevice();
         }
 
         public string GetPortName(int portNumber)
         {
-            return RtMidi.rtmidi_get_port_name(handle, (uint)portNumber);
+            return RtMidiC.rtmidi_get_port_name(handle, (uint)portNumber);
         }
 
         public void OpenVirtualPort(string portName)
         {
             try
             {
-                RtMidi.rtmidi_open_virtual_port(handle, portName);
+                RtMidiC.rtmidi_open_virtual_port(handle, portName);
             }
             finally
             {
@@ -106,7 +107,7 @@ namespace RtMidi.Core
         {
             try
             {
-                RtMidi.rtmidi_open_port(handle, (uint)portNumber, portName);
+                RtMidiC.rtmidi_open_port(handle, (uint)portNumber, portName);
             }
             finally
             {
@@ -119,3 +120,28 @@ namespace RtMidi.Core
         public abstract RtMidiApi CurrentApi { get; }
     }
 }
+
+/**
+ * This is a derived work, based on https://github.com/atsushieno/managed-midi
+ * 
+ * Copyright (c) 2010 Atsushi Eno
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * 
+ **/

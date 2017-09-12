@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using RtMidi.Core.Unmanaged.Devices;
 
 namespace RtMidi.Core.Tests
 {
@@ -16,13 +17,13 @@ namespace RtMidi.Core.Tests
                 Console.WriteLine($"API: {api}");
 
             Console.WriteLine("Available MIDI devices:");
-            foreach (var device in MidiDeviceManager.AllDevices) 
+            foreach (var device in RtMidiDeviceManager.AllDevices) 
             {
                 Console.WriteLine($"Device: {device.Name}:{device.Port}");
             }
 
-            var inputDeviceInfo = MidiDeviceManager.AllDevices.Where(x => x.IsInput).First();
-            var inputDevice = MidiDeviceManager.OpenInput(inputDeviceInfo.ID);
+            var inputDeviceInfo = RtMidiDeviceManager.AllDevices.Where(x => x.IsInput).First();
+            var inputDevice = RtMidiDeviceManager.OpenInput(inputDeviceInfo.ID);
             inputDevice.SetCallback(HandleRtMidiCallback, IntPtr.Zero);
 
             Console.ReadLine();

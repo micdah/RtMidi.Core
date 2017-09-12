@@ -4,14 +4,14 @@ using RtMidiPtr = System.IntPtr;
 using RtMidiInPtr = System.IntPtr;
 using RtMidiOutPtr = System.IntPtr;
 
-namespace RtMidi.Core
+namespace RtMidi.Core.Unmanaged.API
 {
     /// <summary>
     /// The type of a RtMidi callback function.
     /// </summary>
     public delegate void RtMidiCallback(double timestamp, IntPtr message, UIntPtr messageSize, IntPtr userData);
 
-    public static class RtMidi
+    public static class RtMidiC
     {
         public const string RtMidiLibrary = "rtmidi";
 
@@ -175,3 +175,28 @@ namespace RtMidi.Core
         static extern internal int rtmidi_out_send_message(RtMidiOutPtr device, byte[] message, int length);
     }
 }
+
+/**
+ * This is a derived work, based on https://github.com/atsushieno/managed-midi
+ * 
+ * Copyright (c) 2010 Atsushi Eno
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * 
+ **/

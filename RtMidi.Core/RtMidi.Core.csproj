@@ -16,4 +16,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Unmanaged\" />
+    <Folder Include="Unmanaged\API\" />
+    <Folder Include="Unmanaged\Devices\" />
+  </ItemGroup>
 </Project>
