@@ -7,45 +7,45 @@ namespace RtMidi.Core.Unmanaged.Devices
     public class RtMidiInputDevice : RtMidiDevice
     {
         public RtMidiInputDevice()
-            : base(RtMidiC.CreateDefault())
+            : base(RtMidiC.Input.CreateDefault())
         {
         }
 
         public RtMidiInputDevice(RtMidiApi api, string clientName, int queueSizeLimit = 100)
-            : base(RtMidiC.Create(api, clientName, (uint)queueSizeLimit))
+            : base(RtMidiC.Input.Create(api, clientName, (uint)queueSizeLimit))
         {
         }
 
         public override RtMidiApi CurrentApi
         {
-            get { return RtMidiC.GetCurrentApi(Handle); }
+            get { return RtMidiC.Input.GetCurrentApi(Handle); }
         }
 
         protected override void ReleaseDevice()
         {
-            RtMidiC.Free(Handle);
+            RtMidiC.Input.Free(Handle);
         }
 
         public void SetCallback(RtMidiCallback callback, IntPtr userData)
         {
-            RtMidiC.SetCallback(Handle, callback, userData);
+            RtMidiC.Input.SetCallback(Handle, callback, userData);
         }
 
         // TODO Ensure CancelCallback is called (implement IDisposable?)
         public void CancelCallback()
         {
-            RtMidiC.CancelCallback(Handle);
+            RtMidiC.Input.CancelCallback(Handle);
         }
 
         public void SetIgnoredTypes(bool midiSysex, bool midiTime, bool midiSense)
         {
-            RtMidiC.IgnoreTypes(Handle, midiSysex, midiTime, midiSense);
+            RtMidiC.Input.IgnoreTypes(Handle, midiSysex, midiTime, midiSense);
         }
 
         public byte[] GetMessage()
         {
             UIntPtr length = UIntPtr.Zero;
-            int size = (int)RtMidiC.GetMessage(Handle, out IntPtr ptr, ref length);
+            int size = (int)RtMidiC.Input.GetMessage(Handle, out IntPtr ptr, ref length);
             byte[] buf = new byte[size];
             Marshal.Copy(ptr, buf, 0, size);
             return buf;

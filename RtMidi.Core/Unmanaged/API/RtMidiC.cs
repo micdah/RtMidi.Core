@@ -80,83 +80,77 @@ namespace RtMidi.Core.Unmanaged.API
         [return: MarshalAs(UnmanagedType.LPStr)]
         static extern internal string GetPortName(RtMidiPtr device, uint portNumber);
 
-        internal static class In
+        internal static class Input
         {
-            
+            /// <summary>
+            /// Create a default RtMidiInPtr value, with no initialization.
+            /// </summary>
+            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_create_default", CallingConvention = CallingConvention.Cdecl)]
+            static extern internal RtMidiInPtr CreateDefault();
+
+            /// <summary>
+            /// Create a  RtMidiInPtr value, with given api, clientName and queueSizeLimit.
+            /// </summary>
+            /// <param name="api">An optional API id can be specified.</param>
+            /// <param name="clientName">
+            /// An optional client name can be specified. This will be used to group the ports that 
+            /// are created by the application.
+            /// </param>
+            /// <param name="queueSizeLimit">An optional size of the MIDI input queue can be specified.</param>
+            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_create", CallingConvention = CallingConvention.Cdecl)]
+            static extern internal RtMidiInPtr Create(RtMidiApi api, string clientName, uint queueSizeLimit);
+
+            /// <summary>
+            /// Deallocate the given pointer.
+            /// </summary>
+            /// <param name="device">Device</param>
+            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_free", CallingConvention = CallingConvention.Cdecl)]
+            static extern internal void Free(RtMidiInPtr device);
+
+            /// <summary>
+            /// Returns the MIDI API specifier for the given instance of RtMidiIn.
+            /// </summary>
+            /// <param name="device">Device</param>
+            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_get_current_api", CallingConvention = CallingConvention.Cdecl)]
+            static extern internal RtMidiApi GetCurrentApi(RtMidiPtr device);
+
+            /// <summary>
+            /// Set a callback function to be invoked for incoming MIDI messages.
+            /// </summary>
+            /// <param name="device">Device</param>
+            /// <param name="callback">Callback</param>
+            /// <param name="userData">User data</param>
+            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_set_callback", CallingConvention = CallingConvention.Cdecl)]
+            static extern internal void SetCallback(RtMidiInPtr device, RtMidiCallback callback, IntPtr userData);
+
+            /// <summary>
+            /// Cancel use of the current callback function (if one exists).
+            /// </summary>
+            /// <param name="device">Device</param>
+            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_cancel_callback", CallingConvention = CallingConvention.Cdecl)]
+            static extern internal void CancelCallback(RtMidiInPtr device);
+
+            /// <summary>
+            /// Specify whether certain MIDI message types should be queued or ignored during input.
+            /// </summary>
+            /// <param name="device">Device.</param>
+            /// <param name="midiSysex">Ignore sysex</param>
+            /// <param name="midiTime">Ignore time</param>
+            /// <param name="midiSense">Ignore sense</param>
+            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_ignore_types", CallingConvention = CallingConvention.Cdecl)]
+            static extern internal void IgnoreTypes(RtMidiInPtr device, bool midiSysex, bool midiTime, bool midiSense);
+
+            /// <summary>
+            /// Fill the user-provided array with the data bytes for the next available
+            /// MIDI message in the input queue and return the event delta-time in seconds.
+            /// </summary>
+            /// <param name="device">Device</param>
+            /// <param name="message">Must point to a char* that is already allocated. SYSEX
+            /// messages maximum size being 1024, a statically allocated array could be sufficient.</param>
+            /// <param name="size">Is used to return the size of the message obtained. </param>
+            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_get_message", CallingConvention = CallingConvention.Cdecl)]
+            static extern internal double GetMessage(RtMidiInPtr device, /* unsigned char ** */out IntPtr message, /* size_t * */ ref UIntPtr size);
         }
-
-        #region RtMidiIn API
-
-        /// <summary>
-        /// Create a default RtMidiInPtr value, with no initialization.
-        /// </summary>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_create_default", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal RtMidiInPtr CreateDefault();
-
-        /// <summary>
-        /// Create a  RtMidiInPtr value, with given api, clientName and queueSizeLimit.
-        /// </summary>
-        /// <param name="api">An optional API id can be specified.</param>
-        /// <param name="clientName">
-        /// An optional client name can be specified. This will be used to group the ports that 
-        /// are created by the application.
-        /// </param>
-        /// <param name="queueSizeLimit">An optional size of the MIDI input queue can be specified.</param>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_create", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal RtMidiInPtr Create(RtMidiApi api, string clientName, uint queueSizeLimit);
-
-        /// <summary>
-        /// Deallocate the given pointer.
-        /// </summary>
-        /// <param name="device">Device</param>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_free", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal void Free(RtMidiInPtr device);
-
-        /// <summary>
-        /// Returns the MIDI API specifier for the given instance of RtMidiIn.
-        /// </summary>
-        /// <param name="device">Device</param>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_get_current_api", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal RtMidiApi GetCurrentApi(RtMidiPtr device);
-
-        /// <summary>
-        /// Set a callback function to be invoked for incoming MIDI messages.
-        /// </summary>
-        /// <param name="device">Device</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="userData">User data</param>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_set_callback", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal void SetCallback(RtMidiInPtr device, RtMidiCallback callback, IntPtr userData);
-
-        /// <summary>
-        /// Cancel use of the current callback function (if one exists).
-        /// </summary>
-        /// <param name="device">Device</param>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_cancel_callback", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal void CancelCallback(RtMidiInPtr device);
-
-        /// <summary>
-        /// Specify whether certain MIDI message types should be queued or ignored during input.
-        /// </summary>
-        /// <param name="device">Device.</param>
-        /// <param name="midiSysex">Ignore sysex</param>
-        /// <param name="midiTime">Ignore time</param>
-        /// <param name="midiSense">Ignore sense</param>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_ignore_types", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal void IgnoreTypes(RtMidiInPtr device, bool midiSysex, bool midiTime, bool midiSense);
-
-        /// <summary>
-        /// Fill the user-provided array with the data bytes for the next available
-        /// MIDI message in the input queue and return the event delta-time in seconds.
-        /// </summary>
-        /// <param name="device">Device</param>
-        /// <param name="message">Must point to a char* that is already allocated. SYSEX
-        /// messages maximum size being 1024, a statically allocated array could be sufficient.</param>
-        /// <param name="size">Is used to return the size of the message obtained. </param>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_get_message", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal double GetMessage(RtMidiInPtr device, /* unsigned char ** */out IntPtr message, /* size_t * */ ref UIntPtr size);
-
-        #endregion
 
         /* RtMidiOut API */
         [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
