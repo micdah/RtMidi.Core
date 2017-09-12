@@ -6,23 +6,23 @@ namespace RtMidi.Core.Unmanaged.Devices
     public class RtMidiOutputDevice : RtMidiDevice
     {
         public RtMidiOutputDevice()
-            : base(RtMidiC.CreateDefault())
+            : base(RtMidiC.Output.CreateDefault())
         {
         }
 
         public RtMidiOutputDevice(RtMidiApi api, string clientName)
-            : base(RtMidiC.Create(api, clientName))
+            : base(RtMidiC.Output.Create(api, clientName))
         {
         }
 
         public override RtMidiApi CurrentApi
         {
-            get { return RtMidiC.GetCurrentApi(Handle); }
+            get { return RtMidiC.Output.GetCurrentApi(Handle); }
         }
 
         protected override void ReleaseDevice()
         {
-            RtMidiC.Free(Handle);
+            RtMidiC.Output.Free(Handle);
         }
 
         public void SendMessage(byte[] message, int length)
@@ -30,7 +30,7 @@ namespace RtMidi.Core.Unmanaged.Devices
             if (message == null)
                 throw new ArgumentNullException(nameof(message));
             // While it could emit message parsing error, it still returns 0...!
-            RtMidiC.SendMessage(Handle, message, length);
+            RtMidiC.Output.SendMessage(Handle, message, length);
         }
     }
 }
