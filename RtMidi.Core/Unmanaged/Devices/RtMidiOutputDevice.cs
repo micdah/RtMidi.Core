@@ -6,31 +6,31 @@ namespace RtMidi.Core.Unmanaged.Devices
     public class RtMidiOutputDevice : RtMidiDevice
     {
         public RtMidiOutputDevice()
-            : base(RtMidiC.rtmidi_out_create_default())
+            : base(RtMidiC.CreateDefault())
         {
         }
 
         public RtMidiOutputDevice(RtMidiApi api, string clientName)
-            : base(RtMidiC.rtmidi_out_create(api, clientName))
+            : base(RtMidiC.Create(api, clientName))
         {
         }
 
         public override RtMidiApi CurrentApi
         {
-            get { return RtMidiC.rtmidi_out_get_current_api(Handle); }
+            get { return RtMidiC.GetCurrentApi(Handle); }
         }
 
         protected override void ReleaseDevice()
         {
-            RtMidiC.rtmidi_out_free(Handle);
+            RtMidiC.Free(Handle);
         }
 
         public void SendMessage(byte[] message, int length)
         {
             if (message == null)
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException(nameof(message));
             // While it could emit message parsing error, it still returns 0...!
-            RtMidiC.rtmidi_out_send_message(Handle, message, length);
+            RtMidiC.SendMessage(Handle, message, length);
         }
     }
 }
