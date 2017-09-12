@@ -1,5 +1,4 @@
 ﻿using System;
-using RtMidiPtr = System.IntPtr;
 using RtMidi.Core.Unmanaged.API;
 
 namespace RtMidi.Core.Unmanaged.Devices
@@ -9,22 +8,17 @@ namespace RtMidi.Core.Unmanaged.Devices
     /// </summary>
     public abstract class RtMidiDevice : IDisposable
     {
-        RtMidiPtr handle;
-        bool is_port_open;
+        protected readonly IntPtr Handle;
+        private bool _isPortOpen;
 
-        protected RtMidiDevice(RtMidiPtr handle)
+        protected RtMidiDevice(IntPtr handle)
         {
-            this.handle = handle;
-        }
-
-        public RtMidiPtr Handle
-        {
-            get { return handle; }
+            Handle = handle;
         }
 
         public int PortCount
         {
-            get { return (int)RtMidiC.GetPortCount(handle); }
+            get { return (int)RtMidiC.GetPortCount(Handle); }
         }
 
         public void Dispose()
@@ -34,28 +28,29 @@ namespace RtMidi.Core.Unmanaged.Devices
 
         public void Close()
         {
-            if (is_port_open)
+            if (_isPortOpen)
             {
-                is_port_open = false;
-                RtMidiC.ClosePort(handle);
+                RtMidiC.ClosePort(Handle);
+                _isPortOpen = false;
             }
+
             ReleaseDevice();
         }
 
         public string GetPortName(int portNumber)
         {
-            return RtMidiC.GetPortName(handle, (uint)portNumber);
+            return RtMidiC.GetPortName(Handle, (uint)portNumber);
         }
 
         public void OpenVirtualPort(string portName)
         {
             try
             {
-                RtMidiC.OpenVirtualPort(handle, portName);
+                RtMidiC.OpenVirtualPort(Handle, portName);
             }
             finally
             {
-                is_port_open = true;
+                _isPortOpen = true;
             }
         }
 
@@ -63,11 +58,11 @@ namespace RtMidi.Core.Unmanaged.Devices
         {
             try
             {
-                RtMidiC.OpenPort(handle, (uint)portNumber, portName);
+                RtMidiC.OpenPort(Handle, (uint)portNumber, portName);
             }
             finally
             {
-                is_port_open = true;
+                _isPortOpen = true;
             }
         }
 

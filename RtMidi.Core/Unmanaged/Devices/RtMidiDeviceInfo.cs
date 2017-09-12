@@ -1,50 +1,21 @@
-﻿using System;
-
-namespace RtMidi.Core.Unmanaged.Devices
+﻿namespace RtMidi.Core.Unmanaged.Devices
 {
     public class RtMidiDeviceInfo
     {
-        readonly RtMidiDevice manager;
-        readonly int id;
-        readonly int port;
-        readonly bool is_input;
-
-        internal RtMidiDeviceInfo(RtMidiDevice manager, int id, int port, bool isInput)
+        internal RtMidiDeviceInfo(string name, int port, bool isInput)
         {
-            this.manager = manager;
-            this.id = id;
-            this.port = port;
-            is_input = isInput;
+            Name = name;
+            Port = port;
+            IsInput = isInput;
         }
 
-        public int ID
-        {
-            get { return id; }
-        }
+        public string Name { get; }
 
-        public int Port
-        {
-            get { return port; }
-        }
+        public int Port { get; }
 
-        public string Interface
-        {
-            get { return manager.CurrentApi.ToString(); }
-        }
+        public bool IsInput { get; }
 
-        public string Name
-        {
-            get { return manager.GetPortName(port); }
-        }
-
-        public bool IsInput { get { return is_input; } }
-
-        public bool IsOutput { get { return !is_input; } }
-
-        public override string ToString()
-        {
-            return String.Format("{0} - {1} ({2})", Interface, Name, IsInput ? (IsOutput ? "I/O" : "Input") : (IsOutput ? "Output" : "N/A"));
-        }
+        public bool IsOutput => !IsInput;
     }
 }
 

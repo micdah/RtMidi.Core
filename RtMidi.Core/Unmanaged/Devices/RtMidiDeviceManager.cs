@@ -1,55 +1,65 @@
 ﻿using System.Collections.Generic;
+using System;
 
 namespace RtMidi.Core.Unmanaged.Devices
 {
-    public static class RtMidiDeviceManager
+    public class RtMidiDeviceManager : IDisposable
     {
-        static readonly RtMidiOutputDevice manager_output = new RtMidiOutputDevice();
-        static readonly RtMidiInputDevice manager_input = new RtMidiInputDevice();
+        public static readonly RtMidiDeviceManager Instance = new RtMidiDeviceManager();
 
-        // OK, it is not really a device count. But RTMIDI is designed to have bad names enough
-        // to enumerate APIs as DEVICEs.
-        public static int DeviceCount
+        private readonly RtMidiOutputDevice DefaultOutput = new RtMidiOutputDevice();
+        private readonly RtMidiInputDevice DefaultInput = new RtMidiInputDevice();
+        private bool _disposed;
+
+        private RtMidiDeviceManager() 
         {
-            get { return manager_input.PortCount + manager_output.PortCount; }
         }
 
-        public static int DefaultInputDeviceID
-        {
-            get { return 0; }
-        }
-
-        public static int DefaultOutputDeviceID
-        {
-            get { return manager_input.PortCount; }
-        }
-
-        public static IEnumerable<RtMidiDeviceInfo> AllDevices
+        public IEnumerable<RtMidiDeviceInfo> AllDevices
         {
             get
             {
-                for (int i = 0; i < DeviceCount; i++)
-                    yield return GetDeviceInfo(i);
+                for (var port = 0; port < DefaultInput.PortCount; port++)
+                    yield return new RtMidiDeviceInfo(DefaultInput.GetPortName(port), port, true);
+
+                for (var port = 0; port < DefaultOutput.PortCount; port++)
+                    yield return new RtMidiDeviceInfo(DefaultOutput.GetPortName(port), port, true);
             }
         }
 
-        public static RtMidiDeviceInfo GetDeviceInfo(int id)
-        {
-            return id < manager_input.PortCount ? new RtMidiDeviceInfo(manager_input, id, id, true) : new RtMidiDeviceInfo(manager_output, id, id - manager_input.PortCount, false);
-        }
-
-        public static RtMidiInputDevice OpenInput(int deviceID)
+        public RtMidiInputDevice OpenInput(RtMidiDeviceInfo deviceInfo)
         {
             var dev = new RtMidiInputDevice();
-            dev.OpenPort(deviceID, GetDeviceInfo(deviceID).Name);
+            dev.OpenPort(deviceInfo.Port, deviceInfo.Name);
             return dev;
         }
 
-        public static RtMidiOutputDevice OpenOutput(int deviceID)
+        public RtMidiOutputDevice OpenOutput(RtMidiDeviceInfo deviceInfo)
         {
             var dev = new RtMidiOutputDevice();
-            dev.OpenPort(deviceID - manager_input.PortCount, GetDeviceInfo(deviceID).Name);
+            dev.OpenPort(deviceInfo.Port, deviceInfo.Name);
             return dev;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                DefaultInput.Dispose();
+                DefaultOutput.Dispose();
+
+                _disposed = true;
+            }
+        }
+
+        ~RtMidiDeviceManager() {
+          Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -16,13 +16,13 @@ namespace RtMidi.Core.Tests
                 Console.WriteLine($"API: {api}");
 
             Console.WriteLine("Available MIDI devices:");
-            foreach (var device in RtMidiDeviceManager.AllDevices) 
+            foreach (var device in RtMidiDeviceManager.Instance.AllDevices) 
             {
                 Console.WriteLine($"Device: {device.Name}:{device.Port}");
             }
 
-            var inputDeviceInfo = RtMidiDeviceManager.AllDevices.Where(x => x.IsInput).First();
-            var inputDevice = RtMidiDeviceManager.OpenInput(inputDeviceInfo.ID);
+            var inputDeviceInfo = RtMidiDeviceManager.Instance.AllDevices.Where(x => x.IsInput).First();
+            var inputDevice = RtMidiDeviceManager.Instance.OpenInput(inputDeviceInfo);
             inputDevice.SetCallback(HandleRtMidiCallback, IntPtr.Zero);
 
             Console.ReadLine();
