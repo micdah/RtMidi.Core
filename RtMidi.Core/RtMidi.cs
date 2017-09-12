@@ -9,7 +9,7 @@ namespace RtMidi.Core
     /// <summary>
     /// The type of a RtMidi callback function.
     /// </summary>
-    public delegate void RtMidiCallback(double timestamp, string message, IntPtr userData);
+    public delegate void RtMidiCallback(double timestamp, IntPtr message, UIntPtr messageSize, IntPtr userData);
 
     public static class RtMidi
     {

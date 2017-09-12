@@ -2,6 +2,7 @@
 using System.Xml.Linq;
 using System.Linq;
 using System.Text;
+using System.Runtime.InteropServices;
 
 namespace RtMidi.Core.Tests
 {
@@ -29,11 +30,22 @@ namespace RtMidi.Core.Tests
             inputDevice.Close();
         }
 
-        static void HandleRtMidiCallback(double timestamp, string message, IntPtr userData)
+        static void HandleRtMidiCallback(double timestamp, IntPtr messagePtr, UIntPtr messageSize, IntPtr userData)
         {
-            var bytes = Encoding.UTF8.GetBytes(message);
-            var msg = string.Join(" ", bytes.Select(b => $"{b:X2}"));
-            Console.WriteLine($"Input:{msg} ({timestamp})");
+            try
+            {
+                var size = (int)messageSize;
+                var message = new byte[size];
+                Marshal.Copy(messagePtr, message, 0, size);
+
+                var msg = string.Join(" ", message.Select(b => $"{b:X2}/{b}"));
+
+                Console.WriteLine($"Received: {msg} (length {messageSize})");
+            }
+            catch(Exception e) 
+            {
+                Console.WriteLine($"Exception receiving message: {e}");
+            }
         }
     }
 }
