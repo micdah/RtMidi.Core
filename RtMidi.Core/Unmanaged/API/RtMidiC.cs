@@ -20,8 +20,8 @@ namespace RtMidi.Core.Unmanaged.API
         /// <summary>
         /// Returns the size (with sizeof) of a RtMidiApi instance.
         /// </summary>
-        [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
-        static extern internal int rtmidi_sizeof_rtmidi_api();
+        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_sizeof_rtmidi_api", CallingConvention = CallingConvention.Cdecl)]
+        static extern internal int SizeofRtMidiApi();
 
         #endregion
 
@@ -33,14 +33,14 @@ namespace RtMidi.Core.Unmanaged.API
         /// Otherwise, fill the given apis array with the RtMidi::Api values.
         /// </summary>
         /// <param name="apis">An array or a null value.</param>
-        [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
-        static extern internal int rtmidi_get_compiled_api(ref IntPtr/* RtMidiApi ** */ apis);
+        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_get_compiled_api", CallingConvention = CallingConvention.Cdecl)]
+        static extern internal int GetCompiledApi(ref IntPtr/* RtMidiApi ** */ apis);
 
         /// <summary>
         /// Report an error.
         /// </summary>
-        [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
-        static extern internal void rtmidi_error(RtMidiErrorType type, string errorString);
+        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_error", CallingConvention = CallingConvention.Cdecl)]
+        static extern internal void Error(RtMidiErrorType type, string errorString);
 
         /// <summary>
         /// Open a MIDI port.
@@ -48,8 +48,8 @@ namespace RtMidi.Core.Unmanaged.API
         /// <param name="device">Device</param>
         /// <param name="portNumber">Must be greater than 0</param>
         /// <param name="portName">Name for the application port.x</param>
-        [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
-        static extern internal void rtmidi_open_port(RtMidiPtr device, uint portNumber, string portName);
+        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_open_port", CallingConvention = CallingConvention.Cdecl)]
+        static extern internal void OpenPort(RtMidiPtr device, uint portNumber, string portName);
 
         /// <summary>
         /// Creates a virtual MIDI port to which other software applications can 
@@ -57,31 +57,31 @@ namespace RtMidi.Core.Unmanaged.API
         /// </summary>
         /// <param name="device">Device</param>
         /// <param name="portName"> Name for the application port.</param>
-        [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
-        static extern internal void rtmidi_open_virtual_port(RtMidiPtr device, string portName);
+        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_open_virtual_port", CallingConvention = CallingConvention.Cdecl)]
+        static extern internal void OpenVirtualPort(RtMidiPtr device, string portName);
 
         /// <summary>
         /// Close a MIDI connection.
         /// </summary>
         /// <param name="device">Device to close</param>
-        [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
-        static extern internal void rtmidi_close_port(RtMidiPtr device);
+        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_close_port", CallingConvention = CallingConvention.Cdecl)]
+        static extern internal void ClosePort(RtMidiPtr device);
 
         /// <summary>
         /// Return the number of available MIDI ports.
         /// </summary>
         /// <param name="device">Device</param>
-        [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
-        static extern internal uint rtmidi_get_port_count(RtMidiPtr device);
+        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_get_port_count", CallingConvention = CallingConvention.Cdecl)]
+        static extern internal uint GetPortCount(RtMidiPtr device);
 
         /// <summary>
         /// Return a string identifier for the specified MIDI input port number.
         /// </summary>
         /// <param name="device">Device</param>
         /// <param name="portNumber">Port number</param>
-        [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_get_port_name", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.LPStr)]
-        static extern internal string rtmidi_get_port_name(RtMidiPtr device, uint portNumber);
+        static extern internal string GetPortName(RtMidiPtr device, uint portNumber);
 
         #endregion
 

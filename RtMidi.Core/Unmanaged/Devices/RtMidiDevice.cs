@@ -10,16 +10,16 @@ namespace RtMidi.Core.Unmanaged.Devices
         // no idea when to use it...
         public static void Error(RtMidiErrorType errorType, string message)
         {
-            RtMidiC.rtmidi_error(errorType, message);
+            RtMidiC.Error(errorType, message);
         }
 
         public static RtMidiApi[] GetAvailableApis()
         {
-            int enumSize = RtMidiC.rtmidi_sizeof_rtmidi_api();
+            int enumSize = RtMidiC.SizeofRtMidiApi();
             var ptr = IntPtr.Zero;
-            int size = RtMidiC.rtmidi_get_compiled_api(ref ptr);
+            int size = RtMidiC.GetCompiledApi(ref ptr);
             ptr = Marshal.AllocHGlobal(size * enumSize);
-            RtMidiC.rtmidi_get_compiled_api(ref ptr);
+            RtMidiC.GetCompiledApi(ref ptr);
             RtMidiApi[] ret = new RtMidiApi[size];
             switch (enumSize)
             {
@@ -68,7 +68,7 @@ namespace RtMidi.Core.Unmanaged.Devices
 
         public int PortCount
         {
-            get { return (int)RtMidiC.rtmidi_get_port_count(handle); }
+            get { return (int)RtMidiC.GetPortCount(handle); }
         }
 
         public void Dispose()
@@ -81,21 +81,21 @@ namespace RtMidi.Core.Unmanaged.Devices
             if (is_port_open)
             {
                 is_port_open = false;
-                RtMidiC.rtmidi_close_port(handle);
+                RtMidiC.ClosePort(handle);
             }
             ReleaseDevice();
         }
 
         public string GetPortName(int portNumber)
         {
-            return RtMidiC.rtmidi_get_port_name(handle, (uint)portNumber);
+            return RtMidiC.GetPortName(handle, (uint)portNumber);
         }
 
         public void OpenVirtualPort(string portName)
         {
             try
             {
-                RtMidiC.rtmidi_open_virtual_port(handle, portName);
+                RtMidiC.OpenVirtualPort(handle, portName);
             }
             finally
             {
@@ -107,7 +107,7 @@ namespace RtMidi.Core.Unmanaged.Devices
         {
             try
             {
-                RtMidiC.rtmidi_open_port(handle, (uint)portNumber, portName);
+                RtMidiC.OpenPort(handle, (uint)portNumber, portName);
             }
             finally
             {
