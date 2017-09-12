@@ -5,52 +5,15 @@ using RtMidi.Core.Unmanaged.API;
 
 namespace RtMidi.Core.Unmanaged.Devices
 {
+    /// <summary>
+    /// Abstract RtMidi device
+    /// </summary>
     public abstract class RtMidiDevice : IDisposable
     {
         // no idea when to use it...
         public static void Error(RtMidiErrorType errorType, string message)
         {
             RtMidiC.Error(errorType, message);
-        }
-
-        public static RtMidiApi[] GetAvailableApis()
-        {
-            int enumSize = RtMidiC.Utility.SizeofRtMidiApi();
-            var ptr = IntPtr.Zero;
-            int size = RtMidiC.GetCompiledApi(ref ptr);
-            ptr = Marshal.AllocHGlobal(size * enumSize);
-            RtMidiC.GetCompiledApi(ref ptr);
-            RtMidiApi[] ret = new RtMidiApi[size];
-            switch (enumSize)
-            {
-                case 1:
-                    byte[] bytes = new byte[size];
-                    Marshal.Copy(ptr, bytes, 0, bytes.Length);
-                    for (int i = 0; i < bytes.Length; i++)
-                        ret[i] = (RtMidiApi)bytes[i];
-                    break;
-                case 2:
-                    short[] shorts = new short[size];
-                    Marshal.Copy(ptr, shorts, 0, shorts.Length);
-                    for (int i = 0; i < shorts.Length; i++)
-                        ret[i] = (RtMidiApi)shorts[i];
-                    break;
-                case 4:
-                    int[] ints = new int[size];
-                    Marshal.Copy(ptr, ints, 0, ints.Length);
-                    for (int i = 0; i < ints.Length; i++)
-                        ret[i] = (RtMidiApi)ints[i];
-                    break;
-                case 8:
-                    long[] longs = new long[size];
-                    Marshal.Copy(ptr, longs, 0, longs.Length);
-                    for (int i = 0; i < longs.Length; i++)
-                        ret[i] = (RtMidiApi)longs[i];
-                    break;
-                default:
-                    throw new NotSupportedException("sizeof RtMidiApi is unexpected: " + enumSize);
-            }
-            return ret;
         }
 
         RtMidiPtr handle;

@@ -21,4 +21,7 @@
     <Folder Include="Unmanaged\API\" />
     <Folder Include="Unmanaged\Devices\" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="2.5.0" />
+  </ItemGroup>
 </Project>

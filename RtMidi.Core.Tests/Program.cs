@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Xml.Linq;
 using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using RtMidi.Core.Unmanaged.Devices;
+using RtMidi.Core.Unmanaged;
 
 namespace RtMidi.Core.Tests
 {
@@ -12,7 +11,7 @@ namespace RtMidi.Core.Tests
         static void Main(string[] args)
         {
             Console.WriteLine("Available MIDI API's:");
-            var apis = RtMidiDevice.GetAvailableApis();
+            var apis = RtMidiApiManager.GetAvailableApis();
             foreach (var api in apis)
                 Console.WriteLine($"API: {api}");
 
