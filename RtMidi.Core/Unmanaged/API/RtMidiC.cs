@@ -15,6 +15,9 @@ namespace RtMidi.Core.Unmanaged.API
     {
         public const string RtMidiLibrary = "rtmidi";
 
+        /// <summary>
+        /// Utility related API methods
+        /// </summary>
         internal static class Utility
         {
             /// <summary>
@@ -80,6 +83,9 @@ namespace RtMidi.Core.Unmanaged.API
         [return: MarshalAs(UnmanagedType.LPStr)]
         static extern internal string GetPortName(RtMidiPtr device, uint portNumber);
 
+        /// <summary>
+        /// Input related API methods
+        /// </summary>
         internal static class Input
         {
             /// <summary>
@@ -152,19 +158,41 @@ namespace RtMidi.Core.Unmanaged.API
             static extern internal double GetMessage(RtMidiInPtr device, /* unsigned char ** */out IntPtr message, /* size_t * */ ref UIntPtr size);
         }
 
-        /* RtMidiOut API */
+        /// <summary>
+        /// Create a default RtMidiInPtr value, with no initialization.
+        /// </summary>
         [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
         static extern internal RtMidiOutPtr rtmidi_out_create_default();
 
+        /// <summary>
+        /// Create a RtMidiOutPtr value, with given and clientName.
+        /// </summary>
+        /// <param name="api">An optional API id can be specified.</param>
+        /// <param name="clientName">An optional client name can be specified. This
+        /// will be used to group the ports that are created by the application.</param>
         [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
         static extern internal RtMidiOutPtr rtmidi_out_create(RtMidiApi api, string clientName);
 
+        /// <summary>
+        /// Deallocate the given pointer.
+        /// </summary>
+        /// <param name="device">Device</param>
         [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
         static extern internal void rtmidi_out_free(RtMidiOutPtr device);
 
+        /// <summary>
+        /// Returns the MIDI API specifier for the given instance of RtMidiOut.
+        /// </summary>
+        /// <param name="device">Device</param>
         [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
         static extern internal RtMidiApi rtmidi_out_get_current_api(RtMidiPtr device);
 
+        /// <summary>
+        /// Immediately send a single message out an open MIDI output port.
+        /// </summary>
+        /// <param name="device">Device</param>
+        /// <param name="message">Message</param>
+        /// <param name="length">Length</param>
         [DllImport(RtMidiLibrary, CallingConvention = CallingConvention.Cdecl)]
         static extern internal int rtmidi_out_send_message(RtMidiOutPtr device, byte[] message, int length);
     }
