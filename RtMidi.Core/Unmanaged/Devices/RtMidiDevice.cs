@@ -15,7 +15,7 @@ namespace RtMidi.Core.Unmanaged.Devices
 
         public static RtMidiApi[] GetAvailableApis()
         {
-            int enumSize = RtMidiC.SizeofRtMidiApi();
+            int enumSize = RtMidiC.Utility.SizeofRtMidiApi();
             var ptr = IntPtr.Zero;
             int size = RtMidiC.GetCompiledApi(ref ptr);
             ptr = Marshal.AllocHGlobal(size * enumSize);
