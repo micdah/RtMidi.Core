@@ -14,19 +14,37 @@ namespace RtMidi.Core.Unmanaged.Devices
 
         protected override IntPtr CreateDevice()
         {
+            IntPtr handle = IntPtr.Zero;
             try
             {
                 Log.Debug("Creating default input device");
-                var handle = RtMidiC.Input.CreateDefault();
+                handle = RtMidiC.Input.CreateDefault();
+                CheckForError(handle);
 
                 Log.Debug("Setting input callback");
                 RtMidiC.Input.SetCallback(handle, HandleRtMidiCallback, IntPtr.Zero);
+                CheckForError(handle);
 
                 return handle;
             }
             catch (Exception e)
             {
                 Log.Error(e, "Unable to create default input device");
+
+                if (handle != IntPtr.Zero)
+                {
+                    Log.Information("Freeing input device handle");
+                    try
+                    {
+                        RtMidiC.Input.Free(handle);
+                        CheckForError(handle);
+                    }
+                    catch (Exception e2)
+                    {
+                        Log.Error(e2, "Unable to free input device");
+                    }
+                }
+
                 return IntPtr.Zero;
             }
         }
@@ -62,9 +80,11 @@ namespace RtMidi.Core.Unmanaged.Devices
             {
                 Log.Debug("Cancelling input callback");
                 RtMidiC.Input.CancelCallback(Handle);
+                CheckForError();
 
                 Log.Debug("Freeing input device handle");
                 RtMidiC.Input.Free(Handle);
+                CheckForError();
             }
             catch (Exception e)
             {

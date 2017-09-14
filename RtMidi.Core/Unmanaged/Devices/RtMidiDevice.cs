@@ -1,6 +1,7 @@
 ﻿using System;
 using RtMidi.Core.Unmanaged.API;
 using Serilog;
+using System.Runtime.InteropServices;
 namespace RtMidi.Core.Unmanaged.Devices
 {
 
@@ -49,9 +50,11 @@ namespace RtMidi.Core.Unmanaged.Devices
             {
                 Log.Debug("Feching port name, for port {PortNumber}", _portNumber);
                 var portName = RtMidiC.GetPortName(_handle, _portNumber);
+                CheckForError();
 
                 Log.Debug("Opening port {PortNumber} using name {PortName}", _portNumber, portName);
                 RtMidiC.OpenPort(_handle, _portNumber, portName);
+                CheckForError();
 
                 _isOpen = true;
 
@@ -72,6 +75,8 @@ namespace RtMidi.Core.Unmanaged.Devices
             {
                 Log.Debug("Closing port number {PortNumber}", _portNumber);
                 RtMidiC.ClosePort(_handle);
+                CheckForError();
+
                 _isOpen = false;
             }
             catch (Exception e)
@@ -90,7 +95,9 @@ namespace RtMidi.Core.Unmanaged.Devices
 
             try
             {
-                return RtMidiC.GetPortCount(_handle);
+                var count = RtMidiC.GetPortCount(_handle);
+                CheckForError();
+                return count;
             }
             catch (Exception e)
             {
@@ -110,7 +117,9 @@ namespace RtMidi.Core.Unmanaged.Devices
 
             try 
             {
-                return RtMidiC.GetPortName(_handle, portNumber);
+                var name = RtMidiC.GetPortName(_handle, portNumber);
+                CheckForError();
+                return name;
             }
             catch (Exception e)
             {
@@ -126,6 +135,23 @@ namespace RtMidi.Core.Unmanaged.Devices
             _handle = CreateDevice();
 
             return _handle != IntPtr.Zero;
+        }
+
+        protected void CheckForError()
+        {
+            CheckForError(_handle);
+        }
+
+        protected static void CheckForError(IntPtr handle)
+        {
+            if (handle == IntPtr.Zero) return;
+
+            var wrapper = (RtMidiWrapper)Marshal.PtrToStructure(handle, typeof(RtMidiWrapper));
+            if (!wrapper.Ok)
+            {
+                Log.Error("Error detected from RtMidi API '{ErrorMessage}'", wrapper.ErrorMessage);
+                throw new RtMidiApiException($"Error detected from RtMidi API '{wrapper.ErrorMessage}'");
+            }
         }
 
         public void Dispose() 
