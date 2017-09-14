@@ -11,24 +11,6 @@ namespace RtMidi.Core.Unmanaged.API
     /// </summary>
     public delegate void RtMidiCallback(double timestamp, IntPtr message, UIntPtr messageSize, IntPtr userData);
 
-    internal struct RtMidiWrapper 
-    {
-        IntPtr ptr;
-        IntPtr data;
-        bool ok;
-        string msg;
-
-        public bool Ok => ok;
-        public string ErrorMessage => msg;
-    }
-
-    internal class RtMidiApiException : Exception
-    {
-        public RtMidiApiException(string message) : base(message)
-        {
-        }
-    }
-
     internal static class RtMidiC
     {
         public const string RtMidiLibrary = "rtmidi";
