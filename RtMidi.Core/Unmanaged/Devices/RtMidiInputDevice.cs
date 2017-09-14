@@ -1,79 +1,75 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using RtMidi.Core.Unmanaged.API;
-
+using Serilog;
+using System.Runtime.InteropServices;
 namespace RtMidi.Core.Unmanaged.Devices
 {
-    public class RtMidiInputDevice : RtMidiDevice
+    internal class RtMidiInputDevice : RtMidiDevice, IRtMidiInputDevice
     {
-        public RtMidiInputDevice()
-            : base(RtMidiC.Input.CreateDefault())
+        internal RtMidiInputDevice(uint portNumber) : base(portNumber)
         {
         }
 
-        public RtMidiInputDevice(RtMidiApi api, string clientName, int queueSizeLimit = 100)
-            : base(RtMidiC.Input.Create(api, clientName, (uint)queueSizeLimit))
+        public event EventHandler<byte[]> Message;
+
+        protected override IntPtr CreateDevice()
         {
+            try
+            {
+                Log.Debug("Creating default input device");
+                var handle = RtMidiC.Input.CreateDefault();
+
+                Log.Debug("Setting input callback");
+                RtMidiC.Input.SetCallback(handle, HandleRtMidiCallback, IntPtr.Zero);
+
+                return handle;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Unable to create default input device");
+                return IntPtr.Zero;
+            }
         }
 
-        public override RtMidiApi CurrentApi
+        private void HandleRtMidiCallback(double timestamp, IntPtr messagePtr, UIntPtr messageSize, IntPtr userData)
         {
-            get { return RtMidiC.Input.GetCurrentApi(Handle); }
+            try
+            {
+                var messageHandlers = Message;
+                if (messageHandlers != null)
+                {
+                    // Copy message to managed byte array
+                    var size = (int)messageSize;
+                    var message = new byte[size];
+                    Marshal.Copy(messagePtr, message, 0, size);
+
+                    // Invoke message handlers
+                    messageHandlers.Invoke(this, message);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Unexpected exception occurred while receiving MIDI message");
+                return;
+            }
+
+
         }
 
-        protected override void ReleaseDevice()
+        protected override void DestroyDevice()
         {
-            RtMidiC.Input.Free(Handle);
-        }
+            try
+            {
+                Log.Debug("Cancelling input callback");
+                RtMidiC.Input.CancelCallback(Handle);
 
-        public void SetCallback(RtMidiCallback callback, IntPtr userData)
-        {
-            RtMidiC.Input.SetCallback(Handle, callback, userData);
-        }
-
-        // TODO Ensure CancelCallback is called (implement IDisposable?)
-        public void CancelCallback()
-        {
-            RtMidiC.Input.CancelCallback(Handle);
-        }
-
-        public void SetIgnoredTypes(bool midiSysex, bool midiTime, bool midiSense)
-        {
-            RtMidiC.Input.IgnoreTypes(Handle, midiSysex, midiTime, midiSense);
-        }
-
-        public byte[] GetMessage()
-        {
-            UIntPtr length = UIntPtr.Zero;
-            int size = (int)RtMidiC.Input.GetMessage(Handle, out IntPtr ptr, ref length);
-            byte[] buf = new byte[size];
-            Marshal.Copy(ptr, buf, 0, size);
-            return buf;
+                Log.Debug("Freeing input device handle");
+                RtMidiC.Input.Free(Handle);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error while freeing input device handle");
+            }
         }
     }
 }
-
-/**
- * This is a derived work, based on https://github.com/atsushieno/managed-midi
- * 
- * Copyright (c) 2010 Atsushi Eno
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- **/

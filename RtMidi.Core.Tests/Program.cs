@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.InteropServices;
-using RtMidi.Core.Unmanaged.Devices;
 using RtMidi.Core.Unmanaged;
 
 namespace RtMidi.Core.Tests
@@ -16,36 +14,25 @@ namespace RtMidi.Core.Tests
                 Console.WriteLine($"API: {api}");
 
             Console.WriteLine("Available MIDI devices:");
-            foreach (var device in RtMidiDeviceManager.Instance.AllDevices) 
+            var inputDevices = RtMidiDeviceManager.Instance.InputDevices.ToList();
+            foreach (var device in inputDevices) 
             {
                 Console.WriteLine($"Device: {device.Name}:{device.Port}");
             }
 
-            var inputDeviceInfo = RtMidiDeviceManager.Instance.AllDevices.Where(x => x.IsInput).First();
-            var inputDevice = RtMidiDeviceManager.Instance.OpenInput(inputDeviceInfo);
-            inputDevice.SetCallback(HandleRtMidiCallback, IntPtr.Zero);
+            using (var inputDevice = inputDevices.First().CreateDevice())
+            {
+                inputDevice.Message += InputDevice_Message;
+                inputDevice.Open();
 
-            Console.ReadLine();
-
-            inputDevice.Close();
+                Console.ReadLine();
+            }
         }
 
-        static void HandleRtMidiCallback(double timestamp, IntPtr messagePtr, UIntPtr messageSize, IntPtr userData)
+        static void InputDevice_Message(object sender, byte[] message)
         {
-            try
-            {
-                var size = (int)messageSize;
-                var message = new byte[size];
-                Marshal.Copy(messagePtr, message, 0, size);
-
-                var msg = string.Join(" ", message.Select(b => $"{b:X2}/{b}"));
-
-                Console.WriteLine($"Received: {msg} (length {messageSize})");
-            }
-            catch(Exception e) 
-            {
-                Console.WriteLine($"Exception receiving message: {e}");
-            }
+            var msg = string.Join(" ", message.Select(b => $"{b:X2}/{b}"));
+            Console.WriteLine($"Received: {msg} (length {message.Length})");
         }
     }
 }

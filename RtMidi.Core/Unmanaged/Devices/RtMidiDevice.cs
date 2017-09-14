@@ -1,98 +1,154 @@
 ﻿using System;
 using RtMidi.Core.Unmanaged.API;
-
+using Serilog;
 namespace RtMidi.Core.Unmanaged.Devices
 {
+
     /// <summary>
-    /// Abstract RtMidi device
+    /// Abstract RtMidi device base class
     /// </summary>
-    public abstract class RtMidiDevice : IDisposable
+    internal abstract class RtMidiDevice : IRtMidiDevice
     {
-        protected readonly IntPtr Handle;
-        private bool _isPortOpen;
+        private static readonly ILogger Log = Serilog.Log.ForContext<RtMidiDevice>();
 
-        protected RtMidiDevice(IntPtr handle)
+        private IntPtr _handle;
+        private readonly uint _portNumber;
+        private bool _disposed;
+        private bool _isOpen;
+
+        protected RtMidiDevice(uint portNumber) 
         {
-            Handle = handle;
+            _handle = IntPtr.Zero;
+            _portNumber = portNumber;
         }
 
-        public int PortCount
+        ~RtMidiDevice() 
         {
-            get { return (int)RtMidiC.GetPortCount(Handle); }
+            // Ensure unmanaged handles are freed
+            Dispose();
         }
 
-        public void Dispose()
+        public bool IsOpen => _isOpen;
+
+        /// <summary>
+        /// Read-only access to the unmanaged device handle
+        /// </summary>
+        protected IntPtr Handle => _handle;
+
+        public bool Open() 
         {
-            Close();
+            if (_isOpen) return false;
+
+            if (!EnsureDevice())
+            {
+                Log.Debug("Could not create device handle, cannot open port {PortNumber}", _portNumber);
+                return false;
+            }
+
+            try
+            {
+                Log.Debug("Feching port name, for port {PortNumber}", _portNumber);
+                var portName = RtMidiC.GetPortName(_handle, _portNumber);
+
+                Log.Debug("Opening port {PortNumber} using name {PortName}", _portNumber, portName);
+                RtMidiC.OpenPort(_handle, _portNumber, portName);
+
+                _isOpen = true;
+
+                return true;
+            }
+            catch (Exception e) 
+            {
+                Log.Error(e, "Unable to open port number {PortNumber}", _portNumber);
+                return false;
+            }
         }
 
         public void Close()
         {
-            if (_isPortOpen)
-            {
-                RtMidiC.ClosePort(Handle);
-                _isPortOpen = false;
-            }
+            if (!_isOpen) return;
 
-            ReleaseDevice();
-        }
-
-        public string GetPortName(int portNumber)
-        {
-            return RtMidiC.GetPortName(Handle, (uint)portNumber);
-        }
-
-        public void OpenVirtualPort(string portName)
-        {
             try
             {
-                RtMidiC.OpenVirtualPort(Handle, portName);
+                Log.Debug("Closing port number {PortNumber}", _portNumber);
+                RtMidiC.ClosePort(_handle);
+                _isOpen = false;
             }
-            finally
+            catch (Exception e)
             {
-                _isPortOpen = true;
+                Log.Error(e, "Unable to close port number {PortNumber}", _portNumber);
             }
         }
 
-        public void OpenPort(int portNumber, string portName)
+        /// <summary>
+        /// Get number of available ports for this device type
+        /// </summary>
+        /// <returns>Number of ports</returns>
+        internal uint GetPortCount()
         {
+            if (!EnsureDevice()) return 0;
+
             try
             {
-                RtMidiC.OpenPort(Handle, (uint)portNumber, portName);
+                return RtMidiC.GetPortCount(_handle);
             }
-            finally
+            catch (Exception e)
             {
-                _isPortOpen = true;
+                Log.Error(e, "Error while getting number of ports");
+                return 0;
             }
         }
 
-        protected abstract void ReleaseDevice();
+        /// <summary>
+        /// Get name of port, for this device type
+        /// </summary>
+        /// <returns>The port name.</returns>
+        /// <param name="portNumber">Port number.</param>
+        internal string GetPortName(uint portNumber) 
+        {
+            if (!EnsureDevice()) return null;
 
-        public abstract RtMidiApi CurrentApi { get; }
+            try 
+            {
+                return RtMidiC.GetPortName(_handle, portNumber);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error while getting port {PortNumber} name", portNumber);
+                return null;
+            }
+        }
+
+        private bool EnsureDevice()
+        {
+            if (_handle != IntPtr.Zero) return true;
+
+            _handle = CreateDevice();
+
+            return _handle != IntPtr.Zero;
+        }
+
+        public void Dispose() 
+        {
+            if (_disposed) return;
+
+            // Ensure device is closed
+            if (_isOpen) 
+            {
+                Close();
+            }
+
+            // Ensure device is destroyed
+            if (_handle != IntPtr.Zero) 
+            {
+                DestroyDevice();
+            }
+
+            _disposed = true;
+            GC.SuppressFinalize(this);
+        }
+
+        protected abstract IntPtr CreateDevice();
+        protected abstract void DestroyDevice();
     }
 }
-
-/**
- * This is a derived work, based on https://github.com/atsushieno/managed-midi
- * 
- * Copyright (c) 2010 Atsushi Eno
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- **/
