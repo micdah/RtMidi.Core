@@ -48,7 +48,7 @@ namespace RtMidi.Core.Unmanaged.Devices
 
             try
             {
-                Log.Debug("Feching port name, for port {PortNumber}", _portNumber);
+                Log.Debug("Fetching port name, for port {PortNumber}", _portNumber);
                 var portName = RtMidiC.GetPortName(_handle, _portNumber);
                 CheckForError();
 
