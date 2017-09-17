@@ -7,18 +7,36 @@ using System.Runtime.CompilerServices;
 namespace RtMidi.Core
 {
 
-    internal abstract class MidiDevice<TRtMidiDevice> : IMidiDevice 
-        where TRtMidiDevice : class, IRtMidiDevice
+    internal abstract class MidiDevice : IMidiDevice 
     {
-        protected readonly TRtMidiDevice RtMidiDevice;
+        private readonly IRtMidiDevice _rtMidiDevice;
+        private bool _disposed;
 
-        protected MidiDevice(TRtMidiDevice rtMidiDevice)
+        protected MidiDevice(IRtMidiDevice rtMidiDevice)
         {
-            RtMidiDevice = rtMidiDevice ?? throw new ArgumentNullException(nameof(rtMidiDevice));
+            _rtMidiDevice = rtMidiDevice ?? throw new ArgumentNullException(nameof(rtMidiDevice));
         }
 
-        public bool IsOpen => RtMidiDevice.IsOpen;
-        public bool Open() => RtMidiDevice.Open();
-        public void Close() => RtMidiDevice.Close();
+        public bool IsOpen => _rtMidiDevice.IsOpen;
+        public bool Open() => _rtMidiDevice.Open();
+        public void Close() => _rtMidiDevice.Close();
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+
+            try {
+                Disposing();
+                _rtMidiDevice.Dispose();
+            }
+            finally
+            {
+                _disposed = true;
+            }
+        }
+
+        protected virtual void Disposing()
+        {
+        }
     }
 }

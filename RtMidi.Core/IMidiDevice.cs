@@ -1,10 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
+using System;
 
 [assembly: InternalsVisibleTo("RtMidi.Core.Tests")]
 
 namespace RtMidi.Core
 {
-    public interface IMidiDevice
+    public interface IMidiDevice : IDisposable
     {
         /// <summary>
         /// Whether or not the device is open

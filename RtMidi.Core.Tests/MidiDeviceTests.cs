@@ -12,7 +12,7 @@ namespace RtMidi.Core.Tests
         public MidiDeviceTests()
         {
             _rtMidiDevice = new Mock<IRtMidiDevice>();
-            _sut = new MidiDeviceMock<IRtMidiDevice>(_rtMidiDevice.Object);
+            _sut = new MidiDeviceMock(_rtMidiDevice.Object);
         }
 
         [Fact]
@@ -64,12 +64,27 @@ namespace RtMidi.Core.Tests
             _rtMidiDevice.Verify();
         }
 
+        [Fact]
+        public void Should_Dispose_RtMidiDevice_When_Disposed()
+        {
+            // Setup
+            _rtMidiDevice
+                .Setup(x => x.Dispose())
+                .Verifiable("Should call Dispose on RtMidiDevice");
+
+            // Test
+            _sut.Dispose();
+
+            // Verify
+            _rtMidiDevice.Verify();
+        }
+
         /// <summary>
         /// Implementation used for testing base class
         /// </summary>
-        class MidiDeviceMock<T> : MidiDevice<T> where T : class, IRtMidiDevice
+        class MidiDeviceMock : MidiDevice
         {
-            public MidiDeviceMock(T rtMidiDevice) : base(rtMidiDevice)
+            public MidiDeviceMock(IRtMidiDevice rtMidiDevice) : base(rtMidiDevice)
             {
             }
         }
