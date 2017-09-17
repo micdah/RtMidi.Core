@@ -7,7 +7,7 @@ namespace RtMidi.Core.Tests
     public class MidiDeviceTests
     {
         private readonly Mock<IRtMidiDevice> _rtMidiDevice;
-        private readonly MidiDevice<IRtMidiDevice> _sut;
+        private readonly IMidiDevice _sut;
 
         public MidiDeviceTests()
         {
@@ -33,7 +33,7 @@ namespace RtMidi.Core.Tests
         }
 
         [Fact]
-        public void Should_Delegate_Open() 
+        public void Should_Delegate_Open()
         {
             // Setup
             _rtMidiDevice
@@ -50,7 +50,7 @@ namespace RtMidi.Core.Tests
         }
 
         [Fact]
-        public void Should_Delegate_Close() 
+        public void Should_Delegate_Close()
         {
             // Setup
             _rtMidiDevice

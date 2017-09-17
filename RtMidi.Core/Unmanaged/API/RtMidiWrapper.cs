@@ -4,10 +4,12 @@ namespace RtMidi.Core.Unmanaged.API
 {
     internal struct RtMidiWrapper
     {
+#pragma warning disable CS0649,CS0169
         IntPtr ptr;
         IntPtr data;
         bool ok;
         string msg;
+#pragma warning restore CS0649,CS0169
 
         public bool Ok => ok;
         public string ErrorMessage => msg;

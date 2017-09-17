@@ -2,11 +2,13 @@
 using System;
 using System.Runtime.CompilerServices;
 
-[assembly:InternalsVisibleTo("RtMidi.Core.Tests")]
+[assembly: InternalsVisibleTo("RtMidi.Core.Tests")]
 
 namespace RtMidi.Core
 {
-    public abstract class MidiDevice<TRtMidiDevice> where TRtMidiDevice : class, IRtMidiDevice
+
+    internal abstract class MidiDevice<TRtMidiDevice> : IMidiDevice 
+        where TRtMidiDevice : class, IRtMidiDevice
     {
         protected readonly TRtMidiDevice RtMidiDevice;
 
