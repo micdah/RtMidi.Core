@@ -12,7 +12,7 @@ namespace RtMidi.Core.Tests
         public MidiDeviceTests()
         {
             _rtMidiDevice = new Mock<IRtMidiDevice>();
-            _sut = new MidiDevice<IRtMidiDevice>(_rtMidiDevice.Object);
+            _sut = new MidiDeviceMock<IRtMidiDevice>(_rtMidiDevice.Object);
         }
 
         [Fact]
@@ -62,6 +62,16 @@ namespace RtMidi.Core.Tests
 
             // Verify
             _rtMidiDevice.Verify();
+        }
+
+        /// <summary>
+        /// Implementation used for testing base class
+        /// </summary>
+        class MidiDeviceMock<T> : MidiDevice<T> where T : class, IRtMidiDevice
+        {
+            public MidiDeviceMock(T rtMidiDevice) : base(rtMidiDevice)
+            {
+            }
         }
     }
 }

@@ -6,11 +6,11 @@ using System.Runtime.CompilerServices;
 
 namespace RtMidi.Core
 {
-    public class MidiDevice<TRtMidiDevice> where TRtMidiDevice : class, IRtMidiDevice
+    public abstract class MidiDevice<TRtMidiDevice> where TRtMidiDevice : class, IRtMidiDevice
     {
         protected readonly TRtMidiDevice RtMidiDevice;
 
-        public MidiDevice(TRtMidiDevice rtMidiDevice)
+        protected MidiDevice(TRtMidiDevice rtMidiDevice)
         {
             RtMidiDevice = rtMidiDevice ?? throw new ArgumentNullException(nameof(rtMidiDevice));
         }
