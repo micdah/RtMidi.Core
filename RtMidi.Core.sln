@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RtMidi.Core", "RtMidi.Core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RtMidi.Core.Samples", "RtMidi.Core.Samples\RtMidi.Core.Samples.csproj", "{2574496E-86C1-46A5-86FF-A19CCDF1365A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RtMidi.Core.Tests", "RtMidi.Core.Tests\RtMidi.Core.Tests.csproj", "{CFABF8B6-0C72-4F13-A0DE-E00E06733ECE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,5 +21,9 @@ Global
 		{2574496E-86C1-46A5-86FF-A19CCDF1365A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2574496E-86C1-46A5-86FF-A19CCDF1365A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2574496E-86C1-46A5-86FF-A19CCDF1365A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFABF8B6-0C72-4F13-A0DE-E00E06733ECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFABF8B6-0C72-4F13-A0DE-E00E06733ECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFABF8B6-0C72-4F13-A0DE-E00E06733ECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFABF8B6-0C72-4F13-A0DE-E00E06733ECE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
