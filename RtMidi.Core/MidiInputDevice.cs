@@ -2,13 +2,15 @@
 using RtMidi.Core.Messages;
 using System;
 using Serilog;
-using System.Text;
 using RtMidi.Core.Enums;
 
 namespace RtMidi.Core
 {
     internal class MidiInputDevice : MidiDevice, IMidiInputDevice
     {
+        internal const byte NoteOffBitmask = 0b1000_0000;
+        internal const byte NoteOnBitmask = 0b1001_0000;
+
         private static readonly ILogger Log = Serilog.Log.ForContext<MidiInputDevice>();
         private readonly IRtMidiInputDevice _rtMidiInputDevice;
 
@@ -19,6 +21,7 @@ namespace RtMidi.Core
         }
 
         public event EventHandler<NoteOffMessage> NoteOff;
+        public event EventHandler<NoteOnMessage> NoteOn;
 
         private void RtMidiInputDevice_Message(object sender, byte[] message)
         {
@@ -34,6 +37,7 @@ namespace RtMidi.Core
                 return;
             }
 
+            // TODO Decode and propagate midi events on separate thread as not to block receiving thread
             Decode(message);
         }
 
@@ -42,7 +46,7 @@ namespace RtMidi.Core
             byte status = message[0];
             switch (status & 0b1111_0000)
             {
-                case 0b1000_0000:
+                case NoteOffBitmask:
                     DecodeNoteOffMessage(message);
                     break;
                 default:

@@ -5,21 +5,24 @@ using RtMidi.Core.Messages;
 using System.Collections.Generic;
 using RtMidi.Core.Enums;
 using Xunit.Abstractions;
+using System.Linq;
 
 namespace RtMidi.Core.Tests
 {
     public class MidiInputDeviceTests : TestBase
     {
-        private readonly RtMidiInputDeviceMock _inputDevice;
+        private readonly RtMidiInputDeviceMock _inputDeviceMock;
         private readonly IMidiInputDevice _sut;
         private readonly Queue<NoteOffMessage> _noteOffMessages = new Queue<NoteOffMessage>();
+        private readonly Queue<NoteOnMessage> _noteOnMessages = new Queue<NoteOnMessage>();
 
         public MidiInputDeviceTests(ITestOutputHelper output) : base(output)
         {
-            _inputDevice = new RtMidiInputDeviceMock();
-            _sut = new MidiInputDevice(_inputDevice);
+            _inputDeviceMock = new RtMidiInputDeviceMock();
+            _sut = new MidiInputDevice(_inputDeviceMock);
 
             _sut.NoteOff += (sender, e) => _noteOffMessages.Enqueue(e);
+            _sut.NoteOn += (sender, e) => _noteOnMessages.Enqueue(e);
         }
 
         [Fact]
@@ -39,9 +42,49 @@ namespace RtMidi.Core.Tests
             for (var i = 0; i < 16; i++)
             {
                 var channel = (Channel)i;
-                _inputDevice.OnMessage(NoteOffMessage(channel));
+                _inputDeviceMock.OnMessage(NoteOffMessage(channel));
                 Assert.True(_noteOffMessages.TryDequeue(out var noteOffMessage));
                 Assert.Equal(channel, noteOffMessage.Channel);
+            }
+        }
+
+        [Fact]
+        public void Should_Fire_NoteOffMessage() 
+        {
+            foreach (var channel in Enum.GetValues(typeof(Channel)).Cast<Channel>()) 
+            {
+                foreach (var key in Enum.GetValues(typeof(Key)).Cast<Key>())
+                {
+                    for (var velocity = 0; velocity <= 127; velocity ++) 
+                    {
+                        _inputDeviceMock.OnMessage(NoteOffMessage(channel, key, velocity));
+                        Assert.True(_noteOffMessages.TryDequeue(out var noteOffMessage));
+
+                        Assert.Equal(channel, noteOffMessage.Channel);
+                        Assert.Equal(key, noteOffMessage.Key);
+                        Assert.Equal(velocity, noteOffMessage.Velocity);
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        public void Should_Fire_NoteOnMessages()
+        {
+            foreach (var channel in Enum.GetValues(typeof(Channel)).Cast<Channel>())
+            {
+                foreach (var key in Enum.GetValues(typeof(Key)).Cast<Key>())
+                {
+                    for (var velocity = 0; velocity <= 127; velocity++)
+                    {
+                        _inputDeviceMock.OnMessage(NoteOnMessage(channel, key, velocity));
+                        Assert.True(_noteOnMessages.TryDequeue(out var noteOffMessage));
+
+                        Assert.Equal(channel, noteOffMessage.Channel);
+                        Assert.Equal(key, noteOffMessage.Key);
+                        Assert.Equal(velocity, noteOffMessage.Velocity);
+                    }
+                }
             }
         }
 
@@ -49,7 +92,17 @@ namespace RtMidi.Core.Tests
         {
             return new byte[]
             {
-                (byte)(0b1000_0000 | (0b0000_1111 & (int)channel)),
+                (byte)(MidiInputDevice.NoteOffBitmask | (0b0000_1111 & (int)channel)),
+                (byte)(0b0111_1111 & (int)key),
+                (byte)(0b0111_1111 & velocity)
+            };
+        }
+
+        private byte[] NoteOnMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
+        {
+            return new byte[]
+            {
+                (byte)(MidiInputDevice.NoteOnBitmask | (0b0000_1111 & (int)channel)),
                 (byte)(0b0111_1111 & (int)key),
                 (byte)(0b0111_1111 & velocity)
             };

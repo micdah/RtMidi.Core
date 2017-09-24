@@ -12,5 +12,10 @@ namespace RtMidi.Core
         /// Note Off event
         /// </summary>
         event EventHandler<NoteOffMessage> NoteOff;
+
+        /// <summary>
+        /// Note On event
+        /// </summary>
+        event EventHandler<NoteOnMessage> NoteOn;
     }
 }
