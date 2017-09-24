@@ -8,6 +8,16 @@ namespace RtMidi.Core
 {
     internal class MidiInputDevice : MidiDevice, IMidiInputDevice
     {
+        /// <summary>
+        /// Bitmask to isolate channel part of status byte
+        /// </summary>
+        internal const byte ChannelBitmask = 0b0000_1111;
+
+        /// <summary>
+        /// Bitmask to isolate data part of data byte
+        /// </summary>
+        internal const byte DataBitmask = 0b0111_1111;
+
         internal const byte NoteOffBitmask = 0b1000_0000;
         internal const byte NoteOnBitmask = 0b1001_0000;
 
@@ -38,6 +48,7 @@ namespace RtMidi.Core
             }
 
             // TODO Decode and propagate midi events on separate thread as not to block receiving thread
+
             Decode(message);
         }
 
@@ -48,6 +59,9 @@ namespace RtMidi.Core
             {
                 case NoteOffBitmask:
                     DecodeNoteOffMessage(message);
+                    break;
+                case NoteOnBitmask:
+                    DecodeNoteOnMessage(message);
                     break;
                 default:
                     Log.Error("Unknown message type {Bitmask}", $"{status & 0b1111_0000:X2}");
@@ -66,11 +80,30 @@ namespace RtMidi.Core
             var noteOff = NoteOff;
             if (noteOff != null)
             {
-                var channel = (Channel)(0b0000_1111 & message[0]);
-                var key = (Key)(0b0111_1111 & message[1]);
-                var velocity = 0b0111_1111 & message[2];
+                var channel = (Channel)(ChannelBitmask & message[0]);
+                var key = (Key)(DataBitmask & message[1]);
+                var velocity = DataBitmask & message[2];
 
                 noteOff.Invoke(this, new NoteOffMessage(channel, key, velocity));
+            }
+        }
+
+        private void DecodeNoteOnMessage(byte[] message) 
+        {
+            if (message.Length != 3)
+            {
+                Log.Error("Incorrect number of bytes ({Length}) receied for Note On Message", message.Length);
+                return;
+            }
+
+            var noteOn = NoteOn;
+            if (noteOn != null) 
+            {
+                var channel = (Channel)(ChannelBitmask & message[0]);
+                var key = (Key)(DataBitmask & message[1]);
+                var velocity = DataBitmask & message[2];
+
+                noteOn.Invoke(this, new NoteOnMessage(channel, key, velocity));
             }
         }
 

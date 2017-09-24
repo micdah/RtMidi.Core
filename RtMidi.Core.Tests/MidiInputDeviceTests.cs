@@ -92,9 +92,9 @@ namespace RtMidi.Core.Tests
         {
             return new byte[]
             {
-                (byte)(MidiInputDevice.NoteOffBitmask | (0b0000_1111 & (int)channel)),
-                (byte)(0b0111_1111 & (int)key),
-                (byte)(0b0111_1111 & velocity)
+                (byte)(MidiInputDevice.NoteOffBitmask | (MidiInputDevice.ChannelBitmask & (int)channel)),
+                (byte)(MidiInputDevice.DataBitmask & (int)key),
+                (byte)(MidiInputDevice.DataBitmask & velocity)
             };
         }
 
@@ -102,9 +102,9 @@ namespace RtMidi.Core.Tests
         {
             return new byte[]
             {
-                (byte)(MidiInputDevice.NoteOnBitmask | (0b0000_1111 & (int)channel)),
-                (byte)(0b0111_1111 & (int)key),
-                (byte)(0b0111_1111 & velocity)
+                (byte)(MidiInputDevice.NoteOnBitmask | (MidiInputDevice.ChannelBitmask & (int)channel)),
+                (byte)(MidiInputDevice.DataBitmask & (int)key),
+                (byte)(MidiInputDevice.DataBitmask & velocity)
             };
         }
 
