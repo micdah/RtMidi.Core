@@ -1,13 +1,18 @@
 ﻿using Xunit;
 using RtMidi.Core.Enums;
 using System;
+using Xunit.Abstractions;
 
 namespace RtMidi.Core.Tests
 {
     public class KeyTests
     {
-        public class OctaveTests
+        public class OctaveTests : TestBase
         {
+            public OctaveTests(ITestOutputHelper output) : base(output)
+            {
+            }
+
             [Fact]
             public void Should_Throw_ArgumentOutOfRange_When_Key_Below_0()
             {
@@ -50,8 +55,12 @@ namespace RtMidi.Core.Tests
             }
         }
 
-        public class NoteTests
+        public class NoteTests : TestBase
         {
+            public NoteTests(ITestOutputHelper output) : base(output)
+            {
+            }
+
             [Fact]
             public void Should_Throw_ArgumentOutOfRange_When_Key_Below_0() 
             {

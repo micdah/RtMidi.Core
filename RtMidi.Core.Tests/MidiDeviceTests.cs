@@ -1,15 +1,16 @@
 ﻿using RtMidi.Core.Unmanaged.Devices;
 using Moq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace RtMidi.Core.Tests
 {
-    public class MidiDeviceTests
+    public class MidiDeviceTests : TestBase
     {
         private readonly Mock<IRtMidiDevice> _rtMidiDevice;
         private readonly IMidiDevice _sut;
 
-        public MidiDeviceTests()
+        public MidiDeviceTests(ITestOutputHelper output) : base(output)
         {
             _rtMidiDevice = new Mock<IRtMidiDevice>();
             _sut = new MidiDeviceMock(_rtMidiDevice.Object);

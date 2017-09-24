@@ -4,16 +4,17 @@ using Xunit;
 using RtMidi.Core.Messages;
 using System.Collections.Generic;
 using RtMidi.Core.Enums;
+using Xunit.Abstractions;
 
 namespace RtMidi.Core.Tests
 {
-    public class MidiInputDeviceTests
+    public class MidiInputDeviceTests : TestBase
     {
         private readonly RtMidiInputDeviceMock _inputDevice;
         private readonly IMidiInputDevice _sut;
         private readonly Queue<NoteOffMessage> _noteOffMessages = new Queue<NoteOffMessage>();
 
-        public MidiInputDeviceTests()
+        public MidiInputDeviceTests(ITestOutputHelper output) : base(output)
         {
             _inputDevice = new RtMidiInputDeviceMock();
             _sut = new MidiInputDevice(_inputDevice);
