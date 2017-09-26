@@ -1,4 +1,5 @@
 ﻿using RtMidi.Core.Enums;
+using Serilog;
 namespace RtMidi.Core.Messages
 {
     /// <summary>
@@ -6,6 +7,8 @@ namespace RtMidi.Core.Messages
     /// </summary>
     public struct ControlChangeMessage
     {
+        private static readonly ILogger Log = Serilog.Log.ForContext<ControlChangeMessage>();
+
         public ControlChangeMessage(Channel channel, int control, int value)
         {
             Channel = channel;
@@ -15,8 +18,26 @@ namespace RtMidi.Core.Messages
 
         // TODO Create detail enum of midi controls, see https://www.midi.org/specifications/item/table-3-control-change-messages-data-bytes-2
 
-        public Channel Channel { get; }
-        public int Control { get; }
-        public int Value { get; }
+        public Channel Channel { get; private set; }
+        public int Control { get; private set; }
+        public int Value { get; private set; }
+
+        internal static bool TryDecode(byte[] message, out ControlChangeMessage msg)
+        {
+            if (message.Length != 3)
+            {
+                Log.Error("Incorrect number of btyes ({Length}) received for Control Change message");
+                msg = default;
+                return false;
+            }
+
+            msg = new ControlChangeMessage
+            {
+                Channel = (Channel)(Midi.ChannelBitmask & message[0]),
+                Control = Midi.DataBitmask & message[1],
+                Value = Midi.DataBitmask & message[2]
+            };
+            return true;
+        }
     }
 }

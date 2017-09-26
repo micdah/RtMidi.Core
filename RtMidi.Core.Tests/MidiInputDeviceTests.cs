@@ -134,7 +134,7 @@ namespace RtMidi.Core.Tests
         private static byte[] NoteOffMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
         => new byte[]
         {
-            StatusByte(MidiInputDevice.NoteOffBitmask, channel),
+            StatusByte(Midi.NoteOffBitmask, channel),
             DataByte(key),
             DataByte(velocity)
         };
@@ -142,7 +142,7 @@ namespace RtMidi.Core.Tests
         private static byte[] NoteOnMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
         => new byte[]
         {
-            StatusByte(MidiInputDevice.NoteOnBitmask, channel),
+            StatusByte(Midi.NoteOnBitmask, channel),
             DataByte(key),
             DataByte(velocity)
         };
@@ -150,7 +150,7 @@ namespace RtMidi.Core.Tests
         private static byte[] PolyphonicKeyPressureMessage(Channel channel, Key key = Key.Key_0, int pressure = 0)
         => new byte[]
         {
-            StatusByte(MidiInputDevice.PolyphonicKeyPressureBitmask, channel),
+            StatusByte(Midi.PolyphonicKeyPressureBitmask, channel),
             DataByte(key),
             DataByte(pressure)
         };
@@ -158,19 +158,19 @@ namespace RtMidi.Core.Tests
         private static byte[] ControlChangeMessage(Channel channel, int control, int value)
         => new byte[]
         {
-            StatusByte(MidiInputDevice.ControlChangeBitmask, channel),
+            StatusByte(Midi.ControlChangeBitmask, channel),
             DataByte(control),
             DataByte(value)
         };
 
         private static byte StatusByte(byte statusBitmask, Channel channel) 
-        => (byte)(statusBitmask | (MidiInputDevice.ChannelBitmask & (int)channel));
+        => (byte)(statusBitmask | (Midi.ChannelBitmask & (int)channel));
 
         private static byte DataByte(int value)
-        => (byte)(MidiInputDevice.DataBitmask & value);
+        => (byte)(Midi.DataBitmask & value);
 
         private static byte DataByte(Key key)
-        => (byte)(MidiInputDevice.DataBitmask & (int)key);
+        => (byte)(Midi.DataBitmask & (int)key);
             
 
         private class RtMidiInputDeviceMock : IRtMidiInputDevice
