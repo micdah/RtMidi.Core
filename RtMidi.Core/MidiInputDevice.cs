@@ -20,6 +20,7 @@ namespace RtMidi.Core
 
         internal const byte NoteOffBitmask = 0b1000_0000;
         internal const byte NoteOnBitmask = 0b1001_0000;
+        internal const byte PolyphonicKeyPressureBitmask = 0b1010_0000;
 
         private static readonly ILogger Log = Serilog.Log.ForContext<MidiInputDevice>();
         private readonly IRtMidiInputDevice _rtMidiInputDevice;
@@ -32,6 +33,7 @@ namespace RtMidi.Core
 
         public event EventHandler<NoteOffMessage> NoteOff;
         public event EventHandler<NoteOnMessage> NoteOn;
+        public event EventHandler<PolyphonicKeyPressureMessage> PolyphonicKeyPressure;
 
         private void RtMidiInputDevice_Message(object sender, byte[] message)
         {
@@ -63,6 +65,9 @@ namespace RtMidi.Core
                 case NoteOnBitmask:
                     DecodeNoteOnMessage(message);
                     break;
+                case PolyphonicKeyPressureBitmask:
+                    DecodePolyphonicKeyPressureMessage(message);
+                    break;
                 default:
                     Log.Error("Unknown message type {Bitmask}", $"{status & 0b1111_0000:X2}");
                     break;
@@ -73,18 +78,18 @@ namespace RtMidi.Core
         {
             if (message.Length != 3)
             {
-                Log.Error("Incorrect number of bytes ({Length}) received for Note Off Message", message.Length);
+                Log.Error("Incorrect number of bytes ({Length}) received for Note Off message", message.Length);
                 return;
             }
 
-            var noteOff = NoteOff;
-            if (noteOff != null)
+            var @event = NoteOff;
+            if (@event != null)
             {
                 var channel = (Channel)(ChannelBitmask & message[0]);
                 var key = (Key)(DataBitmask & message[1]);
                 var velocity = DataBitmask & message[2];
 
-                noteOff.Invoke(this, new NoteOffMessage(channel, key, velocity));
+                @event.Invoke(this, new NoteOffMessage(channel, key, velocity));
             }
         }
 
@@ -92,19 +97,38 @@ namespace RtMidi.Core
         {
             if (message.Length != 3)
             {
-                Log.Error("Incorrect number of bytes ({Length}) receied for Note On Message", message.Length);
+                Log.Error("Incorrect number of bytes ({Length}) received for Note On message", message.Length);
                 return;
             }
 
-            var noteOn = NoteOn;
-            if (noteOn != null) 
+            var @event = NoteOn;
+            if (@event != null) 
             {
                 var channel = (Channel)(ChannelBitmask & message[0]);
                 var key = (Key)(DataBitmask & message[1]);
                 var velocity = DataBitmask & message[2];
 
-                noteOn.Invoke(this, new NoteOnMessage(channel, key, velocity));
+                @event.Invoke(this, new NoteOnMessage(channel, key, velocity));
             }
+        }
+
+        private void DecodePolyphonicKeyPressureMessage(byte[] message)
+        {
+            if (message.Length != 3)
+            {
+                Log.Error("Incorrect nuber of bytes ({Length}) received for Polyphonic Key Pressure message", message.Length);
+            }
+
+            var @event = PolyphonicKeyPressure;
+            if (@event != null) 
+            {
+                var channel = (Channel)(ChannelBitmask & message[0]);
+                var key = (Key)(DataBitmask & message[1]);
+                var pressure = DataBitmask & message[2];
+
+                @event.Invoke(this, new PolyphonicKeyPressureMessage(channel, key, pressure));
+            }
+
         }
 
         protected override void Disposing()

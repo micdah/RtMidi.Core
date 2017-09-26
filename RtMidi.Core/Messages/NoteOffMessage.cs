@@ -1,6 +1,9 @@
 ﻿using RtMidi.Core.Enums;
 namespace RtMidi.Core.Messages
 {
+    /// <summary>
+    /// This message is sent when a note is released (ended). 
+    /// </summary>
     public struct NoteOffMessage
     {
         public NoteOffMessage(Channel channel, Key key, int velocity) 

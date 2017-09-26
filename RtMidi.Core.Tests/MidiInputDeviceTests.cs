@@ -15,6 +15,7 @@ namespace RtMidi.Core.Tests
         private readonly IMidiInputDevice _sut;
         private readonly Queue<NoteOffMessage> _noteOffMessages = new Queue<NoteOffMessage>();
         private readonly Queue<NoteOnMessage> _noteOnMessages = new Queue<NoteOnMessage>();
+        private readonly Queue<PolyphonicKeyPressureMessage> _polyphonicKeyPressureMessages = new Queue<Messages.PolyphonicKeyPressureMessage>();
 
         public MidiInputDeviceTests(ITestOutputHelper output) : base(output)
         {
@@ -23,6 +24,7 @@ namespace RtMidi.Core.Tests
 
             _sut.NoteOff += (sender, e) => _noteOffMessages.Enqueue(e);
             _sut.NoteOn += (sender, e) => _noteOnMessages.Enqueue(e);
+            _sut.PolyphonicKeyPressure += (sender, e) => _polyphonicKeyPressureMessages.Enqueue(e);
         }
 
         [Fact]
@@ -88,25 +90,65 @@ namespace RtMidi.Core.Tests
             }
         }
 
-        private byte[] NoteOffMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
+        [Fact]
+        public void Should_Fire_PolyphonicKeyPressureMessages() 
+        {
+            foreach (var channel in Enum.GetValues(typeof(Channel)).Cast<Channel>()) 
+            {
+                foreach (var key in Enum.GetValues(typeof(Key)).Cast<Key>()) 
+                {
+                    for (var pressure = 0; pressure <= 127; pressure++)
+                    {
+                        _inputDeviceMock.OnMessage(PolyphonicKeyPressureMessage(channel, key, pressure));
+                        Assert.True(_polyphonicKeyPressureMessages.TryDequeue(out var polyphonicKeyPressureMessage));
+
+                        Assert.Equal(channel, polyphonicKeyPressureMessage.Channel);
+                        Assert.Equal(key, polyphonicKeyPressureMessage.Key);
+                        Assert.Equal(pressure, polyphonicKeyPressureMessage.Pressure);
+                    }
+                }
+            }
+        }
+
+        private static byte[] NoteOffMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
         {
             return new byte[]
             {
-                (byte)(MidiInputDevice.NoteOffBitmask | (MidiInputDevice.ChannelBitmask & (int)channel)),
-                (byte)(MidiInputDevice.DataBitmask & (int)key),
-                (byte)(MidiInputDevice.DataBitmask & velocity)
+                StatusByte(MidiInputDevice.NoteOffBitmask, channel),
+                DataByte(key),
+                DataByte(velocity)
             };
         }
 
-        private byte[] NoteOnMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
+        private static byte[] NoteOnMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
         {
             return new byte[]
             {
-                (byte)(MidiInputDevice.NoteOnBitmask | (MidiInputDevice.ChannelBitmask & (int)channel)),
-                (byte)(MidiInputDevice.DataBitmask & (int)key),
-                (byte)(MidiInputDevice.DataBitmask & velocity)
+                StatusByte(MidiInputDevice.NoteOnBitmask, channel),
+                DataByte(key),
+                DataByte(velocity)
             };
         }
+
+        private static byte[] PolyphonicKeyPressureMessage(Channel channel, Key key = Key.Key_0, int pressure = 0)
+        {
+            return new byte[]
+            {
+                StatusByte(MidiInputDevice.PolyphonicKeyPressureBitmask, channel),
+                DataByte(key),
+                DataByte(pressure)
+            };
+        }
+
+        private static byte StatusByte(byte statusBitmask, Channel channel) 
+        => (byte)(statusBitmask | (MidiInputDevice.ChannelBitmask & (int)channel));
+
+        private static byte DataByte(int value)
+        => (byte)(MidiInputDevice.DataBitmask & value);
+
+        private static byte DataByte(Key key)
+        => (byte)(MidiInputDevice.DataBitmask & (int)key);
+            
 
         private class RtMidiInputDeviceMock : IRtMidiInputDevice
         {

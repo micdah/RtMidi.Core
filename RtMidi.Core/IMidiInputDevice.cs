@@ -9,13 +9,18 @@ namespace RtMidi.Core
     public interface IMidiInputDevice : IMidiDevice
     {
         /// <summary>
-        /// Note Off event
+        /// Note Off event.
         /// </summary>
         event EventHandler<NoteOffMessage> NoteOff;
 
         /// <summary>
-        /// Note On event
+        /// Note On event.
         /// </summary>
         event EventHandler<NoteOnMessage> NoteOn;
+
+        /// <summary>
+        /// Polyphonic Key Pressure (Aftertouch).
+        /// </summary>
+        event EventHandler<PolyphonicKeyPressureMessage> PolyphonicKeyPressure;
     }
 }

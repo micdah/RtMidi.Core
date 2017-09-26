@@ -1,6 +1,9 @@
 ﻿using RtMidi.Core.Enums;
 namespace RtMidi.Core.Messages
 {
+    /// <summary>
+    /// This message is sent when a note is depressed (start). 
+    /// </summary>
     public struct NoteOnMessage
     {
         public NoteOnMessage(Channel channel, Key key, int velocity)
