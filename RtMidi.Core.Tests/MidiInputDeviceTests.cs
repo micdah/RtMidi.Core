@@ -43,97 +43,54 @@ namespace RtMidi.Core.Tests
         [Fact]
         public void Should_Fire_Events_On_Channel_1_Through_16()
         {
-            for (var i = 0; i < 16; i++)
+            AllChannels(channel =>
             {
-                var channel = (Channel)i;
                 _inputDeviceMock.OnMessage(NoteOffMessage(channel));
                 Assert.True(_noteOffMessages.TryDequeue(out var noteOffMessage));
                 Assert.Equal(channel, noteOffMessage.Channel);
-            }
-        }
-
-        private static void AllChannels(Action<Channel> func)
-        {
-            foreach (var channel in Enum.GetValues(typeof(Channel)).Cast<Channel>())
-            {
-                func(channel);
-            }
-        }
-
-        private static void AllKeys(Action<Key> func)
-        {
-            foreach (var key in Enum.GetValues(typeof(Key)).Cast<Key>()) 
-            {
-                func(key);
-            }
-        }
-
-        private static void AllInRange(int from, int to, Action<int> func)
-        {
-            for (var i = from; i <= to; i++) 
-            {
-                func(i);
-            }
+            });
         }
 
         [Fact]
         public void Should_Fire_NoteOffMessage() 
         {
-            foreach (var channel in Enum.GetValues(typeof(Channel)).Cast<Channel>()) 
+            AllChannels(channel => AllKeys(key => AllInRange(0,127, velocity =>
             {
-                foreach (var key in Enum.GetValues(typeof(Key)).Cast<Key>())
-                {
-                    for (var velocity = 0; velocity <= 127; velocity ++) 
-                    {
-                        _inputDeviceMock.OnMessage(NoteOffMessage(channel, key, velocity));
-                        Assert.True(_noteOffMessages.TryDequeue(out var msg));
+                _inputDeviceMock.OnMessage(NoteOffMessage(channel, key, velocity));
+                Assert.True(_noteOffMessages.TryDequeue(out var msg));
 
-                        Assert.Equal(channel, msg.Channel);
-                        Assert.Equal(key, msg.Key);
-                        Assert.Equal(velocity, msg.Velocity);
-                    }
-                }
-            }
+                Assert.Equal(channel, msg.Channel);
+                Assert.Equal(key, msg.Key);
+                Assert.Equal(velocity, msg.Velocity);
+            })));
         }
 
         [Fact]
         public void Should_Fire_NoteOnMessages()
         {
-            foreach (var channel in Enum.GetValues(typeof(Channel)).Cast<Channel>())
+            AllChannels(channel => AllKeys(key => AllInRange(0, 127, velocity =>
             {
-                foreach (var key in Enum.GetValues(typeof(Key)).Cast<Key>())
-                {
-                    for (var velocity = 0; velocity <= 127; velocity++)
-                    {
-                        _inputDeviceMock.OnMessage(NoteOnMessage(channel, key, velocity));
-                        Assert.True(_noteOnMessages.TryDequeue(out var msg));
+                _inputDeviceMock.OnMessage(NoteOnMessage(channel, key, velocity));
+                Assert.True(_noteOnMessages.TryDequeue(out var msg));
 
-                        Assert.Equal(channel, msg.Channel);
-                        Assert.Equal(key, msg.Key);
-                        Assert.Equal(velocity, msg.Velocity);
-                    }
-                }
-            }
+                Assert.Equal(channel, msg.Channel);
+                Assert.Equal(key, msg.Key);
+                Assert.Equal(velocity, msg.Velocity);
+            })));
         }
 
         [Fact]
         public void Should_Fire_PolyphonicKeyPressureMessages() 
         {
-            foreach (var channel in Enum.GetValues(typeof(Channel)).Cast<Channel>()) 
+            AllChannels(channel => AllKeys(key => AllInRange(0,127, pressure => 
             {
-                foreach (var key in Enum.GetValues(typeof(Key)).Cast<Key>()) 
-                {
-                    for (var pressure = 0; pressure <= 127; pressure++)
-                    {
-                        _inputDeviceMock.OnMessage(PolyphonicKeyPressureMessage(channel, key, pressure));
-                        Assert.True(_polyphonicKeyPressureMessages.TryDequeue(out var msg));
+                _inputDeviceMock.OnMessage(PolyphonicKeyPressureMessage(channel, key, pressure));
+                Assert.True(_polyphonicKeyPressureMessages.TryDequeue(out var msg));
 
-                        Assert.Equal(channel, msg.Channel);
-                        Assert.Equal(key, msg.Key);
-                        Assert.Equal(pressure, msg.Pressure);
-                    }
-                }
-            }
+                Assert.Equal(channel, msg.Channel);
+                Assert.Equal(key, msg.Key);
+                Assert.Equal(pressure, msg.Pressure);
+            })));
         }
 
         [Fact]
@@ -150,45 +107,61 @@ namespace RtMidi.Core.Tests
             })));
         }
 
-        private static byte[] NoteOffMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
+        private static void AllChannels(Action<Channel> func)
         {
-            return new byte[]
+            foreach (var channel in Enum.GetValues(typeof(Channel)).Cast<Channel>())
             {
-                StatusByte(MidiInputDevice.NoteOffBitmask, channel),
-                DataByte(key),
-                DataByte(velocity)
-            };
+                func(channel);
+            }
         }
+
+        private static void AllKeys(Action<Key> func)
+        {
+            foreach (var key in Enum.GetValues(typeof(Key)).Cast<Key>())
+            {
+                func(key);
+            }
+        }
+
+        private static void AllInRange(int from, int to, Action<int> func)
+        {
+            for (var i = from; i <= to; i++)
+            {
+                func(i);
+            }
+        }
+
+        private static byte[] NoteOffMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
+        => new byte[]
+        {
+            StatusByte(MidiInputDevice.NoteOffBitmask, channel),
+            DataByte(key),
+            DataByte(velocity)
+        };
 
         private static byte[] NoteOnMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
+        => new byte[]
         {
-            return new byte[]
-            {
-                StatusByte(MidiInputDevice.NoteOnBitmask, channel),
-                DataByte(key),
-                DataByte(velocity)
-            };
-        }
+            StatusByte(MidiInputDevice.NoteOnBitmask, channel),
+            DataByte(key),
+            DataByte(velocity)
+        };
 
         private static byte[] PolyphonicKeyPressureMessage(Channel channel, Key key = Key.Key_0, int pressure = 0)
+        => new byte[]
         {
-            return new byte[]
-            {
-                StatusByte(MidiInputDevice.PolyphonicKeyPressureBitmask, channel),
-                DataByte(key),
-                DataByte(pressure)
-            };
-        }
+            StatusByte(MidiInputDevice.PolyphonicKeyPressureBitmask, channel),
+            DataByte(key),
+            DataByte(pressure)
+        };
 
         private static byte[] ControlChangeMessage(Channel channel, int control, int value)
+        => new byte[]
         {
-            return new byte[]
-            {
-                StatusByte(MidiInputDevice.ControlChangeBitmask, channel),
-                DataByte(control),
-                DataByte(value)
-            };
-        }
+            StatusByte(MidiInputDevice.ControlChangeBitmask, channel),
+            DataByte(control),
+            DataByte(value)
+        };
 
         private static byte StatusByte(byte statusBitmask, Channel channel) 
         => (byte)(statusBitmask | (MidiInputDevice.ChannelBitmask & (int)channel));
