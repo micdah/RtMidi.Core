@@ -8,6 +8,8 @@ namespace RtMidi.Core
 {
     internal class MidiInputDevice : MidiDevice, IMidiInputDevice
     {
+        private static readonly ILogger Log = Serilog.Log.ForContext<MidiInputDevice>();
+
         /// <summary>
         /// Bitmask to isolate channel part of status byte
         /// </summary>
@@ -18,11 +20,14 @@ namespace RtMidi.Core
         /// </summary>
         internal const byte DataBitmask = 0b0111_1111;
 
+        /// <summary>
+        /// Status masks
+        /// </summary>
         internal const byte NoteOffBitmask = 0b1000_0000;
         internal const byte NoteOnBitmask = 0b1001_0000;
         internal const byte PolyphonicKeyPressureBitmask = 0b1010_0000;
+        internal const byte ControlChangeBitmask = 0b1011_0000;
 
-        private static readonly ILogger Log = Serilog.Log.ForContext<MidiInputDevice>();
         private readonly IRtMidiInputDevice _rtMidiInputDevice;
 
         public MidiInputDevice(IRtMidiInputDevice rtMidiInputDevice) : base(rtMidiInputDevice)
@@ -34,6 +39,7 @@ namespace RtMidi.Core
         public event EventHandler<NoteOffMessage> NoteOff;
         public event EventHandler<NoteOnMessage> NoteOn;
         public event EventHandler<PolyphonicKeyPressureMessage> PolyphonicKeyPressure;
+        public event EventHandler<ControlChangeMessage> ControlChange;
 
         private void RtMidiInputDevice_Message(object sender, byte[] message)
         {
@@ -67,6 +73,9 @@ namespace RtMidi.Core
                     break;
                 case PolyphonicKeyPressureBitmask:
                     DecodePolyphonicKeyPressureMessage(message);
+                    break;
+                case ControlChangeBitmask:
+                    DecodeControlChange(message);
                     break;
                 default:
                     Log.Error("Unknown message type {Bitmask}", $"{status & 0b1111_0000:X2}");
@@ -117,6 +126,7 @@ namespace RtMidi.Core
             if (message.Length != 3)
             {
                 Log.Error("Incorrect nuber of bytes ({Length}) received for Polyphonic Key Pressure message", message.Length);
+                return;
             }
 
             var @event = PolyphonicKeyPressure;
@@ -128,7 +138,25 @@ namespace RtMidi.Core
 
                 @event.Invoke(this, new PolyphonicKeyPressureMessage(channel, key, pressure));
             }
+        }
 
+        private void DecodeControlChange(byte[] message) 
+        {
+            if (message.Length != 3)
+            {
+                Log.Error("Incorrect number of btyes ({Length}) received for Control Change message");
+                return;
+            }
+
+            var @event = ControlChange;
+            if (@event != null)
+            {
+                var channel = (Channel)(ChannelBitmask & message[0]);
+                var control = DataBitmask & message[1];
+                var value = DataBitmask & message[2];
+
+                @event.Invoke(this, new ControlChangeMessage(channel, control, value));
+            }
         }
 
         protected override void Disposing()

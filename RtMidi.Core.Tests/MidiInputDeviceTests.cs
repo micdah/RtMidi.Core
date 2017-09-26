@@ -16,6 +16,7 @@ namespace RtMidi.Core.Tests
         private readonly Queue<NoteOffMessage> _noteOffMessages = new Queue<NoteOffMessage>();
         private readonly Queue<NoteOnMessage> _noteOnMessages = new Queue<NoteOnMessage>();
         private readonly Queue<PolyphonicKeyPressureMessage> _polyphonicKeyPressureMessages = new Queue<Messages.PolyphonicKeyPressureMessage>();
+        private readonly Queue<ControlChangeMessage> _controlChangeMessages = new Queue<Messages.ControlChangeMessage>();
 
         public MidiInputDeviceTests(ITestOutputHelper output) : base(output)
         {
@@ -25,6 +26,7 @@ namespace RtMidi.Core.Tests
             _sut.NoteOff += (sender, e) => _noteOffMessages.Enqueue(e);
             _sut.NoteOn += (sender, e) => _noteOnMessages.Enqueue(e);
             _sut.PolyphonicKeyPressure += (sender, e) => _polyphonicKeyPressureMessages.Enqueue(e);
+            _sut.ControlChange += (sender, e) => _controlChangeMessages.Enqueue(e);
         }
 
         [Fact]
@@ -50,6 +52,30 @@ namespace RtMidi.Core.Tests
             }
         }
 
+        private static void AllChannels(Action<Channel> func)
+        {
+            foreach (var channel in Enum.GetValues(typeof(Channel)).Cast<Channel>())
+            {
+                func(channel);
+            }
+        }
+
+        private static void AllKeys(Action<Key> func)
+        {
+            foreach (var key in Enum.GetValues(typeof(Key)).Cast<Key>()) 
+            {
+                func(key);
+            }
+        }
+
+        private static void AllInRange(int from, int to, Action<int> func)
+        {
+            for (var i = from; i <= to; i++) 
+            {
+                func(i);
+            }
+        }
+
         [Fact]
         public void Should_Fire_NoteOffMessage() 
         {
@@ -60,11 +86,11 @@ namespace RtMidi.Core.Tests
                     for (var velocity = 0; velocity <= 127; velocity ++) 
                     {
                         _inputDeviceMock.OnMessage(NoteOffMessage(channel, key, velocity));
-                        Assert.True(_noteOffMessages.TryDequeue(out var noteOffMessage));
+                        Assert.True(_noteOffMessages.TryDequeue(out var msg));
 
-                        Assert.Equal(channel, noteOffMessage.Channel);
-                        Assert.Equal(key, noteOffMessage.Key);
-                        Assert.Equal(velocity, noteOffMessage.Velocity);
+                        Assert.Equal(channel, msg.Channel);
+                        Assert.Equal(key, msg.Key);
+                        Assert.Equal(velocity, msg.Velocity);
                     }
                 }
             }
@@ -80,11 +106,11 @@ namespace RtMidi.Core.Tests
                     for (var velocity = 0; velocity <= 127; velocity++)
                     {
                         _inputDeviceMock.OnMessage(NoteOnMessage(channel, key, velocity));
-                        Assert.True(_noteOnMessages.TryDequeue(out var noteOffMessage));
+                        Assert.True(_noteOnMessages.TryDequeue(out var msg));
 
-                        Assert.Equal(channel, noteOffMessage.Channel);
-                        Assert.Equal(key, noteOffMessage.Key);
-                        Assert.Equal(velocity, noteOffMessage.Velocity);
+                        Assert.Equal(channel, msg.Channel);
+                        Assert.Equal(key, msg.Key);
+                        Assert.Equal(velocity, msg.Velocity);
                     }
                 }
             }
@@ -100,14 +126,28 @@ namespace RtMidi.Core.Tests
                     for (var pressure = 0; pressure <= 127; pressure++)
                     {
                         _inputDeviceMock.OnMessage(PolyphonicKeyPressureMessage(channel, key, pressure));
-                        Assert.True(_polyphonicKeyPressureMessages.TryDequeue(out var polyphonicKeyPressureMessage));
+                        Assert.True(_polyphonicKeyPressureMessages.TryDequeue(out var msg));
 
-                        Assert.Equal(channel, polyphonicKeyPressureMessage.Channel);
-                        Assert.Equal(key, polyphonicKeyPressureMessage.Key);
-                        Assert.Equal(pressure, polyphonicKeyPressureMessage.Pressure);
+                        Assert.Equal(channel, msg.Channel);
+                        Assert.Equal(key, msg.Key);
+                        Assert.Equal(pressure, msg.Pressure);
                     }
                 }
             }
+        }
+
+        [Fact]
+        public void Should_Fire_ControlChangeMessages()
+        {
+            AllChannels(channel => AllInRange(0, 127, control => AllInRange(0, 127, value =>
+            {
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel, control, value));
+                Assert.True(_controlChangeMessages.TryDequeue(out var msg));
+
+                Assert.Equal(channel, msg.Channel);
+                Assert.Equal(control, msg.Control);
+                Assert.Equal(value, msg.Value);
+            })));
         }
 
         private static byte[] NoteOffMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
@@ -137,6 +177,16 @@ namespace RtMidi.Core.Tests
                 StatusByte(MidiInputDevice.PolyphonicKeyPressureBitmask, channel),
                 DataByte(key),
                 DataByte(pressure)
+            };
+        }
+
+        private static byte[] ControlChangeMessage(Channel channel, int control, int value)
+        {
+            return new byte[]
+            {
+                StatusByte(MidiInputDevice.ControlChangeBitmask, channel),
+                DataByte(control),
+                DataByte(value)
             };
         }
 

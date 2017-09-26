@@ -22,5 +22,10 @@ namespace RtMidi.Core
         /// Polyphonic Key Pressure (Aftertouch).
         /// </summary>
         event EventHandler<PolyphonicKeyPressureMessage> PolyphonicKeyPressure;
+
+        /// <summary>
+        /// Control Change.
+        /// </summary>
+        event EventHandler<ControlChangeMessage> ControlChange;
     }
 }
