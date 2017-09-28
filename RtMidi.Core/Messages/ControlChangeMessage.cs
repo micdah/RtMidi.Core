@@ -25,6 +25,16 @@ namespace RtMidi.Core.Messages
         public int Control { get; private set; }
         public int Value { get; private set; }
 
+        internal byte[] Encode()
+        {
+            return new[]
+            {
+                StructHelper.StatusByte(Midi.Status.ControlChangeBitmask, Channel),
+                StructHelper.DataByte(Control),
+                StructHelper.DataByte(Value)
+            };
+        }
+
         internal static bool TryDecode(byte[] message, out ControlChangeMessage msg)
         {
             if (message.Length != 3)

@@ -1,19 +1,19 @@
-﻿using RtMidi.Core.Unmanaged.Devices;
-using RtMidi.Core.Messages;
-using System;
+﻿using RtMidi.Core.Messages;
+using RtMidi.Core.Unmanaged.Devices;
 using Serilog;
+using System;
 
 namespace RtMidi.Core
 {
     internal class MidiInputDevice : MidiDevice, IMidiInputDevice
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<MidiInputDevice>();
-        private readonly IRtMidiInputDevice _rtMidiInputDevice;
+        private readonly IRtMidiInputDevice _inputDevice;
 
         public MidiInputDevice(IRtMidiInputDevice rtMidiInputDevice) : base(rtMidiInputDevice)
         {
-            _rtMidiInputDevice = rtMidiInputDevice;
-            _rtMidiInputDevice.Message += RtMidiInputDevice_Message;
+            _inputDevice = rtMidiInputDevice;
+            _inputDevice.Message += RtMidiInputDevice_Message;
         }
 
         public event EventHandler<NoteOffMessage> NoteOff;
@@ -91,7 +91,16 @@ namespace RtMidi.Core
 
         protected override void Disposing()
         {
-            _rtMidiInputDevice.Message -= RtMidiInputDevice_Message;
+            _inputDevice.Message -= RtMidiInputDevice_Message;
+            
+            // Clear all subscribers
+            NoteOff = null;
+            NoteOn = null;
+            PolyphonicKeyPressure = null;
+            ControlChange = null;
+            ProgramChange = null;
+            ChannelPressure = null;
+            PitchBend = null;
         }
     }
 }

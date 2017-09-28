@@ -3,13 +3,12 @@ using RtMidi.Core.Messages;
 using RtMidi.Core.Unmanaged.Devices;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace RtMidi.Core.Tests
 {
-    public class MidiInputDeviceTests : TestBase
+    public class MidiInputDeviceTests : MidiDeviceTestBase
     {
         private readonly RtMidiInputDeviceMock _inputDeviceMock;
         private readonly IMidiInputDevice _sut;
@@ -58,7 +57,7 @@ namespace RtMidi.Core.Tests
         }
 
         [Fact]
-        public void Should_Fire_NoteOffMessage() 
+        public void Should_Fire_NoteOffMessages() 
         {
             AllChannels(channel => AllKeys(key => AllInRange(0,127, velocity =>
             {
@@ -140,19 +139,6 @@ namespace RtMidi.Core.Tests
         }
 
         [Fact]
-        public void Should_Separate_Lsb_And_Msb_For_Pitch_Bend()
-        {
-            var msg = PitchBendMessage(Channel.Channel_1, 5482);
-
-            Assert.Equal(3, msg.Length);
-            var lsb = msg[1];
-            var msb = msg[2];
-
-            Assert.Equal(0b0110_1010, lsb);
-            Assert.Equal(0b0010_1010, msb);
-        }
-
-        [Fact]
         public void Should_Fire_PitchBendMessages()
         {
             AllChannels(channel => AllInRange(0, 16383, value =>
@@ -165,93 +151,6 @@ namespace RtMidi.Core.Tests
             }));
         }
 
-        private static void AllChannels(Action<Channel> func)
-        {
-            foreach (var channel in Enum.GetValues(typeof(Channel)).Cast<Channel>())
-            {
-                func(channel);
-            }
-        }
-
-        private static void AllKeys(Action<Key> func)
-        {
-            foreach (var key in Enum.GetValues(typeof(Key)).Cast<Key>())
-            {
-                func(key);
-            }
-        }
-
-        private static void AllInRange(int from, int to, Action<int> func)
-        {
-            for (var i = from; i <= to; i++)
-            {
-                func(i);
-            }
-        }
-
-        private static byte[] NoteOffMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
-            => new[]
-            {
-                StatusByte(Midi.Status.NoteOffBitmask, channel),
-                DataByte(key),
-                DataByte(velocity)
-            };
-
-        private static byte[] NoteOnMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
-            => new[]
-            {
-                StatusByte(Midi.Status.NoteOnBitmask, channel),
-                DataByte(key),
-                DataByte(velocity)
-            };
-
-        private static byte[] PolyphonicKeyPressureMessage(Channel channel, Key key = Key.Key_0, int pressure = 0)
-            => new[]
-            {
-                StatusByte(Midi.Status.PolyphonicKeyPressureBitmask, channel),
-                DataByte(key),
-                DataByte(pressure)
-            };
-
-        private static byte[] ControlChangeMessage(Channel channel, int control, int value)
-            => new[]
-            {
-                StatusByte(Midi.Status.ControlChangeBitmask, channel),
-                DataByte(control),
-                DataByte(value)
-            };
-
-        private static byte[] ProgramChangeMessage(Channel channel, int program)
-            => new[]
-            {
-                StatusByte(Midi.Status.ProgramChangeBitmask, channel),
-                DataByte(program)
-            };
-
-        private static byte[] ChannelPressureMessage(Channel channel, int pressure)
-            => new[]
-            {
-                StatusByte(Midi.Status.ChannelPressureBitmask, channel),
-                DataByte(pressure)
-            };
-
-        private static byte[] PitchBendMessage(Channel channel, int value)
-            => new[]
-            {
-                StatusByte(Midi.Status.PitchBendChange, channel),
-                DataByte(value & 0b0111_1111),
-                DataByte(value >> 7)
-            };
-
-        private static byte StatusByte(byte statusBitmask, Channel channel) 
-        => (byte)(statusBitmask | (Midi.ChannelBitmask & (int)channel));
-
-        private static byte DataByte(int value)
-        => (byte)(Midi.DataBitmask & value);
-
-        private static byte DataByte(Key key)
-        => (byte)(Midi.DataBitmask & (int)key);
-            
 
         private class RtMidiInputDeviceMock : IRtMidiInputDevice
         {

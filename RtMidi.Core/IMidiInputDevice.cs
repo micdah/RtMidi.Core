@@ -1,8 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using RtMidi.Core.Messages;
 using System;
-using RtMidi.Core.Messages;
-
-[assembly: InternalsVisibleTo("RtMidi.Core.Tests")]
 
 namespace RtMidi.Core
 {
@@ -42,5 +39,7 @@ namespace RtMidi.Core
         /// Pitch Bend Change.
         /// </summary>
         event EventHandler<PitchBendMessage> PitchBend;
+
+        // TODO NRPN event
     }
 }

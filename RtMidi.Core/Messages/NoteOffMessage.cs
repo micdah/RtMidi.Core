@@ -22,6 +22,16 @@ namespace RtMidi.Core.Messages
         public Key Key { get; private set; }
         public int Velocity { get; private set; }
 
+        internal byte[] Encode()
+        {
+            return new[]
+            {
+                StructHelper.StatusByte(Midi.Status.NoteOffBitmask, Channel),
+                StructHelper.DataByte(Key),
+                StructHelper.DataByte(Velocity)
+            };
+        }
+
         internal static bool TryDecode(byte[] message, out NoteOffMessage msg) 
         {
             if (message.Length != 3)

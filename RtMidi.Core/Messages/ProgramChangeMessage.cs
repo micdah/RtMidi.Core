@@ -23,6 +23,15 @@ namespace RtMidi.Core.Messages
         public Channel Channel { get; private set; }
         public int Program { get; private set; }
 
+        internal byte[] Encode()
+        {
+            return new[]
+            {
+                StructHelper.StatusByte(Midi.Status.ProgramChangeBitmask, Channel),
+                StructHelper.DataByte(Program)
+            };
+        }
+
         internal static bool TryDecode(byte[] message, out ProgramChangeMessage msg)
         {
             if (message.Length != 2)

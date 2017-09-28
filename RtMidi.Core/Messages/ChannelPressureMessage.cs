@@ -23,6 +23,15 @@ namespace RtMidi.Core.Messages
         public Channel Channel { get; private set; }
         public int Pressure { get; private set; }
 
+        internal byte[] Encode()
+        {
+            return new[]
+            {
+                StructHelper.StatusByte(Midi.Status.ChannelPressureBitmask, Channel),
+                StructHelper.DataByte(Pressure)
+            };
+        }
+
         internal static bool TryDecode(byte[] message, out ChannelPressureMessage msg)
         {
             if (message.Length != 2)

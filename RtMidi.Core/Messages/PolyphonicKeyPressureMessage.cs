@@ -22,6 +22,16 @@ namespace RtMidi.Core.Messages
         public Key Key { get; private set; }
         public int Pressure { get; private set; }
 
+        internal byte[] Encode()
+        {
+            return new[]
+            {
+                StructHelper.StatusByte(Midi.Status.PolyphonicKeyPressureBitmask, Channel),
+                StructHelper.DataByte(Key),
+                StructHelper.DataByte(Pressure)
+            };
+        }
+
         internal static bool TryDecode(byte[] message, out PolyphonicKeyPressureMessage msg) 
         {
             if (message.Length != 3)

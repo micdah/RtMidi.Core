@@ -23,6 +23,16 @@ namespace RtMidi.Core.Messages
         public Channel Channel { get; private set; }
         public int Value { get; private set; }
 
+        internal byte[] Encode()
+        {
+            return new[]
+            {
+                StructHelper.StatusByte(Midi.Status.PitchBendChange, Channel),
+                StructHelper.DataByte(Value & 0b0111_1111),
+                StructHelper.DataByte(Value >> 7)
+            };
+        }
+
         internal static bool TryDecode(byte[] message, out PitchBendMessage msg)
         {
             if (message.Length != 3)

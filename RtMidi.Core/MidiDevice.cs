@@ -1,8 +1,5 @@
 ﻿using RtMidi.Core.Unmanaged.Devices;
 using System;
-using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("RtMidi.Core.Tests")]
 
 namespace RtMidi.Core
 {
