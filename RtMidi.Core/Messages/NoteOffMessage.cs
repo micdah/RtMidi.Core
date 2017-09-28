@@ -9,8 +9,10 @@ namespace RtMidi.Core.Messages
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<NoteOffMessage>();
 
-        public NoteOffMessage(Channel channel, Key key, int velocity) 
+        public NoteOffMessage(Channel channel, Key key, int velocity)
         {
+            StructHelper.IsWithin7BitRange(nameof(velocity), velocity);
+
             Channel = channel;
             Key = key;
             Velocity = velocity;

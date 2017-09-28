@@ -11,6 +11,8 @@ namespace RtMidi.Core.Messages
 
         public PolyphonicKeyPressureMessage(Channel channel, Key key, int pressure)
         {
+            StructHelper.IsWithin7BitRange(nameof(pressure), pressure);
+
             Channel = channel;
             Key = key;
             Pressure = pressure;

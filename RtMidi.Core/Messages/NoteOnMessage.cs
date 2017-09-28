@@ -11,6 +11,8 @@ namespace RtMidi.Core.Messages
 
         public NoteOnMessage(Channel channel, Key key, int velocity)
         {
+            StructHelper.IsWithin7BitRange(nameof(velocity), velocity);
+
             Channel = channel;
             Key = key;
             Velocity = velocity;

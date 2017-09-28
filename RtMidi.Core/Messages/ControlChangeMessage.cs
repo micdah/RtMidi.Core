@@ -11,6 +11,9 @@ namespace RtMidi.Core.Messages
 
         public ControlChangeMessage(Channel channel, int control, int value)
         {
+            StructHelper.IsWithin7BitRange(nameof(control), control);
+            StructHelper.IsWithin7BitRange(nameof(value), value);
+            
             Channel = channel;
             Control = control;
             Value = value;
@@ -26,7 +29,7 @@ namespace RtMidi.Core.Messages
         {
             if (message.Length != 3)
             {
-                Log.Error("Incorrect number of btyes ({Length}) received for Control Change message");
+                Log.Error("Incorrect number of btyes ({Length}) received for Control Change message", message.Length);
                 msg = default;
                 return false;
             }

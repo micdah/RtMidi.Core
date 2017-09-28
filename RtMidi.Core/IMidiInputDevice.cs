@@ -27,5 +27,20 @@ namespace RtMidi.Core
         /// Control Change.
         /// </summary>
         event EventHandler<ControlChangeMessage> ControlChange;
+
+        /// <summary>
+        /// Program Change.
+        /// </summary>
+        event EventHandler<ProgramChangeMessage> ProgramChange;
+
+        /// <summary>
+        /// Channel Pressure (After-touch).
+        /// </summary>
+        event EventHandler<ChannelPressureMessage> ChannelPressure;
+
+        /// <summary>
+        /// Pitch Bend Change.
+        /// </summary>
+        event EventHandler<PitchBendMessage> PitchBend;
     }
 }

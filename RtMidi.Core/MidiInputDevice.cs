@@ -20,6 +20,9 @@ namespace RtMidi.Core
         public event EventHandler<NoteOnMessage> NoteOn;
         public event EventHandler<PolyphonicKeyPressureMessage> PolyphonicKeyPressure;
         public event EventHandler<ControlChangeMessage> ControlChange;
+        public event EventHandler<ProgramChangeMessage> ProgramChange;
+        public event EventHandler<ChannelPressureMessage> ChannelPressure;
+        public event EventHandler<PitchBendMessage> PitchBend;
 
         private void RtMidiInputDevice_Message(object sender, byte[] message)
         {
@@ -52,21 +55,33 @@ namespace RtMidi.Core
             byte status = message[0];
             switch (status & 0b1111_0000)
             {
-                case Midi.NoteOffBitmask:
+                case Midi.Status.NoteOffBitmask:
                     if (NoteOffMessage.TryDecode(message, out var noteOffMessage))
                         NoteOff?.Invoke(this, noteOffMessage);
                     break;
-                case Midi.NoteOnBitmask:
+                case Midi.Status.NoteOnBitmask:
                     if (NoteOnMessage.TryDecoce(message, out var noteOnMessage))
                         NoteOn?.Invoke(this, noteOnMessage);
                     break;
-                case Midi.PolyphonicKeyPressureBitmask:
+                case Midi.Status.PolyphonicKeyPressureBitmask:
                     if (PolyphonicKeyPressureMessage.TryDecode(message, out var polyphonicKeyPressureMessage))
                         PolyphonicKeyPressure?.Invoke(this, polyphonicKeyPressureMessage);
                     break;
-                case Midi.ControlChangeBitmask:
+                case Midi.Status.ControlChangeBitmask:
                     if (ControlChangeMessage.TryDecode(message, out var controlChangeMessage))
                         ControlChange?.Invoke(this, controlChangeMessage);
+                    break;
+                case Midi.Status.ProgramChangeBitmask:
+                    if (ProgramChangeMessage.TryDecode(message, out var programChangeMessage))
+                        ProgramChange?.Invoke(this, programChangeMessage);
+                    break;
+                case Midi.Status.ChannelPressureBitmask:
+                    if (ChannelPressureMessage.TryDecode(message, out var channelPressureMessage))
+                        ChannelPressure?.Invoke(this, channelPressureMessage);
+                    break;
+                case Midi.Status.PitchBendChange:
+                    if (PitchBendMessage.TryDecode(message, out var pitchBendMessage))
+                        PitchBend?.Invoke(this, pitchBendMessage);
                     break;
                 default:
                     Log.Error("Unknown message type {Bitmask}", $"{status & 0b1111_0000:X2}");
