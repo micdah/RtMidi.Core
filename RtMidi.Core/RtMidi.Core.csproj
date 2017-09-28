@@ -3,20 +3,29 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+    <PackageId>RtMidi.Core</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>Michael Dahl</Authors>
+    <Description>Cross-platform MIDI library for .Net Standard built on top of RtMIdi with included support for Windows x64 and macOS</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <Copyright>Copyright 2017 (c) Michael Dahl. All Rights reserved.</Copyright>
+    <PackageTags>midi</PackageTags>
+  </PropertyGroup> 
 
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <LangVersion>Latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup>
     <LangVersion>Latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <None Update="librtmidi.dylib">
+    <None Include="librtmidi.dylib">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>lib\netstandard2.0\</PackagePath>
+      <Pack>true</Pack>
     </None>
-    <None Update="rtmidi.dll">
+    <None Include="rtmidi.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>lib\netstandard2.0\</PackagePath>
+      <Pack>true</Pack>
     </None>
   </ItemGroup>
   <ItemGroup>
