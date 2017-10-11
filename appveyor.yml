@@ -24,3 +24,6 @@ test:
   assemblies:
     only:
       - RtMidi.Core.Tests.dll
+
+test_script:
+  - dotnet test RtMidi.Core.Tests/
