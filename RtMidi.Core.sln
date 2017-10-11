@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution files", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
 		README.md = README.md
+		RTMIDI.md = RTMIDI.md
+		LICENSE = LICENSE
 	EndProjectSection
 EndProject
 Global
