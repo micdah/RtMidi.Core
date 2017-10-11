@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 using RtMidi.Core.Unmanaged;
 using RtMidi.Core.Devices.Infos;
 using RtMidi.Core.Unmanaged.API;
+
+[assembly: InternalsVisibleTo("RtMidi.Core.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 namespace RtMidi.Core
 {

@@ -1,7 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System;
-
-[assembly: InternalsVisibleTo("RtMidi.Core.Tests")]
+﻿using System;
 
 namespace RtMidi.Core.Devices
 {
