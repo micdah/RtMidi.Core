@@ -16,6 +16,8 @@ dotnet_csproj:
 
 build:
   verbosity: minimal
+  publish_nuget: true
+  publish_nuget_symbols: true
 
 before_build:
   - dotnet restore
