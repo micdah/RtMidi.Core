@@ -1,5 +1,8 @@
 ﻿namespace RtMidi.Core.Enums
 {
+    /// <summary>
+    /// MIDI Channel
+    /// </summary>
     public enum Channel
     {
         Channel_1 = 0,
