@@ -1,5 +1,6 @@
 ﻿using System;
 using RtMidi.Core.Enums;
+using RtMidi.Core.Devices;
 
 namespace RtMidi.Core.Messages
 {
@@ -18,7 +19,7 @@ namespace RtMidi.Core.Messages
         }
 
         public static byte StatusByte(byte statusBitmask, Channel channel)
-            => (byte)(statusBitmask | (Midi.ChannelBitmask & (int)channel));
+        => (byte)(statusBitmask | (Midi.ChannelBitmask & (int)channel));
 
         public static byte DataByte(int value)
             => (byte)(Midi.DataBitmask & value);

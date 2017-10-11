@@ -1,5 +1,6 @@
 ﻿using RtMidi.Core.Enums;
 using Serilog;
+using RtMidi.Core.Devices;
 namespace RtMidi.Core.Messages
 {
     /// <summary>

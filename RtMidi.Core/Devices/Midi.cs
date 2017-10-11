@@ -1,4 +1,4 @@
-﻿namespace RtMidi.Core
+﻿namespace RtMidi.Core.Devices
 {
     internal static class Midi
     {

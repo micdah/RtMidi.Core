@@ -4,6 +4,7 @@ using RtMidi.Core.Enums;
 using RtMidi.Core.Messages;
 using Xunit;
 using Xunit.Abstractions;
+using RtMidi.Core.Devices;
 
 namespace RtMidi.Core.Tests
 {
@@ -53,7 +54,7 @@ namespace RtMidi.Core.Tests
         protected static byte[] NoteOffMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
             => new[]
             {
-                StructHelper.StatusByte(Midi.Status.NoteOffBitmask, channel),
+            StructHelper.StatusByte(Midi.Status.NoteOffBitmask, channel),
                 StructHelper.DataByte(key),
                 StructHelper.DataByte(velocity)
             };
