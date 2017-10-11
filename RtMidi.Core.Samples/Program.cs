@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
-using RtMidi.Core.Unmanaged;
-using RtMidi.Core.Unmanaged.Devices;
+using RtMidi.Core.Devices;
 
 namespace RtMidi.Core.Tests
 {
@@ -12,28 +11,28 @@ namespace RtMidi.Core.Tests
             var p = new Program();
         }
 
-        private readonly IRtMidiInputDevice _inputDevice;
+        private readonly IMidiInputDevice _inputDevice;
 
         public Program() 
         {
             Console.WriteLine("Available MIDI API's:");
-            var apis = RtMidiApiManager.GetAvailableApis();
+            var apis = MidiDeviceManager.Instance.GetAvailableMidiApis();
             foreach (var api in apis)
                 Console.WriteLine($"API: {api}");
 
             Console.WriteLine("Available MIDI devices:");
-            var inputDevices = RtMidiDeviceManager.Instance.InputDevices.ToList();
+            var inputDevices = MidiDeviceManager.Instance.InputDevices.ToList();
             foreach (var device in inputDevices)
-                Console.WriteLine($"Input Device: {device.Name}:{device.Port}");
+                Console.WriteLine($"Input Device: {device.Name}");
 
-            var outputDevices = RtMidiDeviceManager.Instance.OutputDevices.ToList();
+            var outputDevices = MidiDeviceManager.Instance.OutputDevices.ToList();
             foreach (var device in outputDevices)
-                Console.WriteLine($"Output Device: {device.Name}:{device.Port}");
+                Console.WriteLine($"Output Device: {device.Name}");
 
             _inputDevice = inputDevices.First().CreateDevice();
 
             try {
-                _inputDevice.Message += InputDevice_Message;
+                _inputDevice.ControlChange += (device, msg) => Console.WriteLine($"Received Control Change: {msg}");
                 _inputDevice.Open();
 
                 Console.ReadLine();

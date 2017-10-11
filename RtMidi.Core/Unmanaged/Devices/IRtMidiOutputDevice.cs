@@ -3,7 +3,7 @@
     /// <summary>
     /// RtMidi Output device
     /// </summary>
-    public interface IRtMidiOutputDevice : IRtMidiDevice
+    internal interface IRtMidiOutputDevice : IRtMidiDevice
     {
         /// <summary>
         /// Send MIDI message to output device

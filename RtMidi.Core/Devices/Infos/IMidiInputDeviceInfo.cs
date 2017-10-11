@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides information about an available MIDI Input device
     /// </summary>
-    public interface IMidiInputDeviceInfo
+    public interface IMidiInputDeviceInfo : IMidiDeviceInfo
     {
         /// <summary>
         /// Create MIDI Input device used to receive midi messages for this device

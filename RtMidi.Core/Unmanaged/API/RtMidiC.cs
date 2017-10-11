@@ -9,7 +9,7 @@ namespace RtMidi.Core.Unmanaged.API
     /// <summary>
     /// The type of a RtMidi callback function.
     /// </summary>
-    public delegate void RtMidiCallback(double timestamp, IntPtr message, UIntPtr messageSize, IntPtr userData);
+    internal delegate void RtMidiCallback(double timestamp, IntPtr message, UIntPtr messageSize, IntPtr userData);
 
     internal static class RtMidiC
     {

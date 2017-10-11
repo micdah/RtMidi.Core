@@ -2,7 +2,7 @@
 
 namespace RtMidi.Core.Unmanaged.API
 {
-    internal class RtMidiApiException : Exception
+    public class RtMidiApiException : Exception
     {
         public RtMidiApiException(string message) : base(message)
         {

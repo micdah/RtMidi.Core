@@ -4,8 +4,7 @@ using RtMidi.Core.Unmanaged.Devices;
 
 namespace RtMidi.Core.Unmanaged
 {
-    // TODO Change visibility to internal
-    public class RtMidiDeviceManager : IDisposable
+    internal class RtMidiDeviceManager : IDisposable
     {
         public static readonly RtMidiDeviceManager Instance = new RtMidiDeviceManager();
 

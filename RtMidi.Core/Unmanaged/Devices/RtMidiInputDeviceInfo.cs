@@ -1,6 +1,6 @@
 ﻿namespace RtMidi.Core.Unmanaged.Devices
 {
-    public class RtMidiInputDeviceInfo : RtMidiDeviceInfo
+    internal class RtMidiInputDeviceInfo : RtMidiDeviceInfo
     {
         internal RtMidiInputDeviceInfo(uint port, string name) : base(port, name)
         {

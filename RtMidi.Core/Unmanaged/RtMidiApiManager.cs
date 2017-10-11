@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace RtMidi.Core.Unmanaged
 {
-    public static class RtMidiApiManager
+    internal static class RtMidiApiManager
     {
         private static readonly ILogger Log = Serilog.Log.ForContext(typeof(RtMidiApiManager));
 

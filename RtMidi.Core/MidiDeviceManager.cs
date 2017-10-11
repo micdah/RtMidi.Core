@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using RtMidi.Core.Unmanaged;
 using RtMidi.Core.Devices.Infos;
+using RtMidi.Core.Unmanaged.API;
 
 namespace RtMidi.Core
 {
@@ -50,6 +51,15 @@ namespace RtMidi.Core
                     yield return new MidiOutputDeviceInfo(rtOutputDeviceInfo);
                 }
             }
+        }
+
+        /// <summary>
+        /// Get the available MIDI API's used by RtMidi (if any)
+        /// </summary>
+        /// <returns>The available midi apis.</returns>
+        public IEnumerable<RtMidiApi> GetAvailableMidiApis()
+        {
+            return RtMidiApiManager.GetAvailableApis();
         }
     }
 }

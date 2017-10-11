@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides information about an available MIDI Output device
     /// </summary>
-    public interface IMidiOutputDeviceInfo
+    public interface IMidiOutputDeviceInfo : IMidiDeviceInfo
     {
         /// <summary>
         /// Create MIDI Output device used to send midi messages to this device
