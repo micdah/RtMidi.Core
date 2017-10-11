@@ -3,7 +3,7 @@ using RtMidi.Core.Unmanaged.Devices;
 using Serilog;
 using System;
 
-namespace RtMidi.Core
+namespace RtMidi.Core.Devices
 {
     internal class MidiInputDevice : MidiDevice, IMidiInputDevice
     {

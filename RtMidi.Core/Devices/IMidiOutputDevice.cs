@@ -1,6 +1,6 @@
 ﻿using RtMidi.Core.Messages;
 
-namespace RtMidi.Core
+namespace RtMidi.Core.Devices
 {
     public interface IMidiOutputDevice : IMidiDevice
     {

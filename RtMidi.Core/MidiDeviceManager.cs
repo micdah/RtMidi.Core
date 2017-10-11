@@ -1,45 +1,55 @@
-﻿using RtMidi.Core.Unmanaged.Devices;
-using System;
+﻿using System.Collections.Generic;
+using RtMidi.Core.Unmanaged;
+using RtMidi.Core.Devices.Infos;
+
 namespace RtMidi.Core
 {
+    /// <summary>
+    /// This is the MIDI Device Manager, which you shall use to obtain information
+    /// about all available input and output devices, information is always up-to-date
+    /// so each time you enumerate input or output devices, it will reflect the 
+    /// currently available devices.
+    /// </summary>
     public class MidiDeviceManager
     {
+        /// <summary>
+        /// Manager singleton instance to use
+        /// </summary>
         public static readonly MidiDeviceManager Instance = new MidiDeviceManager();
 
-        public MidiDeviceManager()
+        private readonly RtMidiDeviceManager _rtDeviceManager;
+
+        private MidiDeviceManager()
         {
-        }
-    }
-
-    internal class MidiDeviceInfo<TRtMidiDeviceInfo> : IMidiDeviceInfo
-        where TRtMidiDeviceInfo : RtMidiDeviceInfo
-    {
-        protected readonly TRtMidiDeviceInfo RtMidiDeviceInfo;
-
-        public MidiDeviceInfo(TRtMidiDeviceInfo rtMidiDeviceInfo) 
-        {
-            if (rtMidiDeviceInfo == null) throw new ArgumentNullException(nameof(rtMidiDeviceInfo));
-
-            RtMidiDeviceInfo = rtMidiDeviceInfo;
+            _rtDeviceManager = RtMidiDeviceManager.Instance;
         }
 
-        public string Name => RtMidiDeviceInfo.Name;
-    }
-
-    public interface IMidiInputDeviceInfo
-    {
-        IMidiInputDevice CreateDevice();
-    }
-
-    internal class MidiInputDeviceInfo : MidiDeviceInfo<RtMidiInputDeviceInfo>, IMidiInputDeviceInfo
-    {
-        public MidiInputDeviceInfo(RtMidiInputDeviceInfo rtMidiDeviceInfo) : base(rtMidiDeviceInfo)
+        /// <summary>
+        /// Enumerate all currently available input devices
+        /// </summary>
+        public IEnumerable<IMidiInputDeviceInfo> InputDevices 
         {
+            get
+            {
+                foreach (var rtInputDeviceInfo in _rtDeviceManager.InputDevices) 
+                {
+                    yield return new MidiInputDeviceInfo(rtInputDeviceInfo);
+                }
+            }
         }
 
-        public IMidiInputDevice CreateDevice()
+        /// <summary>
+        /// Enumerate all currently available output devices
+        /// </summary>
+        public IEnumerable<IMidiOutputDeviceInfo> OutputDevices
         {
-            return new MidiInputDevice(RtMidiDeviceInfo.CreateDevice());
+            get 
+            {
+                foreach (var rtOutputDeviceInfo in _rtDeviceManager.OutputDevices) 
+                {
+                    yield return new MidiOutputDeviceInfo(rtOutputDeviceInfo);
+                }
+            }
         }
     }
 }

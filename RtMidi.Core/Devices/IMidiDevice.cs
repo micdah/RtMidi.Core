@@ -3,7 +3,7 @@ using System;
 
 [assembly: InternalsVisibleTo("RtMidi.Core.Tests")]
 
-namespace RtMidi.Core
+namespace RtMidi.Core.Devices
 {
     public interface IMidiDevice : IDisposable
     {

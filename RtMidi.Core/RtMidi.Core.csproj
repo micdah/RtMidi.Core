@@ -33,6 +33,8 @@
     <Folder Include="Unmanaged\API\" />
     <Folder Include="Unmanaged\Devices\" />
     <Folder Include="Enums\" />
+    <Folder Include="Devices\" />
+    <Folder Include="Devices\Infos\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="2.5.0" />

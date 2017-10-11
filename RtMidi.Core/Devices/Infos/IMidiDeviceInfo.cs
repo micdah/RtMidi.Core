@@ -1,4 +1,4 @@
-﻿namespace RtMidi.Core
+﻿namespace RtMidi.Core.Devices.Infos
 {
     /// <summary>
     /// Midi device info

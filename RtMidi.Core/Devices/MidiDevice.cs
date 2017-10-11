@@ -1,7 +1,7 @@
 ﻿using RtMidi.Core.Unmanaged.Devices;
 using System;
 
-namespace RtMidi.Core
+namespace RtMidi.Core.Devices
 {
 
     internal abstract class MidiDevice : IMidiDevice 

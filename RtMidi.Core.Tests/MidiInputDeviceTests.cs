@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
+using RtMidi.Core.Devices;
 
 namespace RtMidi.Core.Tests
 {

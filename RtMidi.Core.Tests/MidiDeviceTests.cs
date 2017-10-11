@@ -2,6 +2,7 @@
 using Moq;
 using Xunit;
 using Xunit.Abstractions;
+using RtMidi.Core.Devices;
 
 namespace RtMidi.Core.Tests
 {

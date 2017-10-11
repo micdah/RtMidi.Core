@@ -1,7 +1,7 @@
 ﻿using RtMidi.Core.Messages;
 using System;
 
-namespace RtMidi.Core
+namespace RtMidi.Core.Devices
 {
     public interface IMidiInputDevice : IMidiDevice
     {
