@@ -1,0 +1,23 @@
+branches:
+  only:
+  - master
+
+shallow_clone: true
+
+image: Visual Studio 2017
+version: 0.1.{build}
+configuration: Release
+
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
+
+build:
+  verbosity: minimal
+
+test:
+  assemblies:
+    only:
+      - RtMidi.Core.Tests.dll
