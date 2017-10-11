@@ -17,6 +17,9 @@ dotnet_csproj:
 build:
   verbosity: minimal
 
+before_build:
+  - dotnet restore
+
 test:
   assemblies:
     only:
