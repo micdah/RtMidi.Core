@@ -21,7 +21,15 @@ namespace RtMidi.Core.Messages
             Value = value;
         }
 
+        /// <summary>
+        /// MIDI Channel
+        /// </summary>
         public Channel Channel { get; private set; }
+
+        /// <summary>
+        /// 14-bit value
+        /// </summary>
+        /// <value>The value.</value>
         public int Value { get; private set; }
 
         internal byte[] Encode()

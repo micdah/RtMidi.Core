@@ -4,7 +4,8 @@ using RtMidi.Core.Devices;
 namespace RtMidi.Core.Messages
 {
     /// <summary>
-    /// This message is sent when a controller value changes. Controllers include devices such as pedals and levers. 
+    /// This message is sent when a controller value changes. Controllers 
+    /// include devices such as pedals and levers. 
     /// </summary>
     public struct ControlChangeMessage
     {
