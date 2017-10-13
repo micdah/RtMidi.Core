@@ -38,7 +38,7 @@ namespace RtMidi.Core.Tests
         [Fact]
         public void Test_NoteOffMessage()
         {
-            var noteOffMsg = NoteOffMessage(Channel.Channel_4, Key.Key_127, 11);
+            var noteOffMsg = NoteOffMessage(Channel.Channel4, Key.Key127, 11);
             Assert.NotNull(noteOffMsg);
             Assert.Equal(3, noteOffMsg.Length);
             Assert.Equal(0b1000_0011, noteOffMsg[0]);   // Channel
