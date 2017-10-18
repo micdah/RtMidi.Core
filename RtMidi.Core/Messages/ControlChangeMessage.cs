@@ -1,6 +1,7 @@
 ﻿using RtMidi.Core.Enums;
 using Serilog;
 using RtMidi.Core.Devices;
+using System;
 namespace RtMidi.Core.Messages
 {
     /// <summary>
@@ -26,6 +27,18 @@ namespace RtMidi.Core.Messages
         public Channel Channel { get; private set; }
         public int Control { get; private set; }
         public int Value { get; private set; }
+
+        public Control ControlFunction 
+        {
+            get
+            {
+                if (Enum.IsDefined(typeof(Control), Control))
+                {
+                    return (Control)Control;
+                }
+                return Enums.Control.Undefined;
+            }
+        }
 
         internal byte[] Encode()
         {
