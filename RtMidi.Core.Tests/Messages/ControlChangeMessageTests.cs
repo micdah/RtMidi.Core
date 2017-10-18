@@ -1,11 +1,16 @@
 ﻿using RtMidi.Core.Enums;
 using RtMidi.Core.Messages;
 using Xunit;
+using Xunit.Abstractions;
 
-namespace RtMidi.Core.Tests
+namespace RtMidi.Core.Tests.Messages
 {
-    public class ControlChangeMessageTests
+    public class ControlChangeMessageTests : TestBase
     {
+        public ControlChangeMessageTests(ITestOutputHelper output) : base(output)
+        {
+        }
+
         [Fact]
         public void Should_Return_ControlFunction_When_Control_Is_Defined()
         {

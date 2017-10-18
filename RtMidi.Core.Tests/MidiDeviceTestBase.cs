@@ -27,25 +27,26 @@ namespace RtMidi.Core.Tests
             Assert.Equal(0b0010_1010, msb);
         }
 
-        protected static void AllChannels(Action<Channel> func)
+        protected static void AllEnums<TEnum>(Action<TEnum> func)
+            where TEnum : struct
         {
-            foreach (var channel in Enum.GetValues(typeof(Channel)).Cast<Channel>())
+            foreach (var enumValue in Enum.GetValues(typeof(TEnum)).Cast<TEnum>())
             {
-                func(channel);
-            }
-        }
-
-        protected static void AllKeys(Action<Key> func)
-        {
-            foreach (var key in Enum.GetValues(typeof(Key)).Cast<Key>())
-            {
-                func(key);
+                func(enumValue);
             }
         }
 
         protected static void AllInRange(int from, int to, Action<int> func)
         {
-            for (var i = @from; i <= to; i++)
+            for (var i = from; i <= to; i++)
+            {
+                func(i);
+            }
+        }
+
+        protected static void AllInRange(int from, int to, int increment, Action<int> func)
+        {
+            for (var i = from; i <= to; i += increment)
             {
                 func(i);
             }

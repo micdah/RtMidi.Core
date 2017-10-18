@@ -1,7 +1,8 @@
-﻿using RtMidi.Core.Enums;
+﻿using RtMidi.Core.Devices;
+using RtMidi.Core.Enums;
+using RtMidi.Core.Enums.Core;
 using Serilog;
-using RtMidi.Core.Devices;
-using System;
+
 namespace RtMidi.Core.Messages
 {
     /// <summary>
@@ -19,6 +20,7 @@ namespace RtMidi.Core.Messages
             
             Channel = channel;
             Control = control;
+            ControlFunction = ControlFunction.Undefined.OrValueIfDefined(control);
             Value = value;
         }
 
@@ -27,18 +29,8 @@ namespace RtMidi.Core.Messages
         public Channel Channel { get; private set; }
         public int Control { get; private set; }
         public int Value { get; private set; }
-
-        public ControlFunction ControlFunction 
-        {
-            get
-            {
-                if (Enum.IsDefined(typeof(ControlFunction), Control))
-                {
-                    return (ControlFunction)Control;
-                }
-                return ControlFunction.Undefined;
-            }
-        }
+        
+        public ControlFunction ControlFunction { get; private set; }        
 
         internal byte[] Encode()
         {
@@ -59,10 +51,12 @@ namespace RtMidi.Core.Messages
                 return false;
             }
 
+            var control = Midi.DataBitmask & message[1];
             msg = new ControlChangeMessage
             {
                 Channel = (Channel)(Midi.ChannelBitmask & message[0]),
-                Control = Midi.DataBitmask & message[1],
+                Control = control,
+                ControlFunction = ControlFunction.Undefined.OrValueIfDefined(control),
                 Value = Midi.DataBitmask & message[2]
             };
             return true;

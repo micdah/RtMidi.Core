@@ -80,7 +80,7 @@ namespace RtMidi.Core.Enums
         LSBForControl5 = 37,
 
         [EnumDisplayName("LSB for Control 6 (Data Entry)")]
-        LSBForControl6 = 38,
+        LSBForControl6DataEntry = 38,
 
         [EnumDisplayName("LSB for Control 7 (Channel Volume)")]
         LSBForControl7 = 39,

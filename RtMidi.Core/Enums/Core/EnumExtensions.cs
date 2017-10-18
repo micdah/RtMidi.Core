@@ -24,5 +24,23 @@ namespace RtMidi.Core.Enums.Core
                     .OfType<EnumDisplayNameAttribute>()
                     .Single());
         }
+
+        /// <summary>
+        /// Get <see cref="TEnum"/> enumeration value for <paramref name="value"/> if it is defined
+        /// (<see cref="Enum.IsDefined"/>) or <paramref name="defaultValue"/> if not.
+        /// </summary>
+        /// <typeparam name="TEnum">Type of enum</typeparam>
+        /// <param name="defaultValue">Default value if not defined</param>
+        /// <param name="value">Value of enum to return, if defined</param>
+        /// <returns>Value of enum or default value if not defined</returns>
+        public static TEnum OrValueIfDefined<TEnum>(this TEnum defaultValue, object value)
+            where TEnum : struct
+        {
+            if (Enum.IsDefined(typeof(TEnum), value))
+            {
+                return (TEnum) value;
+            }
+            return defaultValue;
+        }
     }
 }

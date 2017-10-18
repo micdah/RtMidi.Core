@@ -2,6 +2,7 @@
 using RtMidi.Core.Unmanaged.Devices;
 using Serilog;
 using System;
+using RtMidi.Core.Enums;
 
 namespace RtMidi.Core.Devices
 {
@@ -9,11 +10,18 @@ namespace RtMidi.Core.Devices
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<MidiInputDevice>();
         private readonly IRtMidiInputDevice _inputDevice;
+        private readonly NrpnWatcher[] _nrpnWatchers;
 
         public MidiInputDevice(IRtMidiInputDevice rtMidiInputDevice) : base(rtMidiInputDevice)
         {
             _inputDevice = rtMidiInputDevice;
             _inputDevice.Message += RtMidiInputDevice_Message;
+
+            _nrpnWatchers = new NrpnWatcher[16];
+            for (var i = 0; i < 16; i++)
+            {
+                _nrpnWatchers[i] = new NrpnWatcher(this);
+            }
         }
 
         public event EventHandler<NoteOffMessage> NoteOff;
@@ -23,6 +31,7 @@ namespace RtMidi.Core.Devices
         public event EventHandler<ProgramChangeMessage> ProgramChange;
         public event EventHandler<ChannelPressureMessage> ChannelPressure;
         public event EventHandler<PitchBendMessage> PitchBend;
+        public event EventHandler<NRPNMessage> NRPN;
 
         private void RtMidiInputDevice_Message(object sender, byte[] message)
         {
@@ -69,7 +78,7 @@ namespace RtMidi.Core.Devices
                     break;
                 case Midi.Status.ControlChangeBitmask:
                     if (ControlChangeMessage.TryDecode(message, out var controlChangeMessage))
-                        ControlChange?.Invoke(this, controlChangeMessage);
+                        _nrpnWatchers[(int)controlChangeMessage.Channel].HandleControlChangeMessage(controlChangeMessage);
                     break;
                 case Midi.Status.ProgramChangeBitmask:
                     if (ProgramChangeMessage.TryDecode(message, out var programChangeMessage))
@@ -88,7 +97,7 @@ namespace RtMidi.Core.Devices
                     break;
             }
         }
-
+        
         protected override void Disposing()
         {
             _inputDevice.Message -= RtMidiInputDevice_Message;
@@ -101,6 +110,16 @@ namespace RtMidi.Core.Devices
             ProgramChange = null;
             ChannelPressure = null;
             PitchBend = null;
+        }
+
+        internal void OnControlChange(ControlChangeMessage e)
+        {
+            ControlChange?.Invoke(this, e);
+        }
+
+        internal void OnNrpn(NRPNMessage e)
+        {
+            NRPN?.Invoke(this, e);
         }
     }
 }
