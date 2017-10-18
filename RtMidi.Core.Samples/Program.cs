@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Linq;
 using RtMidi.Core.Devices;
+using RtMidi.Core.Messages;
 
 namespace RtMidi.Core.Tests
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             var p = new Program();
         }
-
-        private readonly IMidiInputDevice _inputDevice;
 
         public Program() 
         {
@@ -29,25 +28,27 @@ namespace RtMidi.Core.Tests
             foreach (var device in outputDevices)
                 Console.WriteLine($"Output Device: {device.Name}");
 
-            _inputDevice = inputDevices.First().CreateDevice();
+            var inputDeviceInfo = inputDevices.First();
+            var inputDevice = inputDeviceInfo.CreateDevice();
+            var outputDevice = outputDevices.FirstOrDefault(x => x.Name == inputDeviceInfo.Name)?.CreateDevice();
 
             try {
-                _inputDevice.ControlChange += (_, msg) => Console.WriteLine($"Received Control Change: {msg}");
-                _inputDevice.Nrpn += (_, msg) => Console.WriteLine($"Received NRPN: {msg}");
-                _inputDevice.Open();
+                inputDevice.ControlChange += (_, msg) => Console.WriteLine($"Received Control Change: {msg}");
+                inputDevice.Nrpn += (_, msg) =>
+                {
+                    Console.WriteLine($"Received NRPN: {msg}");
+                    outputDevice?.Send(new NrpnMessage(msg.Channel, msg.Parameter + 1, msg.Value));
+                };
+                inputDevice.Open();
+                outputDevice?.Open();
 
                 Console.ReadLine();
             }
             finally
             {
-                _inputDevice.Dispose();
+                inputDevice.Dispose();
+                outputDevice?.Dispose();
             }
-        }
-
-        private void InputDevice_Message(object sender, byte[] message)
-        {
-            var msg = string.Join(" ", message.Select(b => $"{b:X2}/{b}"));
-            Console.WriteLine($"Received: {msg} (length {message.Length})");
         }
     }
 }
