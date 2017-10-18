@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using RtMidi.Core.Enums;
+﻿using RtMidi.Core.Enums;
 using RtMidi.Core.Messages;
 using Serilog;
 
@@ -7,15 +6,18 @@ namespace RtMidi.Core.Devices
 {
     internal class NrpnWatcher
     {
-        private readonly Queue<ControlChangeMessage> _messageQueue = new Queue<ControlChangeMessage>(4);
+        private readonly ControlChangeMessage[] _messages;
         private readonly MidiInputDevice _inputDevice;
         private bool _queueMessages;
         private ControlFunction _lastControlFunction;
+        private int _index;
 
         public NrpnWatcher(MidiInputDevice inputDevice)
         {
             _inputDevice = inputDevice;
             _lastControlFunction = ControlFunction.Undefined;
+            _messages = new ControlChangeMessage[4];
+            _index = 0;
         }
 
         public void HandleControlChangeMessage(ControlChangeMessage msg)
@@ -23,13 +25,13 @@ namespace RtMidi.Core.Devices
             var controlFunction = msg.ControlFunction;
             if (_queueMessages)
             {
-                _messageQueue.Enqueue(msg);
-
+                _messages[_index++] = msg;
+                
                 // Check if messages are following the NRPN protocol
                 if (IsExpectedControlFunction(controlFunction))
                 {
                     // When we have all four messages, we can assemble and send it
-                    if (_messageQueue.Count == 4)
+                    if (_index == 4)
                     {
                         SendNrpn();
                     }
@@ -43,7 +45,7 @@ namespace RtMidi.Core.Devices
             {
                 // Might be start of NRPN, start queueing messages
                 _queueMessages = true;
-                _messageQueue.Enqueue(msg);
+                _messages[_index++] = msg;
             }
             else
             {
@@ -55,31 +57,24 @@ namespace RtMidi.Core.Devices
 
         private void ReleaseQueue()
         {
-            while (_messageQueue.Count > 0)
+            for (var i = 0; i < _index; i++)
             {
-                _inputDevice.OnControlChange(_messageQueue.Dequeue());
+                _inputDevice.OnControlChange(_messages[i]);
             }
 
+            _index = 0;
             _queueMessages = false;
         }
 
         private void SendNrpn()
         {
-            if (NRPNMessage.TryDecode(new[]
-            {
-                _messageQueue.Dequeue(),
-                _messageQueue.Dequeue(),
-                _messageQueue.Dequeue(),
-                _messageQueue.Dequeue()
-            }, out var msg))
+            if (NRPNMessage.TryDecode(_messages, out var msg))
             {
                 _inputDevice.OnNrpn(msg);
             }
-            else
-            {
-                Log.Fatal("Could not parse NRPN message");
-            }
+            else Log.Error("Could not parse NRPN message");
 
+            _index = 0;
             _queueMessages = false;
         }
 
