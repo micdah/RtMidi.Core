@@ -14,19 +14,19 @@ namespace RtMidi.Core.Tests.Messages
         [Fact]
         public void Should_Recognize_NRPN_Message_Including_Partials()
         {
-            Assert.True(NRPNMessage.IsExpectedControls(ControlChangeMessages(Channel.Channel1,
+            Assert.True(NrpnMessage.IsExpectedControls(ControlChangeMessages(Channel.Channel1,
                 ControlFunction.NonRegisteredParameterNumberMSB)));
 
-            Assert.True(NRPNMessage.IsExpectedControls(ControlChangeMessages(Channel.Channel1,
+            Assert.True(NrpnMessage.IsExpectedControls(ControlChangeMessages(Channel.Channel1,
                 ControlFunction.NonRegisteredParameterNumberMSB,
                 ControlFunction.NonRegisteredParameterNumberLSB)));
 
-            Assert.True(NRPNMessage.IsExpectedControls(ControlChangeMessages(Channel.Channel1,
+            Assert.True(NrpnMessage.IsExpectedControls(ControlChangeMessages(Channel.Channel1,
                 ControlFunction.NonRegisteredParameterNumberMSB,
                 ControlFunction.NonRegisteredParameterNumberLSB,
                 ControlFunction.DataEntryMSB)));
 
-            Assert.True(NRPNMessage.IsExpectedControls(ControlChangeMessages(Channel.Channel1,
+            Assert.True(NrpnMessage.IsExpectedControls(ControlChangeMessages(Channel.Channel1,
                 ControlFunction.NonRegisteredParameterNumberMSB,
                 ControlFunction.NonRegisteredParameterNumberLSB,
                 ControlFunction.DataEntryMSB,
@@ -47,7 +47,7 @@ namespace RtMidi.Core.Tests.Messages
                 msgs[i] = new ControlChangeMessage(Channel.Channel2, msgs[i].Control, msgs[i].Value);
 
                 // Test
-                Assert.False(NRPNMessage.IsExpectedControls(msgs));
+                Assert.False(NrpnMessage.IsExpectedControls(msgs));
             }
         }
 

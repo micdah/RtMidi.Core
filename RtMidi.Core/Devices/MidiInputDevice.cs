@@ -31,7 +31,7 @@ namespace RtMidi.Core.Devices
         public event EventHandler<ProgramChangeMessage> ProgramChange;
         public event EventHandler<ChannelPressureMessage> ChannelPressure;
         public event EventHandler<PitchBendMessage> PitchBend;
-        public event EventHandler<NRPNMessage> NRPN;
+        public event EventHandler<NrpnMessage> Nrpn;
 
         private void RtMidiInputDevice_Message(object sender, byte[] message)
         {
@@ -117,9 +117,9 @@ namespace RtMidi.Core.Devices
             ControlChange?.Invoke(this, e);
         }
 
-        internal void OnNrpn(NRPNMessage e)
+        internal void OnNrpn(NrpnMessage e)
         {
-            NRPN?.Invoke(this, e);
+            Nrpn?.Invoke(this, e);
         }
     }
 }

@@ -43,6 +43,6 @@ namespace RtMidi.Core.Devices
         /// <summary>
         /// Non-Registered Parameter Number (NRPN) event
         /// </summary>
-        event EventHandler<NRPNMessage> NRPN;
+        event EventHandler<NrpnMessage> Nrpn;
     }
 }

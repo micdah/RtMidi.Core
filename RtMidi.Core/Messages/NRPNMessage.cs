@@ -10,9 +10,9 @@ namespace RtMidi.Core.Messages
     /// Change messages and allows 14-bit values to be used, rather than the
     /// normal 7-bit values in regular midi messages.
     /// </summary>
-    public struct NRPNMessage
+    public struct NrpnMessage
     {
-        public NRPNMessage(Channel channel, int parameter, int value)
+        public NrpnMessage(Channel channel, int parameter, int value)
         {
             StructHelper.IsWithin14BitRange(nameof(parameter), parameter);
             StructHelper.IsWithin14BitRange(nameof(value), value);
@@ -77,7 +77,7 @@ namespace RtMidi.Core.Messages
             throw new NotImplementedException();
         }
 
-        internal static bool TryDecode(ControlChangeMessage[] messages, out NRPNMessage msg)
+        internal static bool TryDecode(ControlChangeMessage[] messages, out NrpnMessage msg)
         {
             if (messages.Length != 4)
             {
@@ -93,7 +93,7 @@ namespace RtMidi.Core.Messages
                 return false;
             }
 
-            msg = new NRPNMessage
+            msg = new NrpnMessage
             {
                 Channel = messages[0].Channel,
                 Parameter = (messages[0].Value & Midi.DataBitmask) << 7 | (messages[1].Value & Midi.DataBitmask),

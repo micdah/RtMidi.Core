@@ -19,7 +19,7 @@ namespace RtMidi.Core.Tests
         private readonly Queue<ProgramChangeMessage> _programChangeMessages = new Queue<ProgramChangeMessage>();
         private readonly Queue<ChannelPressureMessage> _channelPressureMessages = new Queue<ChannelPressureMessage>();
         private readonly Queue<PitchBendMessage> _pitchBendMessages = new Queue<PitchBendMessage>();
-        private readonly Queue<NRPNMessage> _nrpnMessages = new Queue<NRPNMessage>();
+        private readonly Queue<NrpnMessage> _nrpnMessages = new Queue<NrpnMessage>();
         
         public MidiInputDeviceTests(ITestOutputHelper output) : base(output)
         {
@@ -33,7 +33,7 @@ namespace RtMidi.Core.Tests
             sut.ProgramChange += (sender, e) => _programChangeMessages.Enqueue(e);
             sut.ChannelPressure += (sender, e) => _channelPressureMessages.Enqueue(e);
             sut.PitchBend += (sender, e) => _pitchBendMessages.Enqueue(e);
-            sut.NRPN += (sender, e) => _nrpnMessages.Enqueue(e);
+            sut.Nrpn += (sender, e) => _nrpnMessages.Enqueue(e);
         }
 
         [Fact]
