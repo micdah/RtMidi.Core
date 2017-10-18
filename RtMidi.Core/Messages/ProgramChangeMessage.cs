@@ -21,7 +21,14 @@ namespace RtMidi.Core.Messages
             Program = program;
         }
 
+        /// <summary>
+        /// MIDI Channel
+        /// </summary>
         public Channel Channel { get; private set; }
+
+        /// <summary>
+        /// Program number (0-127)
+        /// </summary>
         public int Program { get; private set; }
 
         internal byte[] Encode()

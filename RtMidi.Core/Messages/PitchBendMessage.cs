@@ -27,7 +27,7 @@ namespace RtMidi.Core.Messages
         public Channel Channel { get; private set; }
 
         /// <summary>
-        /// 14-bit value
+        /// Pitch value (0-16383)
         /// </summary>
         /// <value>The value.</value>
         public int Value { get; private set; }

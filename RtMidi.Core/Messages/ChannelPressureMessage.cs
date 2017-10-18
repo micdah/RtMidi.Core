@@ -21,7 +21,14 @@ namespace RtMidi.Core.Messages
             Pressure = pressure;
         }
 
+        /// <summary>
+        /// MIDI Channel
+        /// </summary>
         public Channel Channel { get; private set; }
+
+        /// <summary>
+        /// Pressure value (0-127)
+        /// </summary>
         public int Pressure { get; private set; }
 
         internal byte[] Encode()

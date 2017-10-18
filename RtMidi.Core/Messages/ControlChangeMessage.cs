@@ -24,9 +24,24 @@ namespace RtMidi.Core.Messages
             Value = value;
         }
 
+        /// <summary>
+        /// MIDI Channel
+        /// </summary>
         public Channel Channel { get; private set; }
+
+        /// <summary>
+        /// Control number (0-127)
+        /// </summary>
         public int Control { get; private set; }
+
+        /// <summary>
+        /// Control value (0-127)
+        /// </summary>
         public int Value { get; private set; }
+
+        /// <summary>
+        /// Control function (as defined by https://www.midi.org/specifications/item/table-3-control-change-messages-data-bytes-2)
+        /// </summary>
         public ControlFunction ControlFunction { get; private set; }        
 
         internal byte[] Encode()
