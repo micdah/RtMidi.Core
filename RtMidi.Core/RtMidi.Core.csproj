@@ -11,7 +11,7 @@
     <PackageReleaseNotes>Initial release</PackageReleaseNotes>
     <Copyright>Copyright 2017 (c) Michael Dahl. All Rights reserved.</Copyright>
     <PackageTags>midi</PackageTags>
-  </PropertyGroup> 
+  </PropertyGroup>
 
   <PropertyGroup>
     <LangVersion>Latest</LangVersion>
