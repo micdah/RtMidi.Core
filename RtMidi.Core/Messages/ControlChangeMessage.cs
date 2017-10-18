@@ -24,12 +24,9 @@ namespace RtMidi.Core.Messages
             Value = value;
         }
 
-        // TODO Create detail enum of midi controls, see https://www.midi.org/specifications/item/table-3-control-change-messages-data-bytes-2
-
         public Channel Channel { get; private set; }
         public int Control { get; private set; }
         public int Value { get; private set; }
-        
         public ControlFunction ControlFunction { get; private set; }        
 
         internal byte[] Encode()

@@ -96,6 +96,12 @@ namespace RtMidi.Core.Tests
             }));
         }
 
+        [Fact]
+        public void Should_Send_NrpnMessages()
+        {
+            
+        }
+
         private class RtMidiOutputDeviceMock : IRtMidiOutputDevice
         {
             public readonly Queue<byte[]> Messages = new Queue<byte[]>();

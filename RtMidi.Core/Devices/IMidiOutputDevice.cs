@@ -53,6 +53,11 @@ namespace RtMidi.Core.Devices
         /// <returns>True if sent, false otherwise</returns>
         bool Send(PitchBendMessage pitchBendMessage);
 
-        // TODO Send NRPN message
+        /// <summary>
+        /// Send Non-Registered Parameter Number message
+        /// </summary>
+        /// <param name="nrpnMessage"></param>
+        /// <returns>True if sent, false otherwise</returns>
+        bool Send(NrpnMessage nrpnMessage);
     }
 }
