@@ -1,10 +1,13 @@
-﻿using RtMidi.Core.Enums;
+﻿using RtMidi.Core.Devices;
+using RtMidi.Core.Enums;
+using RtMidi.Core.Enums.Core;
 using Serilog;
-using RtMidi.Core.Devices;
+
 namespace RtMidi.Core.Messages
 {
     /// <summary>
-    /// This message is sent when a controller value changes. Controllers include devices such as pedals and levers. 
+    /// This message is sent when a controller value changes. Controllers 
+    /// include devices such as pedals and levers. 
     /// </summary>
     public struct ControlChangeMessage
     {
@@ -17,14 +20,29 @@ namespace RtMidi.Core.Messages
             
             Channel = channel;
             Control = control;
+            ControlFunction = ControlFunction.Undefined.OrValueIfDefined(control);
             Value = value;
         }
 
-        // TODO Create detail enum of midi controls, see https://www.midi.org/specifications/item/table-3-control-change-messages-data-bytes-2
-
+        /// <summary>
+        /// MIDI Channel
+        /// </summary>
         public Channel Channel { get; private set; }
+
+        /// <summary>
+        /// Control number (0-127)
+        /// </summary>
         public int Control { get; private set; }
+
+        /// <summary>
+        /// Control value (0-127)
+        /// </summary>
         public int Value { get; private set; }
+
+        /// <summary>
+        /// Control function (as defined by https://www.midi.org/specifications/item/table-3-control-change-messages-data-bytes-2)
+        /// </summary>
+        public ControlFunction ControlFunction { get; private set; }        
 
         internal byte[] Encode()
         {
@@ -45,13 +63,20 @@ namespace RtMidi.Core.Messages
                 return false;
             }
 
+            var control = Midi.DataBitmask & message[1];
             msg = new ControlChangeMessage
             {
                 Channel = (Channel)(Midi.ChannelBitmask & message[0]),
-                Control = Midi.DataBitmask & message[1],
+                Control = control,
+                ControlFunction = ControlFunction.Undefined.OrValueIfDefined(control),
                 Value = Midi.DataBitmask & message[2]
             };
             return true;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(Channel)}: {Channel}, {nameof(Control)}: {Control}, {nameof(Value)}: {Value}, {nameof(ControlFunction)}: {ControlFunction}";
         }
     }
 }

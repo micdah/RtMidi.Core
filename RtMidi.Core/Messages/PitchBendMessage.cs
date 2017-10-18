@@ -21,7 +21,15 @@ namespace RtMidi.Core.Messages
             Value = value;
         }
 
+        /// <summary>
+        /// MIDI Channel
+        /// </summary>
         public Channel Channel { get; private set; }
+
+        /// <summary>
+        /// Pitch value (0-16383)
+        /// </summary>
+        /// <value>The value.</value>
         public int Value { get; private set; }
 
         internal byte[] Encode()
@@ -53,6 +61,11 @@ namespace RtMidi.Core.Messages
                     ((Midi.DataBitmask & message[2]) << 7)
             };
             return true;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(Channel)}: {Channel}, {nameof(Value)}: {Value}";
         }
     }
 }

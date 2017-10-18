@@ -40,6 +40,9 @@ namespace RtMidi.Core.Devices
         /// </summary>
         event EventHandler<PitchBendMessage> PitchBend;
 
-        // TODO NRPN event
+        /// <summary>
+        /// Non-Registered Parameter Number (NRPN) event
+        /// </summary>
+        event EventHandler<NrpnMessage> Nrpn;
     }
 }

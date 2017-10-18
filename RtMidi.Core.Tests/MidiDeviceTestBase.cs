@@ -17,7 +17,7 @@ namespace RtMidi.Core.Tests
         [Fact]
         public void Should_Separate_Lsb_And_Msb_For_Pitch_Bend()
         {
-            var msg = PitchBendMessage(Channel.Channel_1, 5482);
+            var msg = PitchBendMessage(Channel.Channel1, 5482);
 
             Assert.Equal(3, msg.Length);
             var lsb = msg[1];
@@ -27,31 +27,32 @@ namespace RtMidi.Core.Tests
             Assert.Equal(0b0010_1010, msb);
         }
 
-        protected static void AllChannels(Action<Channel> func)
+        protected static void AllEnums<TEnum>(Action<TEnum> func)
+            where TEnum : struct
         {
-            foreach (var channel in Enum.GetValues(typeof(Channel)).Cast<Channel>())
+            foreach (var enumValue in Enum.GetValues(typeof(TEnum)).Cast<TEnum>())
             {
-                func(channel);
-            }
-        }
-
-        protected static void AllKeys(Action<Key> func)
-        {
-            foreach (var key in Enum.GetValues(typeof(Key)).Cast<Key>())
-            {
-                func(key);
+                func(enumValue);
             }
         }
 
         protected static void AllInRange(int from, int to, Action<int> func)
         {
-            for (var i = @from; i <= to; i++)
+            for (var i = from; i <= to; i++)
             {
                 func(i);
             }
         }
 
-        protected static byte[] NoteOffMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
+        protected static void AllInRange(int from, int to, int increment, Action<int> func)
+        {
+            for (var i = from; i <= to; i += increment)
+            {
+                func(i);
+            }
+        }
+
+        protected static byte[] NoteOffMessage(Channel channel, Key key = Key.Key0, int velocity = 0)
             => new[]
             {
             StructHelper.StatusByte(Midi.Status.NoteOffBitmask, channel),
@@ -59,7 +60,7 @@ namespace RtMidi.Core.Tests
                 StructHelper.DataByte(velocity)
             };
 
-        protected static byte[] NoteOnMessage(Channel channel, Key key = Key.Key_0, int velocity = 0)
+        protected static byte[] NoteOnMessage(Channel channel, Key key = Key.Key0, int velocity = 0)
             => new[]
             {
                 StructHelper.StatusByte(Midi.Status.NoteOnBitmask, channel),
@@ -67,7 +68,7 @@ namespace RtMidi.Core.Tests
                 StructHelper.DataByte(velocity)
             };
 
-        protected static byte[] PolyphonicKeyPressureMessage(Channel channel, Key key = Key.Key_0, int pressure = 0)
+        protected static byte[] PolyphonicKeyPressureMessage(Channel channel, Key key = Key.Key0, int pressure = 0)
             => new[]
             {
                 StructHelper.StatusByte(Midi.Status.PolyphonicKeyPressureBitmask, channel),

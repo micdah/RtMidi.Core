@@ -19,8 +19,19 @@ namespace RtMidi.Core.Messages
             Pressure = pressure;
         }
 
+        /// <summary>
+        /// MIDI Channel
+        /// </summary>
         public Channel Channel { get; private set; }
+
+        /// <summary>
+        /// Key number (0-127)
+        /// </summary>
         public Key Key { get; private set; }
+
+        /// <summary>
+        /// Pressure value (0-127)
+        /// </summary>
         public int Pressure { get; private set; }
 
         internal byte[] Encode()
@@ -49,6 +60,11 @@ namespace RtMidi.Core.Messages
                 Pressure = Midi.DataBitmask & message[2]
             };
             return true;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(Channel)}: {Channel}, {nameof(Key)}: {Key}, {nameof(Pressure)}: {Pressure}";
         }
     }
 }

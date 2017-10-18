@@ -21,7 +21,14 @@ namespace RtMidi.Core.Messages
             Program = program;
         }
 
+        /// <summary>
+        /// MIDI Channel
+        /// </summary>
         public Channel Channel { get; private set; }
+
+        /// <summary>
+        /// Program number (0-127)
+        /// </summary>
         public int Program { get; private set; }
 
         internal byte[] Encode()
@@ -48,6 +55,11 @@ namespace RtMidi.Core.Messages
                 Program = Midi.DataBitmask & message[1]
             };
             return true;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(Channel)}: {Channel}, {nameof(Program)}: {Program}";
         }
     }
 }

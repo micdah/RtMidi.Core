@@ -19,8 +19,19 @@ namespace RtMidi.Core.Messages
             Velocity = velocity;
         }
 
+        /// <summary>
+        /// MIDI Channel
+        /// </summary>
         public Channel Channel { get; private set; }
+
+        /// <summary>
+        /// Key number (0-127)
+        /// </summary>
         public Key Key { get; private set; }
+
+        /// <summary>
+        /// Velocity value (0-127)
+        /// </summary>
         public int Velocity { get; private set; }
 
         internal byte[] Encode()
@@ -49,6 +60,11 @@ namespace RtMidi.Core.Messages
                 Velocity = Midi.DataBitmask & message[2]
             };
             return true;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(Channel)}: {Channel}, {nameof(Key)}: {Key}, {nameof(Velocity)}: {Velocity}";
         }
     }
 }

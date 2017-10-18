@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
 using RtMidi.Core.Devices;
+using RtMidi.Core.Enums;
 
 namespace RtMidi.Core.Tests
 {
@@ -21,7 +22,7 @@ namespace RtMidi.Core.Tests
         [Fact]
         public void Should_Send_NoteOffMessages()
         {
-            AllChannels(channel => AllKeys(key => AllInRange(0, 127, velocity =>
+            AllEnums<Channel>(channel => AllEnums<Key>(key => AllInRange(0, 127, velocity =>
             {
                 _sut.Send(new NoteOffMessage(channel, key, velocity));
                 Assert.True(_outputDeviceMock.Messages.TryDequeue(out var msg));
@@ -32,7 +33,7 @@ namespace RtMidi.Core.Tests
         [Fact]
         public void Should_Send_NoteOnMessages()
         {
-            AllChannels(channel => AllKeys(key => AllInRange(0, 127, velocity =>
+            AllEnums<Channel>(channel => AllEnums<Key>(key => AllInRange(0, 127, velocity =>
             {
                 _sut.Send(new NoteOnMessage(channel, key, velocity));
                 Assert.True(_outputDeviceMock.Messages.TryDequeue(out var msg));
@@ -43,7 +44,7 @@ namespace RtMidi.Core.Tests
         [Fact]
         public void Should_Send_PolyphonicKeyPressureMessages()
         {
-            AllChannels(channel => AllKeys(key => AllInRange(0, 127, pressure =>
+            AllEnums<Channel>(channel => AllEnums<Key>(key => AllInRange(0, 127, pressure =>
             {
                 _sut.Send(new PolyphonicKeyPressureMessage(channel, key, pressure));
                 Assert.True(_outputDeviceMock.Messages.TryDequeue(out var msg));
@@ -54,7 +55,7 @@ namespace RtMidi.Core.Tests
         [Fact]
         public void Should_Send_ControlChangeMessages()
         {
-            AllChannels(channel => AllInRange(0, 127, control => AllInRange(0, 127, value =>
+            AllEnums<Channel>(channel => AllInRange(0, 127, control => AllInRange(0, 127, value =>
             {
                 _sut.Send(new ControlChangeMessage(channel, control, value));
                 Assert.True(_outputDeviceMock.Messages.TryDequeue(out var msg));
@@ -65,7 +66,7 @@ namespace RtMidi.Core.Tests
         [Fact]
         public void Should_Send_ProgramChangeMessages()
         {
-            AllChannels(channel => AllInRange(0, 127, program =>
+            AllEnums<Channel>(channel => AllInRange(0, 127, program =>
             {
                 _sut.Send(new ProgramChangeMessage(channel, program));
                 Assert.True(_outputDeviceMock.Messages.TryDequeue(out var msg));
@@ -76,7 +77,7 @@ namespace RtMidi.Core.Tests
         [Fact]
         public void Should_Send_ChannelPressureMessages()
         {
-            AllChannels(channel => AllInRange(0, 127, pressure =>
+            AllEnums<Channel>(channel => AllInRange(0, 127, pressure =>
             {
                 _sut.Send(new ChannelPressureMessage(channel, pressure));
                 Assert.True(_outputDeviceMock.Messages.TryDequeue(out var msg));
@@ -87,12 +88,33 @@ namespace RtMidi.Core.Tests
         [Fact]
         public void Should_Send_PitchBendMessages()
         {
-            AllChannels(channel => AllInRange(0, 16383, value =>
+            AllEnums<Channel>(channel => AllInRange(0, 16383, value =>
             {
                 _sut.Send(new PitchBendMessage(channel, value));
                 Assert.True(_outputDeviceMock.Messages.TryDequeue(out var msg));
                 Assert.Equal(PitchBendMessage(channel, value), msg);
             }));
+        }
+
+        [Fact]
+        public void Should_Send_NrpnMessages()
+        {
+            AllEnums<Channel>(channel => AllInRange(0, 16383, 128, parameter => AllInRange(0, 16383, 128, value =>
+            {
+                _sut.Send(new NrpnMessage(channel, parameter, value));
+
+                Assert.True(_outputDeviceMock.Messages.TryDequeue(out var parameterMsb));
+                Assert.Equal(ControlChangeMessage(channel, (int)ControlFunction.NonRegisteredParameterNumberMSB, parameter >> 7), parameterMsb);
+
+                Assert.True(_outputDeviceMock.Messages.TryDequeue(out var parameterLsb));
+                Assert.Equal(ControlChangeMessage(channel, (int)ControlFunction.NonRegisteredParameterNumberLSB, parameter & Midi.DataBitmask), parameterLsb);
+
+                Assert.True(_outputDeviceMock.Messages.TryDequeue(out var valueMsb));
+                Assert.Equal(ControlChangeMessage(channel, (int)ControlFunction.DataEntryMSB, value >> 7), valueMsb);
+
+                Assert.True(_outputDeviceMock.Messages.TryDequeue(out var valueLsb));
+                Assert.Equal(ControlChangeMessage(channel, (int)ControlFunction.LSBForControl6DataEntry, value & Midi.DataBitmask), valueLsb);
+            })));
         }
 
         private class RtMidiOutputDeviceMock : IRtMidiOutputDevice
