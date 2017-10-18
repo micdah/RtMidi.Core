@@ -28,15 +28,15 @@ namespace RtMidi.Core.Messages
         public int Control { get; private set; }
         public int Value { get; private set; }
 
-        public Control ControlFunction 
+        public ControlFunction ControlFunction 
         {
             get
             {
-                if (Enum.IsDefined(typeof(Control), Control))
+                if (Enum.IsDefined(typeof(ControlFunction), Control))
                 {
-                    return (Control)Control;
+                    return (ControlFunction)Control;
                 }
-                return Enums.Control.Undefined;
+                return ControlFunction.Undefined;
             }
         }
 

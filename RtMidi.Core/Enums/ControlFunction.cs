@@ -8,7 +8,7 @@ namespace RtMidi.Core.Enums
     /// defined by MIDI specification:
     /// https://www.midi.org/specifications/item/table-3-control-change-messages-data-bytes-2
     /// </summary>
-    public enum Control
+    public enum ControlFunction
     {
         [EnumDisplayName("Undefined")]
         Undefined = -1,
@@ -216,6 +216,69 @@ namespace RtMidi.Core.Enums
 
         [EnumDisplayName("General Purpose Controller 8")]
         GeneralPurposeController8 = 83,
+
+        [EnumDisplayName("Portamento Control")]
+        PortamentoControl = 84,
+
+        [EnumDisplayName("High Resolution Velocity Prefix")]
+        HighResolutionVelocityPrefix = 88,
+
+        [EnumDisplayName("Effects 1 Depth")]
+        Effects1Depth = 91,
+
+        [EnumDisplayName("Effects 2 Depth")]
+        Effects2Depth = 92,
+
+        [EnumDisplayName("Effects 3 Depth")]
+        Effects3Depth = 93,
+
+        [EnumDisplayName("Effects 4 Depth")]
+        Effects4Depth = 94,
+
+        [EnumDisplayName("Effects 5 Depth")]
+        Effects5Depth = 95,
+
+        [EnumDisplayName("Data Increment")]
+        DataIncrement = 96,
+
+        [EnumDisplayName("Data Decrement")]
+        DataDecrement = 97,
+
+        [EnumDisplayName("Non-Registered Parameter Number LSB (NRPN)")]
+        NonRegisteredParameterNumberLSB = 98,
+
+        [EnumDisplayName("Non-Registered Parameter Number MSB (NRPN)")]
+        NonRegisteredParameterNumberMSB = 99,
+
+        [EnumDisplayName("Registered Parameter Number LSB (RPN)")]
+        RegisteredParameterNumberLSB = 100,
+
+        [EnumDisplayName("Registered Parameter Number MSB (RPN)")]
+        RegisteredParameterNumberMSB = 101,
+
+        [EnumDisplayName("Channel Mode Message: All Sound Off")]
+        ChannelModeMessageAllSoundOff = 120,
+
+        [EnumDisplayName("Channel Mode Message: Reset All Controllers")]
+        ChannelModeMessageResetAllControllers = 121,
+
+        [EnumDisplayName("Channel Mode Message: Local Control On/Off")]
+        ChannelModeMessageLocalControlOnOff = 122,
+
+        [EnumDisplayName("Channel Mode Message: All Notes Off")]
+        ChannelModeMessageAllNotesOff = 123,
+
+        [EnumDisplayName("Channel Mode Message: Omni Mode Off")]
+        ChannelModeMessageOmniModeOff = 124,
+
+        [EnumDisplayName("Channel Mode Message: Omni Mode On")]
+        ChannelModeMessageOmniModeOn = 125,
+
+        [EnumDisplayName("Channel Mode Message: Mono Mode On")]
+        ChannelModeMessageMonoModeOn = 126,
+
+        [EnumDisplayName("Channel Mode Message: Poly Mode On")]
+        ChannelModeMessagePolyModeOn = 127
     }
 
     public static class ControlExtensions 
@@ -223,6 +286,6 @@ namespace RtMidi.Core.Enums
         /// <summary>
         /// Get human readable display name of Control
         /// </summary>
-        public static string DisplayName(this Control channel) => EnumExtensions.GetDisplayNameAttribute(channel)?.Name ?? string.Empty;
+        public static string DisplayName(this ControlFunction channel) => EnumExtensions.GetDisplayNameAttribute(channel)?.Name ?? string.Empty;
     }
 }
