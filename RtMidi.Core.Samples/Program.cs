@@ -32,7 +32,8 @@ namespace RtMidi.Core.Tests
             _inputDevice = inputDevices.First().CreateDevice();
 
             try {
-                _inputDevice.ControlChange += (device, msg) => Console.WriteLine($"Received Control Change: {msg}");
+                _inputDevice.ControlChange += (_, msg) => Console.WriteLine($"Received Control Change: {msg}");
+                _inputDevice.NRPN += (_, msg) => Console.WriteLine($"Received NRPN: {msg}");
                 _inputDevice.Open();
 
                 Console.ReadLine();

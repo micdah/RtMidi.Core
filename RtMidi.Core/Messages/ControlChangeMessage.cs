@@ -61,5 +61,10 @@ namespace RtMidi.Core.Messages
             };
             return true;
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(Channel)}: {Channel}, {nameof(Control)}: {Control}, {nameof(Value)}: {Value}, {nameof(ControlFunction)}: {ControlFunction}";
+        }
     }
 }
