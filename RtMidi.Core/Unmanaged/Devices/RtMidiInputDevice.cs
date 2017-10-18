@@ -6,8 +6,14 @@ namespace RtMidi.Core.Unmanaged.Devices
 {
     internal class RtMidiInputDevice : RtMidiDevice, IRtMidiInputDevice
     {
+        /// <summary>
+        /// Ensure delegate is not garbage collected (see https://stackoverflow.com/questions/6193711/call-has-been-made-on-garbage-collected-delegate-in-c)
+        /// </summary>
+        private readonly RtMidiCallback _rtMidiCallbackDelegate;
+
         internal RtMidiInputDevice(uint portNumber) : base(portNumber)
         {
+            _rtMidiCallbackDelegate = HandleRtMidiCallback;
         }
 
         public event EventHandler<byte[]> Message;
@@ -22,7 +28,7 @@ namespace RtMidi.Core.Unmanaged.Devices
                 CheckForError(handle);
 
                 Log.Debug("Setting input callback");
-                RtMidiC.Input.SetCallback(handle, HandleRtMidiCallback, IntPtr.Zero);
+                RtMidiC.Input.SetCallback(handle, _rtMidiCallbackDelegate, IntPtr.Zero);
                 CheckForError(handle);
 
                 return handle;
