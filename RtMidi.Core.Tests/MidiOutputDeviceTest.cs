@@ -99,7 +99,22 @@ namespace RtMidi.Core.Tests
         [Fact]
         public void Should_Send_NrpnMessages()
         {
-            
+            AllEnums<Channel>(channel => AllInRange(0, 16383, 128, parameter => AllInRange(0, 16383, 128, value =>
+            {
+                _sut.Send(new NrpnMessage(channel, parameter, value));
+
+                Assert.True(_outputDeviceMock.Messages.TryDequeue(out var parameterMsb));
+                Assert.Equal(ControlChangeMessage(channel, (int)ControlFunction.NonRegisteredParameterNumberMSB, parameter >> 7), parameterMsb);
+
+                Assert.True(_outputDeviceMock.Messages.TryDequeue(out var parameterLsb));
+                Assert.Equal(ControlChangeMessage(channel, (int)ControlFunction.NonRegisteredParameterNumberLSB, parameter & Midi.DataBitmask), parameterLsb);
+
+                Assert.True(_outputDeviceMock.Messages.TryDequeue(out var valueMsb));
+                Assert.Equal(ControlChangeMessage(channel, (int)ControlFunction.DataEntryMSB, value >> 7), valueMsb);
+
+                Assert.True(_outputDeviceMock.Messages.TryDequeue(out var valueLsb));
+                Assert.Equal(ControlChangeMessage(channel, (int)ControlFunction.LSBForControl6DataEntry, value & Midi.DataBitmask), valueLsb);
+            })));
         }
 
         private class RtMidiOutputDeviceMock : IRtMidiOutputDevice

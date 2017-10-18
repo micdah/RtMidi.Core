@@ -74,7 +74,13 @@ namespace RtMidi.Core.Messages
 
         internal ControlChangeMessage[] Encode()
         {
-            throw new NotImplementedException();
+            return new[]
+            {
+                new ControlChangeMessage(Channel, (int)ControlFunction.NonRegisteredParameterNumberMSB, Parameter >> 7),
+                new ControlChangeMessage(Channel, (int)ControlFunction.NonRegisteredParameterNumberLSB, Parameter & Midi.DataBitmask),  
+                new ControlChangeMessage(Channel, (int)ControlFunction.DataEntryMSB, Value >> 7), 
+                new ControlChangeMessage(Channel, (int)ControlFunction.LSBForControl6DataEntry, Value & Midi.DataBitmask)
+            };
         }
 
         internal static bool TryDecode(ControlChangeMessage[] messages, out NrpnMessage msg)

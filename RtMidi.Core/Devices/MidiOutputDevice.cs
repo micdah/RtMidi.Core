@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using RtMidi.Core.Messages;
 using RtMidi.Core.Unmanaged.Devices;
 using Serilog;
@@ -37,8 +38,6 @@ namespace RtMidi.Core.Devices
             => _outputDevice.SendMessage(pitchBendMessage.Encode());
 
         public bool Send(NrpnMessage nrpnMessage)
-        {
-            throw new NotImplementedException();
-        }
+            => nrpnMessage.Encode().All(Send);
     }
 }
