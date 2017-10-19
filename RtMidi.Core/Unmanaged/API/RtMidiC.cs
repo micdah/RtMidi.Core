@@ -34,7 +34,7 @@ namespace RtMidi.Core.Unmanaged.API
         /// </summary>
         /// <param name="apis">An array or a null value.</param>
         [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_get_compiled_api", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal int GetCompiledApi(ref IntPtr/* RtMidiApi ** */ apis);
+        static extern internal int GetCompiledApi(IntPtr/* RtMidiApi * */ apis);
 
         /// <summary>
         /// Report an error.
