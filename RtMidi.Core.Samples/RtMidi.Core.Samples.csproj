@@ -9,4 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RtMidi.Core\RtMidi.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Serilog.Sinks.ColoredConsole" Version="3.0.1" />
+  </ItemGroup>
 </Project>

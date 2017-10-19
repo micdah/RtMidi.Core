@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using RtMidi.Core.Messages;
+using Serilog;
 
 namespace RtMidi.Core.Samples461
 {
@@ -8,6 +9,11 @@ namespace RtMidi.Core.Samples461
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.ColoredConsole()
+                .MinimumLevel.Debug()
+                .CreateLogger();
+
             var p = new Program();
         }
 
