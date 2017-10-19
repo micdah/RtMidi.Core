@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
-using RtMidi.Core.Devices;
 using RtMidi.Core.Messages;
 
-namespace RtMidi.Core.Tests
+namespace RtMidi.Core.Samples
 {
     public class Program
     {
