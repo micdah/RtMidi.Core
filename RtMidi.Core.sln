@@ -2,11 +2,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RtMidi.Core", "RtMidi.Core\RtMidi.Core.csproj", "{21427A90-5BB5-4E07-9993-69831B387C5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RtMidi.Core", "RtMidi.Core\RtMidi.Core.csproj", "{21427A90-5BB5-4E07-9993-69831B387C5B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RtMidi.Core.Samples", "RtMidi.Core.Samples\RtMidi.Core.Samples.csproj", "{2574496E-86C1-46A5-86FF-A19CCDF1365A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RtMidi.Core.Samples", "RtMidi.Core.Samples\RtMidi.Core.Samples.csproj", "{2574496E-86C1-46A5-86FF-A19CCDF1365A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RtMidi.Core.Tests", "RtMidi.Core.Tests\RtMidi.Core.Tests.csproj", "{CFABF8B6-0C72-4F13-A0DE-E00E06733ECE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RtMidi.Core.Tests", "RtMidi.Core.Tests\RtMidi.Core.Tests.csproj", "{CFABF8B6-0C72-4F13-A0DE-E00E06733ECE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution files", "Solution files", "{F7FAADF2-C6C0-4441-8651-B8F011177020}"
 	ProjectSection(SolutionItems) = preProject
@@ -39,7 +39,6 @@ Global
 		{D72A610E-D043-4039-A527-009E5221C325}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D72A610E-D043-4039-A527-009E5221C325}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D72A610E-D043-4039-A527-009E5221C325}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D72A610E-D043-4039-A527-009E5221C325}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
