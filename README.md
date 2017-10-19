@@ -14,3 +14,8 @@ MIDI support on both Winows (64-bit) and Mac OS X for .Net Standard 2.0 with sup
 
 ## Example
 **TODO** How to use this library will be described here in the near future
+
+### RtMidi Version
+We are using a fork off [rtmidi](https://github.com/thestk/rtmidi) `master` branch with a few changes (_you can see a diff [here](https://github.com/thestk/rtmidi/compare/master...micdah:master) between our fork and official repository_) to make it possible to build on the platforms we are interested in and with changes to better support .Net P/Invoke.
+
+You can find our fork at [micdah/rtmidi](https://github.com/micdah/rtmidi).
