@@ -1,5 +1,6 @@
-﻿using RtMidi.Core.Unmanaged.Devices;
-using System;
+﻿using System;
+using RtMidi.Core.Unmanaged.Devices.Infos;
+
 namespace RtMidi.Core.Devices.Infos
 {
     internal class MidiDeviceInfo<TRtMidiDeviceInfo> : IMidiDeviceInfo
@@ -9,9 +10,7 @@ namespace RtMidi.Core.Devices.Infos
 
         public MidiDeviceInfo(TRtMidiDeviceInfo rtMidiDeviceInfo)
         {
-            if (rtMidiDeviceInfo == null) throw new ArgumentNullException(nameof(rtMidiDeviceInfo));
-
-            RtMidiDeviceInfo = rtMidiDeviceInfo;
+            RtMidiDeviceInfo = rtMidiDeviceInfo ?? throw new ArgumentNullException(nameof(rtMidiDeviceInfo));
         }
 
         public string Name => RtMidiDeviceInfo.Name;

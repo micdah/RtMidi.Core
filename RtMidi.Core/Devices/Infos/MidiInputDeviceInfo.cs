@@ -1,4 +1,4 @@
-﻿using RtMidi.Core.Unmanaged.Devices;
+﻿using RtMidi.Core.Unmanaged.Devices.Infos;
 namespace RtMidi.Core.Devices.Infos
 {
     internal class MidiInputDeviceInfo : MidiDeviceInfo<RtMidiInputDeviceInfo>, IMidiInputDeviceInfo

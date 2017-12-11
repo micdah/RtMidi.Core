@@ -1,5 +1,4 @@
 ﻿using RtMidi.Core.Enums.Core;
-using RtMidi.Core.Messages;
 
 namespace RtMidi.Core.Enums
 {

@@ -1,8 +1,7 @@
-﻿using RtMidi.Core.Messages;
+﻿using System;
+using RtMidi.Core.Messages;
 using RtMidi.Core.Unmanaged.Devices;
 using Serilog;
-using System;
-using RtMidi.Core.Enums;
 
 namespace RtMidi.Core.Devices
 {

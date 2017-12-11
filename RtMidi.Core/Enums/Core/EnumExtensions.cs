@@ -26,7 +26,7 @@ namespace RtMidi.Core.Enums.Core
         }
 
         /// <summary>
-        /// Get <see cref="TEnum"/> enumeration value for <paramref name="value"/> if it is defined
+        /// Get <typeparamref name="TEnum"/> cref="TEnum"/> enumeration value for <paramref name="value"/> if it is defined
         /// (<see cref="Enum.IsDefined"/>) or <paramref name="defaultValue"/> if not.
         /// </summary>
         /// <typeparam name="TEnum">Type of enum</typeparam>

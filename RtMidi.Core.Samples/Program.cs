@@ -13,23 +13,26 @@ namespace RtMidi.Core.Samples
                 .WriteTo.ColoredConsole()
                 .MinimumLevel.Debug()
                 .CreateLogger();
-            
-            var p = new Program();
+
+            using (MidiDeviceManager.Default)
+            {
+                var p = new Program();
+            }
         }
 
         public Program() 
         {
             Console.WriteLine("Available MIDI API's:");
-            var apis = MidiDeviceManager.Instance.GetAvailableMidiApis();
+            var apis = MidiDeviceManager.Default.GetAvailableMidiApis();
             foreach (var api in apis)
                 Console.WriteLine($"API: {api}");
 
             Console.WriteLine("Available MIDI devices:");
-            var inputDevices = MidiDeviceManager.Instance.InputDevices.ToList();
+            var inputDevices = MidiDeviceManager.Default.InputDevices.ToList();
             foreach (var device in inputDevices)
                 Console.WriteLine($"Input Device: {device.Name}");
 
-            var outputDevices = MidiDeviceManager.Instance.OutputDevices.ToList();
+            var outputDevices = MidiDeviceManager.Default.OutputDevices.ToList();
             foreach (var device in outputDevices)
                 Console.WriteLine($"Output Device: {device.Name}");
 

@@ -1,4 +1,4 @@
-﻿namespace RtMidi.Core.Unmanaged.Devices
+﻿namespace RtMidi.Core.Unmanaged.Devices.Infos
 {
     internal class RtMidiOutputDeviceInfo : RtMidiDeviceInfo
     {

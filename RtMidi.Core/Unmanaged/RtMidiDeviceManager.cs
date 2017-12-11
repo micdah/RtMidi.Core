@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using RtMidi.Core.Unmanaged.Devices;
+using RtMidi.Core.Unmanaged.Devices.Infos;
 
 namespace RtMidi.Core.Unmanaged
 {
     internal class RtMidiDeviceManager : IDisposable
     {
-        public static readonly RtMidiDeviceManager Instance = new RtMidiDeviceManager();
+        public static RtMidiDeviceManager Default => DefaultHolder.Value;
+
+        public static readonly Lazy<RtMidiDeviceManager> DefaultHolder = new Lazy<RtMidiDeviceManager>(() => new RtMidiDeviceManager());
 
         private readonly RtMidiInputDevice _defaultInputDevice;
         private readonly RtMidiOutputDevice _defaultOutputDevice;

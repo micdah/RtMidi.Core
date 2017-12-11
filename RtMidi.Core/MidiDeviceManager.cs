@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RtMidi.Core.Unmanaged;
 using RtMidi.Core.Devices.Infos;
 using RtMidi.Core.Unmanaged.API;
+using System;
 
 [assembly: InternalsVisibleTo("RtMidi.Core.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
@@ -15,18 +16,26 @@ namespace RtMidi.Core
     /// so each time you enumerate input or output devices, it will reflect the 
     /// currently available devices.
     /// </summary>
-    public class MidiDeviceManager
+    public sealed class MidiDeviceManager : IDisposable
     {
         /// <summary>
         /// Manager singleton instance to use
         /// </summary>
-        public static readonly MidiDeviceManager Instance = new MidiDeviceManager();
+        public static MidiDeviceManager Default => DefaultHolder.Value;
+
+        private static readonly Lazy<MidiDeviceManager> DefaultHolder = new Lazy<MidiDeviceManager>(() => new MidiDeviceManager());
 
         private readonly RtMidiDeviceManager _rtDeviceManager;
+        private bool _disposed;
 
         private MidiDeviceManager()
         {
-            _rtDeviceManager = RtMidiDeviceManager.Instance;
+            _rtDeviceManager = RtMidiDeviceManager.Default;
+        }
+
+        ~MidiDeviceManager() 
+        {
+            Dispose();
         }
 
         /// <summary>
@@ -64,6 +73,15 @@ namespace RtMidi.Core
         public IEnumerable<RtMidiApi> GetAvailableMidiApis()
         {
             return RtMidiApiManager.GetAvailableApis();
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+
+            _rtDeviceManager.Dispose();
+            _disposed = true;
+            GC.SuppressFinalize(this);
         }
     }
 }

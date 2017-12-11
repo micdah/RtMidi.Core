@@ -22,7 +22,8 @@ namespace RtMidi.Core.Devices
         {
             if (_disposed) return;
 
-            try {
+            try
+            {
                 Disposing();
                 _rtMidiDevice.Dispose();
             }
