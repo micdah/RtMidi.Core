@@ -9,8 +9,10 @@
     <Description>Cross-platform MIDI library for .Net Standard built on top of RtMIdi with included support for Windows x64 and macOS</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>Initial release</PackageReleaseNotes>
-    <Copyright>Copyright 2017 (c) Michael Dahl. All Rights reserved.</Copyright>
+    <PackageProjectUrl>https://github.com/micdah/RtMidi.Core</PackageProjectUrl>
+    <!--<PackageIconUrl>https://github.com/micdah/SlackWebhook/raw/master/icon.png</PackageIconUrl>-->
     <PackageTags>midi netstandard netcore</PackageTags>
+    <Copyright>Copyright 2017 (c) Michael Dahl. All Rights reserved.</Copyright>
   </PropertyGroup>
 
   <PropertyGroup>
