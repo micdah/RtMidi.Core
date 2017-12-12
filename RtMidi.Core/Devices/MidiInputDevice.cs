@@ -2,6 +2,7 @@
 using RtMidi.Core.Messages;
 using RtMidi.Core.Unmanaged.Devices;
 using Serilog;
+using RtMidi.Core.Devices.Nrpn;
 
 namespace RtMidi.Core.Devices
 {
@@ -9,7 +10,7 @@ namespace RtMidi.Core.Devices
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<MidiInputDevice>();
         private readonly IRtMidiInputDevice _inputDevice;
-        private readonly NrpnWatcher[] _nrpnWatchers;
+        private readonly NrpnInterpreter[] _nrpnInterpreters;
         private bool _interpretNrpn;
         private bool _sendControlChange;
 
@@ -18,10 +19,10 @@ namespace RtMidi.Core.Devices
             _inputDevice = rtMidiInputDevice;
             _inputDevice.Message += RtMidiInputDevice_Message;
 
-            _nrpnWatchers = new NrpnWatcher[16];
+            _nrpnInterpreters = new NrpnInterpreter[16];
             for (var i = 0; i < 16; i++)
             {
-                _nrpnWatchers[i] = new NrpnWatcher(this);
+                _nrpnInterpreters[i] = new NrpnInterpreter(this);
             }
 
             // Set default NRPN mode
@@ -85,7 +86,7 @@ namespace RtMidi.Core.Devices
                     {
                         if (_interpretNrpn)
                         {
-                            _nrpnWatchers[(int)controlChangeMessage.Channel].HandleControlChangeMessage(controlChangeMessage);
+                            _nrpnInterpreters[(int)controlChangeMessage.Channel].HandleControlChangeMessage(controlChangeMessage);
                         }
 
                         if (_sendControlChange) 
@@ -140,9 +141,9 @@ namespace RtMidi.Core.Devices
         {
             void SetSendControlChangeMessages(bool value)
             {
-                foreach (var nrpnWatcher in _nrpnWatchers) 
+                foreach (var nrpnInterpreter in _nrpnInterpreters) 
                 {
-                    nrpnWatcher.SendControlChangeOnRelease = value;
+                    nrpnInterpreter.SendControlChangeOnRelease = value;
                 }
             }
 

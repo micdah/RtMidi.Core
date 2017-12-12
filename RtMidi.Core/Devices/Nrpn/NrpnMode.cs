@@ -1,4 +1,4 @@
-﻿namespace RtMidi.Core.Devices
+﻿namespace RtMidi.Core.Devices.Nrpn
 {
     public enum NrpnMode
     {

@@ -1,5 +1,6 @@
 ﻿using RtMidi.Core.Messages;
 using System;
+using RtMidi.Core.Devices.Nrpn;
 
 namespace RtMidi.Core.Devices
 {

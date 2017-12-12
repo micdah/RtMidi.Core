@@ -2,9 +2,9 @@
 using RtMidi.Core.Messages;
 using Serilog;
 
-namespace RtMidi.Core.Devices
+namespace RtMidi.Core.Devices.Nrpn
 {
-    internal class NrpnWatcher
+    internal class NrpnInterpreter
     {
         private readonly ControlChangeMessage[] _messages;
         private readonly MidiInputDevice _inputDevice;
@@ -12,7 +12,7 @@ namespace RtMidi.Core.Devices
         private ControlFunction _lastControlFunction;
         private int _index;
 
-        public NrpnWatcher(MidiInputDevice inputDevice)
+        public NrpnInterpreter(MidiInputDevice inputDevice)
         {
             _inputDevice = inputDevice;
             _lastControlFunction = ControlFunction.Undefined;

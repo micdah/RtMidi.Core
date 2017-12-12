@@ -36,6 +36,7 @@
     <Folder Include="Unmanaged\Devices\" />
     <Folder Include="Devices\Infos\" />
     <Folder Include="Unmanaged\Devices\Infos\" />
+    <Folder Include="Devices\Nrpn\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="2.6.0" />

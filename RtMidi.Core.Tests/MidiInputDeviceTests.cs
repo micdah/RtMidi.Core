@@ -4,6 +4,7 @@ using RtMidi.Core.Enums;
 using RtMidi.Core.Messages;
 using Xunit;
 using Xunit.Abstractions;
+using RtMidi.Core.Devices.Nrpn;
 
 namespace RtMidi.Core.Tests
 {
