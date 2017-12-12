@@ -10,6 +10,8 @@ namespace RtMidi.Core.Devices
         private static readonly ILogger Log = Serilog.Log.ForContext<MidiInputDevice>();
         private readonly IRtMidiInputDevice _inputDevice;
         private readonly NrpnWatcher[] _nrpnWatchers;
+        private bool _interpretNrpn;
+        private bool _sendControlChange;
 
         public MidiInputDevice(IRtMidiInputDevice rtMidiInputDevice) : base(rtMidiInputDevice)
         {
@@ -21,6 +23,9 @@ namespace RtMidi.Core.Devices
             {
                 _nrpnWatchers[i] = new NrpnWatcher(this);
             }
+
+            // Set default NRPN mode
+            SetNrpnMode(NrpnMode.On);;
         }
 
         public event EventHandler<NoteOffMessage> NoteOff;
@@ -77,7 +82,17 @@ namespace RtMidi.Core.Devices
                     break;
                 case Midi.Status.ControlChangeBitmask:
                     if (ControlChangeMessage.TryDecode(message, out var controlChangeMessage))
-                        _nrpnWatchers[(int)controlChangeMessage.Channel].HandleControlChangeMessage(controlChangeMessage);
+                    {
+                        if (_interpretNrpn)
+                        {
+                            _nrpnWatchers[(int)controlChangeMessage.Channel].HandleControlChangeMessage(controlChangeMessage);
+                        }
+
+                        if (_sendControlChange) 
+                        {
+                            ControlChange?.Invoke(this, controlChangeMessage);
+                        }
+                    }
                     break;
                 case Midi.Status.ProgramChangeBitmask:
                     if (ProgramChangeMessage.TryDecode(message, out var programChangeMessage))
@@ -119,6 +134,36 @@ namespace RtMidi.Core.Devices
         internal void OnNrpn(NrpnMessage e)
         {
             Nrpn?.Invoke(this, e);
+        }
+
+        public void SetNrpnMode(NrpnMode mode)
+        {
+            void SetSendControlChangeMessages(bool value)
+            {
+                foreach (var nrpnWatcher in _nrpnWatchers) 
+                {
+                    nrpnWatcher.SendControlChangeOnRelease = value;
+                }
+            }
+
+            switch (mode)
+            {
+                case NrpnMode.On:
+                    _interpretNrpn = true;
+                    _sendControlChange = false;
+                    SetSendControlChangeMessages(true);
+                    break;
+                case NrpnMode.OnSendControlChange:
+                    _interpretNrpn = true;
+                    _sendControlChange = true;
+                    SetSendControlChangeMessages(false);
+                    break;
+                case NrpnMode.Off:
+                    _interpretNrpn = false;
+                    _sendControlChange = true;
+                    SetSendControlChangeMessages(false);
+                    break;
+            }
         }
     }
 }

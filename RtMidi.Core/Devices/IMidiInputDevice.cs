@@ -44,5 +44,11 @@ namespace RtMidi.Core.Devices
         /// Non-Registered Parameter Number (NRPN) event
         /// </summary>
         event EventHandler<NrpnMessage> Nrpn;
+
+        /// <summary>
+        /// Set NRPN interpretation mode
+        /// </summary>
+        /// <param name="mode">Mode</param>
+        void SetNrpnMode(NrpnMode mode);
     }
 }

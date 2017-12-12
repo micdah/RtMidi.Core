@@ -1,17 +1,16 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using RtMidi.Core.Devices;
 using RtMidi.Core.Enums;
 using RtMidi.Core.Messages;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
-using RtMidi.Core.Devices;
-using RtMidi.Core.Enums.Core;
 
 namespace RtMidi.Core.Tests
 {
     public class MidiInputDeviceTests : MidiDeviceTestBase
     {
         private readonly RtMidiInputDeviceMock _inputDeviceMock;
+        private readonly MidiInputDevice _sut;
         private readonly Queue<NoteOffMessage> _noteOffMessages = new Queue<NoteOffMessage>();
         private readonly Queue<NoteOnMessage> _noteOnMessages = new Queue<NoteOnMessage>();
         private readonly Queue<PolyphonicKeyPressureMessage> _polyphonicKeyPressureMessages = new Queue<PolyphonicKeyPressureMessage>();
@@ -24,16 +23,16 @@ namespace RtMidi.Core.Tests
         public MidiInputDeviceTests(ITestOutputHelper output) : base(output)
         {
             _inputDeviceMock = new RtMidiInputDeviceMock();
-            var sut = new MidiInputDevice(_inputDeviceMock);
+            _sut = new MidiInputDevice(_inputDeviceMock);
 
-            sut.NoteOff += (sender, e) => _noteOffMessages.Enqueue(e);
-            sut.NoteOn += (sender, e) => _noteOnMessages.Enqueue(e);
-            sut.PolyphonicKeyPressure += (sender, e) => _polyphonicKeyPressureMessages.Enqueue(e);
-            sut.ControlChange += (sender, e) => _controlChangeMessages.Enqueue(e);
-            sut.ProgramChange += (sender, e) => _programChangeMessages.Enqueue(e);
-            sut.ChannelPressure += (sender, e) => _channelPressureMessages.Enqueue(e);
-            sut.PitchBend += (sender, e) => _pitchBendMessages.Enqueue(e);
-            sut.Nrpn += (sender, e) => _nrpnMessages.Enqueue(e);
+            _sut.NoteOff += (sender, e) => _noteOffMessages.Enqueue(e);
+            _sut.NoteOn += (sender, e) => _noteOnMessages.Enqueue(e);
+            _sut.PolyphonicKeyPressure += (sender, e) => _polyphonicKeyPressureMessages.Enqueue(e);
+            _sut.ControlChange += (sender, e) => _controlChangeMessages.Enqueue(e);
+            _sut.ProgramChange += (sender, e) => _programChangeMessages.Enqueue(e);
+            _sut.ChannelPressure += (sender, e) => _channelPressureMessages.Enqueue(e);
+            _sut.PitchBend += (sender, e) => _pitchBendMessages.Enqueue(e);
+            _sut.Nrpn += (sender, e) => _nrpnMessages.Enqueue(e);
         }
 
         [Fact]
@@ -174,6 +173,8 @@ namespace RtMidi.Core.Tests
         [Fact]
         public void Should_Fire_NRPNMessage()
         {
+            _sut.SetNrpnMode(NrpnMode.On);
+
             AllEnums<Channel>(channel => AllInRange(0, 16383, 128, parameter => AllInRange(0, 16383, 128, value =>
             {
                 var parameterMsb = parameter >> 7;
@@ -201,6 +202,156 @@ namespace RtMidi.Core.Tests
                 Assert.Equal(channel, msg.Channel);
                 Assert.Equal(parameter, msg.Parameter);
                 Assert.Equal(value, msg.Value);
+            })));
+        }
+
+        [Fact]
+        public void Should_Fire_NRPNMessage_And_ControlChange() 
+        {
+            _sut.SetNrpnMode(NrpnMode.OnSendControlChange);
+
+            AllEnums<Channel>(channel => AllInRange(0, 16383, 128, parameter => AllInRange(0, 16383, 128, value =>
+            {
+                var parameterMsb = parameter >> 7;
+                var parameterLsb = parameter & Midi.DataBitmask;
+                var valueMsb = value >> 7;
+                var valueLsb = value & Midi.DataBitmask;
+
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
+                    (int)ControlFunction.NonRegisteredParameterNumberMSB, parameterMsb));
+                
+                Assert.True(_controlChangeMessages.TryDequeue(out var ccParamMsb));
+                Assert.Equal(channel, ccParamMsb.Channel);
+                Assert.Equal(ControlFunction.NonRegisteredParameterNumberMSB, ccParamMsb.ControlFunction);
+                Assert.Equal(parameterMsb, ccParamMsb.Value);
+
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
+                    (int)ControlFunction.NonRegisteredParameterNumberLSB, parameterLsb));
+
+                Assert.True(_controlChangeMessages.TryDequeue(out var ccParamLsb));
+                Assert.Equal(channel, ccParamLsb.Channel);
+                Assert.Equal(ControlFunction.NonRegisteredParameterNumberLSB, ccParamLsb.ControlFunction);
+                Assert.Equal(parameterLsb, ccParamLsb.Value);
+
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
+                    (int)ControlFunction.DataEntryMSB, valueMsb));
+
+                Assert.True(_controlChangeMessages.TryDequeue(out var ccValueMsb));
+                Assert.Equal(channel, ccValueMsb.Channel);
+                Assert.Equal(ControlFunction.DataEntryMSB, ccValueMsb.ControlFunction);
+                Assert.Equal(valueMsb, ccValueMsb.Value);
+
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
+                    (int)ControlFunction.LSBForControl6DataEntry, valueLsb));
+
+                Assert.True(_controlChangeMessages.TryDequeue(out var ccValueLsb));
+                Assert.Equal(channel, ccValueLsb.Channel);
+                Assert.Equal(ControlFunction.LSBForControl6DataEntry, ccValueLsb.ControlFunction);
+                Assert.Equal(valueLsb, ccValueLsb.Value);
+
+                Assert.True(_nrpnMessages.TryDequeue(out var msg));
+                Assert.Equal(channel, msg.Channel);
+                Assert.Equal(parameter, msg.Parameter);
+                Assert.Equal(value, msg.Value);
+            })));
+        }
+
+        [Fact]
+        public void Should_Not_Fire_NRPNMessage()
+        {
+            _sut.SetNrpnMode(NrpnMode.Off);
+
+            AllEnums<Channel>(channel => AllInRange(0, 16383, 128, parameter => AllInRange(0, 16383, 128, value =>
+            {
+                var parameterMsb = parameter >> 7;
+                var parameterLsb = parameter & Midi.DataBitmask;
+                var valueMsb = value >> 7;
+                var valueLsb = value & Midi.DataBitmask;
+
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
+                    (int)ControlFunction.NonRegisteredParameterNumberMSB, parameterMsb));
+
+                Assert.True(_controlChangeMessages.TryDequeue(out var ccParamMsb));
+                Assert.Equal(channel, ccParamMsb.Channel);
+                Assert.Equal(ControlFunction.NonRegisteredParameterNumberMSB, ccParamMsb.ControlFunction);
+                Assert.Equal(parameterMsb, ccParamMsb.Value);
+
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
+                    (int)ControlFunction.NonRegisteredParameterNumberLSB, parameterLsb));
+
+                Assert.True(_controlChangeMessages.TryDequeue(out var ccParamLsb));
+                Assert.Equal(channel, ccParamLsb.Channel);
+                Assert.Equal(ControlFunction.NonRegisteredParameterNumberLSB, ccParamLsb.ControlFunction);
+                Assert.Equal(parameterLsb, ccParamLsb.Value);
+
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
+                    (int)ControlFunction.DataEntryMSB, valueMsb));
+
+                Assert.True(_controlChangeMessages.TryDequeue(out var ccValueMsb));
+                Assert.Equal(channel, ccValueMsb.Channel);
+                Assert.Equal(ControlFunction.DataEntryMSB, ccValueMsb.ControlFunction);
+                Assert.Equal(valueMsb, ccValueMsb.Value);
+
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
+                    (int)ControlFunction.LSBForControl6DataEntry, valueLsb));
+
+                Assert.True(_controlChangeMessages.TryDequeue(out var ccValueLsb));
+                Assert.Equal(channel, ccValueLsb.Channel);
+                Assert.Equal(ControlFunction.LSBForControl6DataEntry, ccValueLsb.ControlFunction);
+                Assert.Equal(valueLsb, ccValueLsb.Value);
+
+                Assert.False(_nrpnMessages.TryDequeue(out var _));
+            })));
+        }
+
+        [Fact]
+        public void Should_Not_Release_Queued_ControlChange_Messages_When_NRPN_Fails_When_NrpnMode_On_With_Sending_ControlChange()
+        {
+            _sut.SetNrpnMode(NrpnMode.OnSendControlChange);
+
+            AllEnums<Channel>(channel => AllInRange(0, 16383, 128, parameter => AllInRange(0, 16383, 128, value =>
+            {
+                var parameterMsb = parameter >> 7;
+                var parameterLsb = parameter & Midi.DataBitmask;
+                var valueMsb = value >> 7;
+
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
+                    (int)ControlFunction.NonRegisteredParameterNumberMSB, parameterMsb));
+
+                Assert.True(_controlChangeMessages.TryDequeue(out var ccParamMsb));
+                Assert.Equal(channel, ccParamMsb.Channel);
+                Assert.Equal(ControlFunction.NonRegisteredParameterNumberMSB, ccParamMsb.ControlFunction);
+                Assert.Equal(parameterMsb, ccParamMsb.Value);
+
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
+                    (int)ControlFunction.NonRegisteredParameterNumberLSB, parameterLsb));
+
+                Assert.True(_controlChangeMessages.TryDequeue(out var ccParamLsb));
+                Assert.Equal(channel, ccParamLsb.Channel);
+                Assert.Equal(ControlFunction.NonRegisteredParameterNumberLSB, ccParamLsb.ControlFunction);
+                Assert.Equal(parameterLsb, ccParamLsb.Value);
+
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
+                    (int)ControlFunction.DataEntryMSB, valueMsb));
+
+                Assert.True(_controlChangeMessages.TryDequeue(out var ccValueMsb));
+                Assert.Equal(channel, ccValueMsb.Channel);
+                Assert.Equal(ControlFunction.DataEntryMSB, ccValueMsb.ControlFunction);
+                Assert.Equal(valueMsb, ccValueMsb.Value);
+
+                // Now send unexpected CC message, which normally would release the CC queue
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
+                    (int)ControlFunction.Balance, 0));
+
+                Assert.False(_nrpnMessages.TryDequeue(out var _));
+
+                Assert.True(_controlChangeMessages.TryDequeue(out var ccMsg));
+                Assert.Equal(channel, ccMsg.Channel);
+                Assert.Equal(ControlFunction.Balance, ccMsg.ControlFunction);
+                Assert.Equal(0, ccMsg.Value);
+
+                // Verify there should be no more messages
+                Assert.False(_controlChangeMessages.TryDequeue(out var _));
             })));
         }
     }

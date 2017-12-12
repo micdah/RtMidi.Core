@@ -20,6 +20,13 @@ namespace RtMidi.Core.Devices
             _index = 0;
         }
 
+        /// <summary>
+        /// Whether or not to send queued <see cref="ControlChangeMessage"/>'s
+        /// when releasing queue (when a series of CC messages does not form a
+        /// NRPN message)
+        /// </summary>
+        public bool SendControlChangeOnRelease { get; set; }
+
         public void HandleControlChangeMessage(ControlChangeMessage msg)
         {
             var controlFunction = msg.ControlFunction;
@@ -57,9 +64,13 @@ namespace RtMidi.Core.Devices
 
         private void ReleaseQueue()
         {
-            for (var i = 0; i < _index; i++)
+            // Send queued CC message (unless disabled)
+            if (SendControlChangeOnRelease)
             {
-                _inputDevice.OnControlChange(_messages[i]);
+                for (var i = 0; i < _index; i++)
+                {
+                    _inputDevice.OnControlChange(_messages[i]);
+                }
             }
 
             _index = 0;
