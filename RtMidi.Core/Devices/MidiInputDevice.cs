@@ -11,8 +11,6 @@ namespace RtMidi.Core.Devices
         private static readonly ILogger Log = Serilog.Log.ForContext<MidiInputDevice>();
         private readonly IRtMidiInputDevice _inputDevice;
         private readonly NrpnInterpreter[] _nrpnInterpreters;
-        private bool _interpretNrpn;
-        private bool _sendControlChange;
 
         public MidiInputDevice(IRtMidiInputDevice rtMidiInputDevice) : base(rtMidiInputDevice)
         {
@@ -83,17 +81,7 @@ namespace RtMidi.Core.Devices
                     break;
                 case Midi.Status.ControlChangeBitmask:
                     if (ControlChangeMessage.TryDecode(message, out var controlChangeMessage))
-                    {
-                        if (_interpretNrpn)
-                        {
-                            _nrpnInterpreters[(int)controlChangeMessage.Channel].HandleControlChangeMessage(controlChangeMessage);
-                        }
-
-                        if (_sendControlChange) 
-                        {
-                            ControlChange?.Invoke(this, controlChangeMessage);
-                        }
-                    }
+                        _nrpnInterpreters[(int)controlChangeMessage.Channel].HandleControlChangeMessage(controlChangeMessage);
                     break;
                 case Midi.Status.ProgramChangeBitmask:
                     if (ProgramChangeMessage.TryDecode(message, out var programChangeMessage))
@@ -137,33 +125,11 @@ namespace RtMidi.Core.Devices
             Nrpn?.Invoke(this, e);
         }
 
-        public void SetNrpnMode(NrpnMode mode)
+        public void SetNrpnMode(NrpnMode nrpnMode)
         {
-            void SetSendControlChangeMessages(bool value)
+            foreach (var nrpnInterpreter in _nrpnInterpreters)
             {
-                foreach (var nrpnInterpreter in _nrpnInterpreters) 
-                {
-                    nrpnInterpreter.SendControlChangeOnRelease = value;
-                }
-            }
-
-            switch (mode)
-            {
-                case NrpnMode.On:
-                    _interpretNrpn = true;
-                    _sendControlChange = false;
-                    SetSendControlChangeMessages(true);
-                    break;
-                case NrpnMode.OnSendControlChange:
-                    _interpretNrpn = true;
-                    _sendControlChange = true;
-                    SetSendControlChangeMessages(false);
-                    break;
-                case NrpnMode.Off:
-                    _interpretNrpn = false;
-                    _sendControlChange = true;
-                    SetSendControlChangeMessages(false);
-                    break;
+                nrpnInterpreter.SetNrpnMode(nrpnMode);
             }
         }
     }

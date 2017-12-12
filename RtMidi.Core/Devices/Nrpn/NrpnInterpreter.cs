@@ -11,6 +11,8 @@ namespace RtMidi.Core.Devices.Nrpn
         private bool _queueMessages;
         private ControlFunction _lastControlFunction;
         private int _index;
+        private bool _interpret;
+        private bool _sendControlChange;
 
         public NrpnInterpreter(MidiInputDevice inputDevice)
         {
@@ -20,15 +22,36 @@ namespace RtMidi.Core.Devices.Nrpn
             _index = 0;
         }
 
-        /// <summary>
-        /// Whether or not to send queued <see cref="ControlChangeMessage"/>'s
-        /// when releasing queue (when a series of CC messages does not form a
-        /// NRPN message)
-        /// </summary>
-        public bool SendControlChangeOnRelease { get; set; }
+        public void SetNrpnMode(NrpnMode nrpmMode)
+        {
+            switch (nrpmMode)
+            {
+                case NrpnMode.On:
+                    _interpret = true;
+                    _sendControlChange = false;
+                    break;
+                case NrpnMode.OnSendControlChange:
+                    _interpret = true;
+                    _sendControlChange = true;
+                    break;
+                case NrpnMode.Off:
+                    _interpret = false;
+                    _sendControlChange = true;
+                    break;
+            }
+        }
 
         public void HandleControlChangeMessage(ControlChangeMessage msg)
         {
+            // Should we send CC messages immediately?
+            if (_sendControlChange)
+            {
+                _inputDevice.OnControlChange(msg);
+            }
+
+            // Should we interpret?
+            if (!_interpret) return;
+
             var controlFunction = msg.ControlFunction;
             if (_queueMessages)
             {
@@ -64,8 +87,8 @@ namespace RtMidi.Core.Devices.Nrpn
 
         private void ReleaseQueue()
         {
-            // Send queued CC message (unless disabled)
-            if (SendControlChangeOnRelease)
+            // Send queued CC messages, if they weren't sent immediately already
+            if (!_sendControlChange)
             {
                 for (var i = 0; i < _index; i++)
                 {
