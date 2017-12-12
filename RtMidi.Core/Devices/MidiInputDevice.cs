@@ -20,7 +20,7 @@ namespace RtMidi.Core.Devices
             _nrpnInterpreters = new NrpnInterpreter[16];
             for (var i = 0; i < 16; i++)
             {
-                _nrpnInterpreters[i] = new NrpnInterpreter(this);
+                _nrpnInterpreters[i] = new NrpnInterpreter(OnControlChange, OnNrpn);
             }
 
             // Set default NRPN mode

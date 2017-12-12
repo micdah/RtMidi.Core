@@ -1,22 +1,25 @@
 ﻿using RtMidi.Core.Enums;
 using RtMidi.Core.Messages;
 using Serilog;
+using System;
 
 namespace RtMidi.Core.Devices.Nrpn
 {
     internal class NrpnInterpreter
     {
         private readonly ControlChangeMessage[] _messages;
-        private readonly MidiInputDevice _inputDevice;
+        private readonly Action<ControlChangeMessage> _onControlChange;
+        private readonly Action<NrpnMessage> _onNrpn;
         private bool _queueMessages;
         private ControlFunction _lastControlFunction;
         private int _index;
         private bool _interpret;
         private bool _sendControlChange;
 
-        public NrpnInterpreter(MidiInputDevice inputDevice)
+        public NrpnInterpreter(Action<ControlChangeMessage> onControlChange, Action<NrpnMessage> onNrpn)
         {
-            _inputDevice = inputDevice;
+            _onControlChange = onControlChange ?? throw new ArgumentNullException(nameof(onControlChange));
+            _onNrpn = onNrpn ?? throw new ArgumentNullException(nameof(onNrpn));
             _lastControlFunction = ControlFunction.Undefined;
             _messages = new ControlChangeMessage[4];
             _index = 0;
@@ -46,7 +49,7 @@ namespace RtMidi.Core.Devices.Nrpn
             // Should we send CC messages immediately?
             if (_sendControlChange)
             {
-                _inputDevice.OnControlChange(msg);
+                _onControlChange(msg);
             }
 
             // Should we interpret?
@@ -77,9 +80,9 @@ namespace RtMidi.Core.Devices.Nrpn
                 _queueMessages = true;
                 _messages[_index++] = msg;
             }
-            else
+            else if (!_sendControlChange)
             {
-                _inputDevice.OnControlChange(msg);
+                _onControlChange(msg);
             }
 
             _lastControlFunction = controlFunction;
@@ -92,7 +95,7 @@ namespace RtMidi.Core.Devices.Nrpn
             {
                 for (var i = 0; i < _index; i++)
                 {
-                    _inputDevice.OnControlChange(_messages[i]);
+                    _onControlChange(_messages[i]);
                 }
             }
 
@@ -104,7 +107,7 @@ namespace RtMidi.Core.Devices.Nrpn
         {
             if (NrpnMessage.TryDecode(_messages, out var msg))
             {
-                _inputDevice.OnNrpn(msg);
+                _onNrpn(msg);
             }
             else Log.Error("Could not parse NRPN message");
 
