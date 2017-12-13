@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.1</LangVersion>
     <PackageId>RtMidi.Core</PackageId>
     <PackageVersion>1.0.0</PackageVersion>
     <Authors>Michael Dahl</Authors>
@@ -13,10 +13,6 @@
     <!--<PackageIconUrl>https://github.com/micdah/SlackWebhook/raw/master/icon.png</PackageIconUrl>-->
     <PackageTags>midi netstandard netcore</PackageTags>
     <Copyright>Copyright 2017 (c) Michael Dahl. All Rights reserved.</Copyright>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <LangVersion>Latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Include="librtmidi.dylib">

@@ -54,3 +54,4 @@ Thumbs.db
 /lib/**/*.lo
 /lib/**/*.la
 .vs/
+.idea/
