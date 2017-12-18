@@ -14,8 +14,8 @@ namespace RtMidi.Core.Unmanaged.API
 
     internal static class RtMidiC
     {
-        public const string RtMidiLibrary = "rtmidi";
-
+        private static bool Is64Bit => IntPtr.Size == 8;
+        
         /// <summary>
         /// Utility related API methods
         /// </summary>
@@ -24,8 +24,9 @@ namespace RtMidi.Core.Unmanaged.API
             /// <summary>
             /// Returns the size (with sizeof) of a RtMidiApi instance.
             /// </summary>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_sizeof_rtmidi_api", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal int SizeofRtMidiApi();
+            internal static int SizeofRtMidiApi() => Is64Bit
+                ? RtMidiC64.Utility.SizeofRtMidiApi()
+                : RtMidiC32.Utility.SizeofRtMidiApi();
         }
 
         /// <summary>
@@ -34,14 +35,24 @@ namespace RtMidi.Core.Unmanaged.API
         /// Otherwise, fill the given apis array with the RtMidi::Api values.
         /// </summary>
         /// <param name="apis">An array or a null value.</param>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_get_compiled_api", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal int GetCompiledApi(IntPtr/* RtMidiApi * */ apis);
+        internal static int GetCompiledApi(IntPtr /* RtMidiApi * */ apis) => Is64Bit
+            ? RtMidiC64.GetCompiledApi(apis)
+            : RtMidiC32.GetCompiledApi(apis);
 
         /// <summary>
         /// Report an error.
         /// </summary>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_error", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal void Error(RtMidiErrorType type, string errorString);
+        internal static void Error(RtMidiErrorType type, string errorString)
+        {
+            if (Is64Bit)
+            {
+                RtMidiC64.Error(type, errorString);
+            }
+            else
+            {
+                RtMidiC32.Error(type, errorString);
+            }
+        }
 
         /// <summary>
         /// Open a MIDI port.
@@ -49,8 +60,17 @@ namespace RtMidi.Core.Unmanaged.API
         /// <param name="device">Device</param>
         /// <param name="portNumber">Must be greater than 0</param>
         /// <param name="portName">Name for the application port.x</param>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_open_port", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal void OpenPort(RtMidiPtr device, uint portNumber, string portName);
+        internal static void OpenPort(RtMidiPtr device, uint portNumber, string portName)
+        {
+            if (Is64Bit)
+            {
+                RtMidiC64.OpenPort(device, portNumber, portName);
+            }
+            else
+            {
+                RtMidiC32.OpenPort(device, portNumber, portName);
+            }
+        }
 
         /// <summary>
         /// Creates a virtual MIDI port to which other software applications can 
@@ -58,31 +78,50 @@ namespace RtMidi.Core.Unmanaged.API
         /// </summary>
         /// <param name="device">Device</param>
         /// <param name="portName"> Name for the application port.</param>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_open_virtual_port", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal void OpenVirtualPort(RtMidiPtr device, string portName);
+        internal static void OpenVirtualPort(RtMidiPtr device, string portName)
+        {
+            if (Is64Bit)
+            {
+                RtMidiC64.OpenVirtualPort(device, portName);
+            }
+            else
+            {
+                RtMidiC32.OpenVirtualPort(device, portName);
+            }
+        }
 
         /// <summary>
         /// Close a MIDI connection.
         /// </summary>
         /// <param name="device">Device to close</param>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_close_port", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal void ClosePort(RtMidiPtr device);
+        internal static void ClosePort(RtMidiPtr device)
+        {
+            if (Is64Bit)
+            {
+                RtMidiC64.ClosePort(device);
+            }
+            else
+            {
+                RtMidiC32.ClosePort(device);
+            }
+        }
 
         /// <summary>
         /// Return the number of available MIDI ports.
         /// </summary>
         /// <param name="device">Device</param>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_get_port_count", CallingConvention = CallingConvention.Cdecl)]
-        static extern internal uint GetPortCount(RtMidiPtr device);
+        internal static uint GetPortCount(RtMidiPtr device) => Is64Bit
+            ? RtMidiC64.GetPortCount(device)
+            : RtMidiC32.GetPortCount(device);
 
         /// <summary>
         /// Return a string identifier for the specified MIDI input port number.
         /// </summary>
         /// <param name="device">Device</param>
         /// <param name="portNumber">Port number</param>
-        [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_get_port_name", CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.LPStr)]
-        static extern internal string GetPortName(RtMidiPtr device, uint portNumber);
+        internal static string GetPortName(RtMidiPtr device, uint portNumber) => Is64Bit
+            ? RtMidiC64.GetPortName(device, portNumber)
+            : RtMidiC32.GetPortName(device, portNumber);
 
         /// <summary>
         /// Input related API methods
@@ -92,8 +131,9 @@ namespace RtMidi.Core.Unmanaged.API
             /// <summary>
             /// Create a default RtMidiInPtr value, with no initialization.
             /// </summary>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_create_default", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal RtMidiInPtr CreateDefault();
+            internal static RtMidiInPtr CreateDefault() => Is64Bit
+                ? RtMidiC64.Input.CreateDefault()
+                : RtMidiC32.Input.CreateDefault();
 
             /// <summary>
             /// Create a  RtMidiInPtr value, with given api, clientName and queueSizeLimit.
@@ -104,22 +144,33 @@ namespace RtMidi.Core.Unmanaged.API
             /// are created by the application.
             /// </param>
             /// <param name="queueSizeLimit">An optional size of the MIDI input queue can be specified.</param>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_create", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal RtMidiInPtr Create(RtMidiApi api, string clientName, uint queueSizeLimit);
+            internal static RtMidiInPtr Create(RtMidiApi api, string clientName, uint queueSizeLimit) => Is64Bit
+                ? RtMidiC64.Input.Create(api, clientName, queueSizeLimit)
+                : RtMidiC32.Input.Create(api, clientName, queueSizeLimit);
 
             /// <summary>
             /// Deallocate the given pointer.
             /// </summary>
             /// <param name="device">Device</param>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_free", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal void Free(RtMidiInPtr device);
+            internal static void Free(RtMidiInPtr device)
+            {
+                if (Is64Bit)
+                {
+                    RtMidiC64.Input.Free(device);
+                }
+                else
+                {
+                    RtMidiC32.Input.Free(device);
+                }
+            }
 
             /// <summary>
             /// Returns the MIDI API specifier for the given instance of RtMidiIn.
             /// </summary>
             /// <param name="device">Device</param>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_get_current_api", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal RtMidiApi GetCurrentApi(RtMidiPtr device);
+            internal static RtMidiApi GetCurrentApi(RtMidiPtr device) => Is64Bit
+                ? RtMidiC64.Input.GetCurrentApi(device)
+                : RtMidiC32.Input.GetCurrentApi(device);
 
             /// <summary>
             /// Set a callback function to be invoked for incoming MIDI messages.
@@ -127,15 +178,33 @@ namespace RtMidi.Core.Unmanaged.API
             /// <param name="device">Device</param>
             /// <param name="callback">Callback</param>
             /// <param name="userData">User data</param>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_set_callback", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal void SetCallback(RtMidiInPtr device, RtMidiCallback callback, IntPtr userData);
+            internal static void SetCallback(RtMidiInPtr device, RtMidiCallback callback, IntPtr userData)
+            {
+                if (Is64Bit)
+                {
+                    RtMidiC64.Input.SetCallback(device, callback, userData);
+                }
+                else
+                {
+                    RtMidiC32.Input.SetCallback(device, callback, userData);
+                }
+            }
 
             /// <summary>
             /// Cancel use of the current callback function (if one exists).
             /// </summary>
             /// <param name="device">Device</param>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_cancel_callback", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal void CancelCallback(RtMidiInPtr device);
+            internal static void CancelCallback(RtMidiInPtr device)
+            {
+                if (Is64Bit)
+                {
+                    RtMidiC64.Input.CancelCallback(device);
+                }
+                else
+                {
+                    RtMidiC32.Input.CancelCallback(device);
+                }
+            }
 
             /// <summary>
             /// Specify whether certain MIDI message types should be queued or ignored during input.
@@ -144,8 +213,17 @@ namespace RtMidi.Core.Unmanaged.API
             /// <param name="midiSysex">Ignore sysex</param>
             /// <param name="midiTime">Ignore time</param>
             /// <param name="midiSense">Ignore sense</param>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_ignore_types", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal void IgnoreTypes(RtMidiInPtr device, bool midiSysex, bool midiTime, bool midiSense);
+            internal static void IgnoreTypes(RtMidiInPtr device, bool midiSysex, bool midiTime, bool midiSense)
+            {
+                if (Is64Bit)
+                {
+                    RtMidiC64.Input.IgnoreTypes(device, midiSysex, midiTime, midiSense);
+                }
+                else
+                {
+                    RtMidiC32.Input.IgnoreTypes(device, midiSysex, midiTime, midiSense);
+                }
+            }
 
             /// <summary>
             /// Fill the user-provided array with the data bytes for the next available
@@ -155,8 +233,9 @@ namespace RtMidi.Core.Unmanaged.API
             /// <param name="message">Must point to a char* that is already allocated. SYSEX
             /// messages maximum size being 1024, a statically allocated array could be sufficient.</param>
             /// <param name="size">Is used to return the size of the message obtained. </param>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_in_get_message", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal double GetMessage(RtMidiInPtr device, /* unsigned char ** */out IntPtr message, /* size_t * */ ref UIntPtr size);
+            internal static double GetMessage(RtMidiInPtr device, /* unsigned char ** */out IntPtr message, /* size_t * */ ref UIntPtr size) => Is64Bit
+                ? RtMidiC64.Input.GetMessage(device, out message, ref size)
+                : RtMidiC32.Input.GetMessage(device, out message, ref size);
         }
 
         /// <summary>
@@ -167,8 +246,9 @@ namespace RtMidi.Core.Unmanaged.API
             /// <summary>
             /// Create a default RtMidiInPtr value, with no initialization.
             /// </summary>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_out_create_default", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal RtMidiOutPtr CreateDefault();
+            internal static RtMidiOutPtr CreateDefault() => Is64Bit
+                ? RtMidiC64.Output.CreateDefault()
+                : RtMidiC32.Output.CreateDefault();
 
             /// <summary>
             /// Create a RtMidiOutPtr value, with given and clientName.
@@ -176,22 +256,33 @@ namespace RtMidi.Core.Unmanaged.API
             /// <param name="api">An optional API id can be specified.</param>
             /// <param name="clientName">An optional client name can be specified. This
             /// will be used to group the ports that are created by the application.</param>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_out_create", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal RtMidiOutPtr Create(RtMidiApi api, string clientName);
+            internal static RtMidiOutPtr Create(RtMidiApi api, string clientName) => Is64Bit
+                ? RtMidiC64.Output.Create(api, clientName)
+                : RtMidiC32.Output.Create(api, clientName);
 
             /// <summary>
             /// Deallocate the given pointer.
             /// </summary>
             /// <param name="device">Device</param>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_out_free", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal void Free(RtMidiOutPtr device);
+            internal static void Free(RtMidiOutPtr device)
+            {
+                if (Is64Bit)
+                {
+                    RtMidiC64.Output.Free(device);
+                }
+                else
+                {
+                    RtMidiC32.Output.Free(device);
+                }
+            }
 
             /// <summary>
             /// Returns the MIDI API specifier for the given instance of RtMidiOut.
             /// </summary>
             /// <param name="device">Device</param>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_out_get_current_api", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal RtMidiApi GetCurrentApi(RtMidiPtr device);
+            internal static RtMidiApi GetCurrentApi(RtMidiPtr device) => Is64Bit
+                ? RtMidiC64.Output.GetCurrentApi(device)
+                : RtMidiC32.Output.GetCurrentApi(device);
 
             /// <summary>
             /// Immediately send a single message out an open MIDI output port.
@@ -199,33 +290,9 @@ namespace RtMidi.Core.Unmanaged.API
             /// <param name="device">Device</param>
             /// <param name="message">Message</param>
             /// <param name="length">Length</param>
-            [DllImport(RtMidiLibrary, EntryPoint = "rtmidi_out_send_message", CallingConvention = CallingConvention.Cdecl)]
-            static extern internal int SendMessage(RtMidiOutPtr device, byte[] message, int length);
+            internal static int SendMessage(RtMidiOutPtr device, byte[] message, int length) => Is64Bit
+                ? RtMidiC64.Output.SendMessage(device, message, length)
+                : RtMidiC32.Output.SendMessage(device, message, length);
         }
     }
 }
-
-/**
- * This is a derived work, based on https://github.com/atsushieno/managed-midi
- * 
- * Copyright (c) 2010 Atsushi Eno
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- **/
