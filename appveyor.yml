@@ -5,7 +5,7 @@ branches:
 shallow_clone: true
 
 image: Visual Studio 2017
-version: 0.1.{build}
+version: 1.0.{build}
 configuration: Release
 
 dotnet_csproj:
@@ -26,6 +26,3 @@ test:
   assemblies:
     only:
       - RtMidi.Core.Tests.dll
-
-test_script:
-  - dotnet test RtMidi.Core.Tests/
