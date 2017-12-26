@@ -8,6 +8,11 @@ namespace RtMidi.Core.Devices
         /// Whether or not the device is open
         /// </summary>
         bool IsOpen { get; }
+        
+        /// <summary>
+        /// Name of MIDI device
+        /// </summary>
+        string Name { get; }
 
         /// <summary>
         /// Open midi device

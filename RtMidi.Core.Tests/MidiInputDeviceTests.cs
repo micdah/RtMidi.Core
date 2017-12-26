@@ -24,7 +24,7 @@ namespace RtMidi.Core.Tests
         public MidiInputDeviceTests(ITestOutputHelper output) : base(output)
         {
             _inputDeviceMock = new RtMidiInputDeviceMock();
-            _sut = new MidiInputDevice(_inputDeviceMock);
+            _sut = new MidiInputDevice(_inputDeviceMock, string.Empty);
 
             _sut.NoteOff += (sender, e) => _noteOffMessages.Enqueue(e);
             _sut.NoteOn += (sender, e) => _noteOnMessages.Enqueue(e);

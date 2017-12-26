@@ -16,7 +16,7 @@ namespace RtMidi.Core.Tests
         public MidiOutputDeviceTest(ITestOutputHelper output) : base(output)
         {
             _outputDeviceMock = new RtMidiOutputDeviceMock();
-            _sut = new MidiOutputDevice(_outputDeviceMock);
+            _sut = new MidiOutputDevice(_outputDeviceMock, string.Empty);
         }
 
         [Fact]

@@ -12,7 +12,7 @@ namespace RtMidi.Core.Devices
         private readonly IRtMidiInputDevice _inputDevice;
         private readonly NrpnInterpreter[] _nrpnInterpreters;
 
-        public MidiInputDevice(IRtMidiInputDevice rtMidiInputDevice) : base(rtMidiInputDevice)
+        public MidiInputDevice(IRtMidiInputDevice rtMidiInputDevice, string name) : base(rtMidiInputDevice, name)
         {
             _inputDevice = rtMidiInputDevice;
             _inputDevice.Message += RtMidiInputDevice_Message;

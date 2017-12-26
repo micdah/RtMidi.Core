@@ -1,16 +1,14 @@
 ﻿using System.Linq;
 using RtMidi.Core.Messages;
 using RtMidi.Core.Unmanaged.Devices;
-using Serilog;
 
 namespace RtMidi.Core.Devices
 {
     internal class MidiOutputDevice : MidiDevice, IMidiOutputDevice
     {
         private readonly IRtMidiOutputDevice _outputDevice;
-        private static readonly ILogger Log = Serilog.Log.ForContext<MidiOutputDevice>();
         
-        public MidiOutputDevice(IRtMidiOutputDevice outputDevice) : base(outputDevice)
+        public MidiOutputDevice(IRtMidiOutputDevice outputDevice, string name) : base(outputDevice, name)
         {
             _outputDevice = outputDevice;
         }

@@ -9,7 +9,7 @@ namespace RtMidi.Core.Devices.Infos
 
         public IMidiOutputDevice CreateDevice()
         {
-            return new MidiOutputDevice(RtMidiDeviceInfo.CreateDevice());
+            return new MidiOutputDevice(RtMidiDeviceInfo.CreateDevice(), Name);
         }
     }
 }

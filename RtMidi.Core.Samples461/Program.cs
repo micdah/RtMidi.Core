@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
+using RtMidi.Core.Devices;
 using RtMidi.Core.Messages;
 using Serilog;
 
@@ -22,41 +23,43 @@ namespace RtMidi.Core.Samples461
 
         public Program()
         {
-            Console.WriteLine("Available MIDI API's:");
-            var apis = MidiDeviceManager.Default.GetAvailableMidiApis();
-            foreach (var api in apis)
-                Console.WriteLine($"API: {api}");
-
-            Console.WriteLine("Available MIDI devices:");
-            var inputDevices = MidiDeviceManager.Default.InputDevices.ToList();
-            foreach (var device in inputDevices)
-                Console.WriteLine($"Input Device: {device.Name}");
-
-            var outputDevices = MidiDeviceManager.Default.OutputDevices.ToList();
-            foreach (var device in outputDevices)
-                Console.WriteLine($"Output Device: {device.Name}");
-
-            var inputDeviceInfo = inputDevices.First();
-            var inputDevice = inputDeviceInfo.CreateDevice();
-            var outputDevice = outputDevices.FirstOrDefault(x => x.Name == inputDeviceInfo.Name)?.CreateDevice();
-
+            // List all available MIDI API's
+            foreach (var api in MidiDeviceManager.Default.GetAvailableMidiApis())
+                Console.WriteLine($"Available API: {api}");
+            
+            // Listen to all available midi devices
+            void ControlChangeHandler(object sender, ControlChangeMessage msg)
+            {
+                if (!(sender is IMidiInputDevice inputDevice)) return;
+                
+                Console.WriteLine($"[{inputDevice.Name}] ControlChange: Channel:{msg.Channel} Control:{msg.Control} Value:{msg.Value}");
+            } 
+            
+            var devices = new List<IMidiInputDevice>();
             try
             {
-                inputDevice.ControlChange += (_, msg) => Console.WriteLine($"Received Control Change: {msg}");
-                inputDevice.Nrpn += (_, msg) =>
+                foreach (var inputDeviceInfo in MidiDeviceManager.Default.InputDevices)
                 {
-                    Console.WriteLine($"Received NRPN: {msg}");
-                    outputDevice?.Send(new NrpnMessage(msg.Channel, msg.Parameter + 1, msg.Value));
-                };
-                inputDevice.Open();
-                outputDevice?.Open();
+                    Console.WriteLine($"Opening {inputDeviceInfo.Name}");
 
-                Console.ReadLine();
+                    var inputDevice = inputDeviceInfo.CreateDevice();
+                    devices.Add(inputDevice);
+                    
+                    inputDevice.ControlChange += ControlChangeHandler;
+                    inputDevice.Open();
+                }
+
+                Console.WriteLine("Press any key to stop...");
+                Console.ReadKey();
+                
             }
             finally
             {
-                inputDevice.Dispose();
-                outputDevice?.Dispose();
+                foreach (var device in devices)
+                {
+                    device.ControlChange -= ControlChangeHandler;
+                    device.Dispose();
+                }
             }
         }
     }

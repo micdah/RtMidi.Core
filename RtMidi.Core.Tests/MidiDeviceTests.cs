@@ -14,7 +14,7 @@ namespace RtMidi.Core.Tests
         public MidiDeviceTests(ITestOutputHelper output) : base(output)
         {
             _rtMidiDevice = new Mock<IRtMidiDevice>();
-            _sut = new MidiDeviceMock(_rtMidiDevice.Object);
+            _sut = new MidiDeviceMock(_rtMidiDevice.Object, string.Empty);
         }
 
         [Fact]
@@ -86,7 +86,7 @@ namespace RtMidi.Core.Tests
         /// </summary>
         class MidiDeviceMock : MidiDevice
         {
-            public MidiDeviceMock(IRtMidiDevice rtMidiDevice) : base(rtMidiDevice)
+            public MidiDeviceMock(IRtMidiDevice rtMidiDevice, string name) : base(rtMidiDevice, name)
             {
             }
         }
