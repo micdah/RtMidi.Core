@@ -31,9 +31,7 @@ namespace RtMidi.Core.Samples
             // Listen to all available midi devices
             void ControlChangeHandler(IMidiInputDevice sender, in ControlChangeMessage msg)
             {
-                if (!(sender is IMidiInputDevice inputDevice)) return;
-                
-                Console.WriteLine($"[{inputDevice.Name}] ControlChange: Channel:{msg.Channel} Control:{msg.Control} Value:{msg.Value}");
+                Console.WriteLine($"[{sender.Name}] ControlChange: Channel:{msg.Channel} Control:{msg.Control} Value:{msg.Value}");
             } 
             
             var devices = new List<IMidiInputDevice>();

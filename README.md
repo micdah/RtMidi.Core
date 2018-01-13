@@ -23,11 +23,9 @@ foreach (var api in MidiDeviceManager.Default.GetAvailableMidiApis())
     Console.WriteLine($"Available API: {api}");
 
 // Listen to all available midi devices
-void ControlChangeHandler(object sender, ControlChangeMessage msg)
-{
-    if (!(sender is IMidiInputDevice inputDevice)) return;
-    
-    Console.WriteLine($"[{inputDevice.Name}] ControlChange: Channel:{msg.Channel} Control:{msg.Control} Value:{msg.Value}");
+void ControlChangeHandler(IMidiInputDevice sender, in ControlChangeMessage msg)
+{   
+    Console.WriteLine($"[{sender.Name}] ControlChange: Channel:{msg.Channel} Control:{msg.Control} Value:{msg.Value}");
 } 
 
 var devices = new List<IMidiInputDevice>();
