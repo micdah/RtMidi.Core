@@ -6,7 +6,7 @@ namespace RtMidi.Core.Messages
     /// <summary>
     /// This message is most often sent by pressing down on the key after it "bottoms out".
     /// </summary>
-    public struct PolyphonicKeyPressureMessage
+    public readonly struct PolyphonicKeyPressureMessage
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<PolyphonicKeyPressureMessage>();
 
@@ -22,17 +22,17 @@ namespace RtMidi.Core.Messages
         /// <summary>
         /// MIDI Channel
         /// </summary>
-        public Channel Channel { get; private set; }
+        public Channel Channel { get; }
 
         /// <summary>
         /// Key number (0-127)
         /// </summary>
-        public Key Key { get; private set; }
+        public Key Key { get; }
 
         /// <summary>
         /// Pressure value (0-127)
         /// </summary>
-        public int Pressure { get; private set; }
+        public int Pressure { get; }
 
         internal byte[] Encode()
         {
@@ -54,11 +54,11 @@ namespace RtMidi.Core.Messages
             }
 
             msg = new PolyphonicKeyPressureMessage
-            {
-                Channel = (Channel)(Midi.ChannelBitmask & message[0]),
-                Key = (Key)(Midi.DataBitmask & message[1]),
-                Pressure = Midi.DataBitmask & message[2]
-            };
+            (
+                (Channel) (Midi.ChannelBitmask & message[0]),
+                (Key) (Midi.DataBitmask & message[1]),
+                Midi.DataBitmask & message[2]
+            );
             return true;
         }
 

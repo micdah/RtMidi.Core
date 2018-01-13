@@ -7,7 +7,7 @@ namespace RtMidi.Core.Messages
     /// <summary>
     /// This message sent when the patch number changes.
     /// </summary>
-    public struct ProgramChangeMessage
+    public readonly struct ProgramChangeMessage
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<ProgramChangeMessage>();
 
@@ -24,12 +24,12 @@ namespace RtMidi.Core.Messages
         /// <summary>
         /// MIDI Channel
         /// </summary>
-        public Channel Channel { get; private set; }
+        public Channel Channel { get; }
 
         /// <summary>
         /// Program number (0-127)
         /// </summary>
-        public int Program { get; private set; }
+        public int Program { get; }
 
         internal byte[] Encode()
         {
@@ -50,10 +50,10 @@ namespace RtMidi.Core.Messages
             }
 
             msg = new ProgramChangeMessage
-            {
-                Channel = (Channel) (Midi.ChannelBitmask & message[0]),
-                Program = Midi.DataBitmask & message[1]
-            };
+            (
+                (Channel) (Midi.ChannelBitmask & message[0]),
+                Midi.DataBitmask & message[1]
+            );
             return true;
         }
 

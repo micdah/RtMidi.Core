@@ -9,7 +9,7 @@ namespace RtMidi.Core.Messages
     /// This message is different from polyphonic after-touch. Use this message to send the 
     /// single greatest pressure value (of all the current depressed keys)
     /// </summary>
-    public struct ChannelPressureMessage
+    public readonly struct ChannelPressureMessage
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<ChannelPressureMessage>();
 
@@ -24,12 +24,12 @@ namespace RtMidi.Core.Messages
         /// <summary>
         /// MIDI Channel
         /// </summary>
-        public Channel Channel { get; private set; }
+        public Channel Channel { get; }
 
         /// <summary>
         /// Pressure value (0-127)
         /// </summary>
-        public int Pressure { get; private set; }
+        public int Pressure { get; }
 
         internal byte[] Encode()
         {
@@ -50,10 +50,10 @@ namespace RtMidi.Core.Messages
             }
 
             msg = new ChannelPressureMessage
-            {
-                Channel = (Channel) (Midi.ChannelBitmask & message[0]),
-                Pressure = Midi.DataBitmask & message[1]
-            };
+            (
+                (Channel) (Midi.ChannelBitmask & message[0]),
+                Midi.DataBitmask & message[1]
+            );
             return true;
         }
 

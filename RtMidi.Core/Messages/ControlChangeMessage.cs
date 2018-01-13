@@ -9,7 +9,7 @@ namespace RtMidi.Core.Messages
     /// This message is sent when a controller value changes. Controllers 
     /// include devices such as pedals and levers. 
     /// </summary>
-    public struct ControlChangeMessage
+    public readonly struct ControlChangeMessage
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<ControlChangeMessage>();
 
@@ -27,22 +27,22 @@ namespace RtMidi.Core.Messages
         /// <summary>
         /// MIDI Channel
         /// </summary>
-        public Channel Channel { get; private set; }
+        public Channel Channel { get; }
 
         /// <summary>
         /// Control number (0-127)
         /// </summary>
-        public int Control { get; private set; }
+        public int Control { get; }
 
         /// <summary>
         /// Control value (0-127)
         /// </summary>
-        public int Value { get; private set; }
+        public int Value { get; }
 
         /// <summary>
         /// Control function (as defined by https://www.midi.org/specifications/item/table-3-control-change-messages-data-bytes-2)
         /// </summary>
-        public ControlFunction ControlFunction { get; private set; }        
+        public ControlFunction ControlFunction { get; }        
 
         internal byte[] Encode()
         {
@@ -65,12 +65,11 @@ namespace RtMidi.Core.Messages
 
             var control = Midi.DataBitmask & message[1];
             msg = new ControlChangeMessage
-            {
-                Channel = (Channel)(Midi.ChannelBitmask & message[0]),
-                Control = control,
-                ControlFunction = ControlFunction.Undefined.OrValueIfDefined(control),
-                Value = Midi.DataBitmask & message[2]
-            };
+            (
+                (Channel) (Midi.ChannelBitmask & message[0]),
+                control,
+                Midi.DataBitmask & message[2]
+            );
             return true;
         }
 

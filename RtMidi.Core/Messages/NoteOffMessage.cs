@@ -6,7 +6,7 @@ namespace RtMidi.Core.Messages
     /// <summary>
     /// This message is sent when a note is released (ended). 
     /// </summary>
-    public struct NoteOffMessage
+    public readonly struct NoteOffMessage
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<NoteOffMessage>();
 
@@ -22,17 +22,17 @@ namespace RtMidi.Core.Messages
         /// <summary>
         /// MIDI Channel
         /// </summary>
-        public Channel Channel { get; private set; }
+        public Channel Channel { get; }
 
         /// <summary>
         /// Key number (0-127)
         /// </summary>
-        public Key Key { get; private set; }
+        public Key Key { get; }
 
         /// <summary>
         /// Velocity value (0-127)
         /// </summary>
-        public int Velocity { get; private set; }
+        public int Velocity { get; }
 
         internal byte[] Encode()
         {
@@ -54,11 +54,11 @@ namespace RtMidi.Core.Messages
             }
 
             msg = new NoteOffMessage
-            {
-                Channel = (Channel)(Midi.ChannelBitmask & message[0]),
-                Key = (Key)(Midi.DataBitmask & message[1]),
-                Velocity = Midi.DataBitmask & message[2]
-            };
+            (
+                (Channel) (Midi.ChannelBitmask & message[0]),
+                (Key) (Midi.DataBitmask & message[1]),
+                Midi.DataBitmask & message[2]
+            );
             return true;
         }
 

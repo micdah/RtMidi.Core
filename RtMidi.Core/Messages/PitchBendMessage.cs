@@ -9,7 +9,7 @@ namespace RtMidi.Core.Messages
     /// The pitch bender is measured by a fourteen bit value. Center (no pitch change) is 2000H.
     /// Sensitivity is a function of the receiver, but may be set using RPN 0.
     /// </summary>
-    public struct PitchBendMessage
+    public readonly struct PitchBendMessage
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<PitchBendMessage>();
 
@@ -24,13 +24,13 @@ namespace RtMidi.Core.Messages
         /// <summary>
         /// MIDI Channel
         /// </summary>
-        public Channel Channel { get; private set; }
+        public Channel Channel { get; }
 
         /// <summary>
         /// Pitch value (0-16383)
         /// </summary>
         /// <value>The value.</value>
-        public int Value { get; private set; }
+        public int Value { get; }
 
         internal byte[] Encode()
         {
@@ -52,14 +52,13 @@ namespace RtMidi.Core.Messages
             }
 
             msg = new PitchBendMessage
-            {
-                Channel = (Channel)(Midi.ChannelBitmask & message[0]),
-                Value = 
-                    // Data byte 1 = LSB
-                    (Midi.DataBitmask & message[1]) | 
-                    // Data byte 2 = MSB
-                    ((Midi.DataBitmask & message[2]) << 7)
-            };
+            (
+                (Channel) (Midi.ChannelBitmask & message[0]),
+                // Data byte 1 = LSB
+                (Midi.DataBitmask & message[1]) |
+                // Data byte 2 = MSB
+                ((Midi.DataBitmask & message[2]) << 7)
+            );
             return true;
         }
 

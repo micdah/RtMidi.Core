@@ -10,7 +10,7 @@ namespace RtMidi.Core.Messages
     /// Change messages and allows 14-bit values to be used, rather than the
     /// normal 7-bit values in regular midi messages.
     /// </summary>
-    public struct NrpnMessage
+    public readonly struct NrpnMessage
     {
         public NrpnMessage(Channel channel, int parameter, int value)
         {
@@ -25,17 +25,17 @@ namespace RtMidi.Core.Messages
         /// <summary>
         /// MIDI Channel
         /// </summary>
-        public Channel Channel { get; private set; }
+        public Channel Channel { get; }
 
         /// <summary>
         /// 14-bit Parameter number
         /// </summary>
-        public int Parameter { get; private set; }
+        public int Parameter { get; }
 
         /// <summary>
         /// 14-bit Parameter value
         /// </summary>
-        public int Value { get; private set; }
+        public int Value { get; }
 
         /// <summary>
         /// Determine if the array of Control Change messges represent a full or partial 
@@ -100,11 +100,11 @@ namespace RtMidi.Core.Messages
             }
 
             msg = new NrpnMessage
-            {
-                Channel = messages[0].Channel,
-                Parameter = (messages[0].Value & Midi.DataBitmask) << 7 | (messages[1].Value & Midi.DataBitmask),
-                Value = (messages[2].Value & Midi.DataBitmask) << 7 | (messages[3].Value & Midi.DataBitmask)
-            };
+            (
+                messages[0].Channel,
+                (messages[0].Value & Midi.DataBitmask) << 7 | (messages[1].Value & Midi.DataBitmask),
+                (messages[2].Value & Midi.DataBitmask) << 7 | (messages[3].Value & Midi.DataBitmask)
+            );
             return true;
         }
 
