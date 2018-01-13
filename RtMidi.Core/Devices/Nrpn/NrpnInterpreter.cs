@@ -8,15 +8,15 @@ namespace RtMidi.Core.Devices.Nrpn
     internal class NrpnInterpreter
     {
         private readonly ControlChangeMessage[] _messages;
-        private readonly Action<ControlChangeMessage> _onControlChange;
-        private readonly Action<NrpnMessage> _onNrpn;
+        private readonly OnControlChangeMessageHandler _onControlChange;
+        private readonly OnNrpnMessageHandler _onNrpn;
         private bool _queueMessages;
         private ControlFunction _lastControlFunction;
         private int _index;
         private bool _interpret;
         private bool _sendControlChange;
 
-        public NrpnInterpreter(Action<ControlChangeMessage> onControlChange, Action<NrpnMessage> onNrpn)
+        public NrpnInterpreter(OnControlChangeMessageHandler onControlChange, OnNrpnMessageHandler onNrpn)
         {
             _onControlChange = onControlChange ?? throw new ArgumentNullException(nameof(onControlChange));
             _onNrpn = onNrpn ?? throw new ArgumentNullException(nameof(onNrpn));
@@ -44,12 +44,12 @@ namespace RtMidi.Core.Devices.Nrpn
             }
         }
 
-        public void HandleControlChangeMessage(ControlChangeMessage msg)
+        public void HandleControlChangeMessage(in ControlChangeMessage msg)
         {
             // Should we send CC messages immediately?
             if (_sendControlChange)
             {
-                _onControlChange(msg);
+                _onControlChange(in msg);
             }
 
             // Should we interpret?
@@ -82,7 +82,7 @@ namespace RtMidi.Core.Devices.Nrpn
             }
             else if (!_sendControlChange)
             {
-                _onControlChange(msg);
+                _onControlChange(in msg);
             }
 
             _lastControlFunction = controlFunction;
@@ -95,7 +95,7 @@ namespace RtMidi.Core.Devices.Nrpn
             {
                 for (var i = 0; i < _index; i++)
                 {
-                    _onControlChange(_messages[i]);
+                    _onControlChange(in _messages[i]);
                 }
             }
 
@@ -107,7 +107,7 @@ namespace RtMidi.Core.Devices.Nrpn
         {
             if (NrpnMessage.TryDecode(_messages, out var msg))
             {
-                _onNrpn(msg);
+                _onNrpn(in msg);
             }
             else Log.Error("Could not parse NRPN message");
 
@@ -130,4 +130,8 @@ namespace RtMidi.Core.Devices.Nrpn
             }
         }
     }
+    
+    internal delegate void OnControlChangeMessageHandler(in ControlChangeMessage msg);
+
+    internal delegate void OnNrpnMessageHandler(in NrpnMessage msg);
 }

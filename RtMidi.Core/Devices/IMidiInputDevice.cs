@@ -9,42 +9,42 @@ namespace RtMidi.Core.Devices
         /// <summary>
         /// Note Off event.
         /// </summary>
-        event EventHandler<NoteOffMessage> NoteOff;
+        event NoteOffMessageHandler NoteOff;
 
         /// <summary>
         /// Note On event.
         /// </summary>
-        event EventHandler<NoteOnMessage> NoteOn;
+        event NoteOnMessageHandler NoteOn;
 
         /// <summary>
         /// Polyphonic Key Pressure (Aftertouch).
         /// </summary>
-        event EventHandler<PolyphonicKeyPressureMessage> PolyphonicKeyPressure;
+        event PolyphonicKeyPressureMessageHandler PolyphonicKeyPressure;
 
         /// <summary>
         /// Control Change.
         /// </summary>
-        event EventHandler<ControlChangeMessage> ControlChange;
+        event ControlChangeMessageHandler ControlChange;
 
         /// <summary>
         /// Program Change.
         /// </summary>
-        event EventHandler<ProgramChangeMessage> ProgramChange;
+        event ProgramChangeMessageHandler ProgramChange;
 
         /// <summary>
         /// Channel Pressure (After-touch).
         /// </summary>
-        event EventHandler<ChannelPressureMessage> ChannelPressure;
+        event ChannelPressureMessageHandler ChannelPressure;
 
         /// <summary>
         /// Pitch Bend Change.
         /// </summary>
-        event EventHandler<PitchBendMessage> PitchBend;
+        event PitchBendMessageHandler PitchBend;
 
         /// <summary>
         /// Non-Registered Parameter Number (NRPN) event
         /// </summary>
-        event EventHandler<NrpnMessage> Nrpn;
+        event NrpnMessageHandler Nrpn;
 
         /// <summary>
         /// Set NRPN interpretation mode
@@ -52,4 +52,20 @@ namespace RtMidi.Core.Devices
         /// <param name="mode">Mode</param>
         void SetNrpnMode(NrpnMode mode);
     }
+
+    public delegate void NoteOffMessageHandler(IMidiInputDevice sender, in NoteOffMessage msg);
+
+    public delegate void NoteOnMessageHandler(IMidiInputDevice sender, in NoteOnMessage msg);
+    
+    public delegate void PolyphonicKeyPressureMessageHandler(IMidiInputDevice sender, in PolyphonicKeyPressureMessage msg);
+
+    public delegate void ControlChangeMessageHandler(IMidiInputDevice sender, in ControlChangeMessage msg);
+
+    public delegate void ProgramChangeMessageHandler(IMidiInputDevice sender, in ProgramChangeMessage msg);
+
+    public delegate void ChannelPressureMessageHandler(IMidiInputDevice sender, in ChannelPressureMessage msg);
+
+    public delegate void PitchBendMessageHandler(IMidiInputDevice sender, in PitchBendMessage msg);
+
+    public delegate void NrpnMessageHandler(IMidiInputDevice sender, in NrpnMessage msg);
 }

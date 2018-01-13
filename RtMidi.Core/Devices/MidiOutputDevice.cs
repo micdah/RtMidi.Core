@@ -13,28 +13,28 @@ namespace RtMidi.Core.Devices
             _outputDevice = outputDevice;
         }
 
-        public bool Send(NoteOffMessage noteOffMessage)
+        public bool Send(in NoteOffMessage noteOffMessage)
             => _outputDevice.SendMessage(noteOffMessage.Encode());
 
-        public bool Send(NoteOnMessage noteOnMessage)
+        public bool Send(in NoteOnMessage noteOnMessage)
             => _outputDevice.SendMessage(noteOnMessage.Encode());
 
-        public bool Send(PolyphonicKeyPressureMessage polyphonicKeyPressureMessage)
+        public bool Send(in PolyphonicKeyPressureMessage polyphonicKeyPressureMessage)
             => _outputDevice.SendMessage(polyphonicKeyPressureMessage.Encode());
 
-        public bool Send(ControlChangeMessage controlChangeMessage)
+        public bool Send(in ControlChangeMessage controlChangeMessage)
             => _outputDevice.SendMessage(controlChangeMessage.Encode());
 
-        public bool Send(ProgramChangeMessage programChangeMessage)
+        public bool Send(in ProgramChangeMessage programChangeMessage)
             => _outputDevice.SendMessage(programChangeMessage.Encode());
 
-        public bool Send(ChannelPressureMessage channelPressureMessage)
+        public bool Send(in ChannelPressureMessage channelPressureMessage)
             => _outputDevice.SendMessage(channelPressureMessage.Encode());
 
-        public bool Send(PitchBendMessage pitchBendMessage)
+        public bool Send(in PitchBendMessage pitchBendMessage)
             => _outputDevice.SendMessage(pitchBendMessage.Encode());
 
-        public bool Send(NrpnMessage nrpnMessage)
-            => nrpnMessage.Encode().All(Send);
+        public bool Send(in NrpnMessage nrpnMessage)
+            => nrpnMessage.Encode().All(msg => Send(in msg));
     }
 }

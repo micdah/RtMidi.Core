@@ -9,55 +9,55 @@ namespace RtMidi.Core.Devices
         /// </summary>
         /// <param name="noteOffMessage"></param>
         /// <returns>True if sent, false otherwise</returns>
-        bool Send(NoteOffMessage noteOffMessage);
+        bool Send(in NoteOffMessage noteOffMessage);
 
         /// <summary>
         /// Send Note On message
         /// </summary>
         /// <param name="noteOnMessage"></param>
         /// <returns>True if sent, false otherwise</returns>
-        bool Send(NoteOnMessage noteOnMessage);
+        bool Send(in NoteOnMessage noteOnMessage);
 
         /// <summary>
         /// Send Polyphonic Key Pressure message
         /// </summary>
         /// <param name="polyphonicKeyPressureMessage"></param>
         /// <returns>True if sent, false otherwise</returns>
-        bool Send(PolyphonicKeyPressureMessage polyphonicKeyPressureMessage);
+        bool Send(in PolyphonicKeyPressureMessage polyphonicKeyPressureMessage);
 
         /// <summary>
         /// Send Control Change message
         /// </summary>
         /// <param name="controlChangeMessage"></param>
         /// <returns>True if sent, false otherwise</returns>
-        bool Send(ControlChangeMessage controlChangeMessage);
+        bool Send(in ControlChangeMessage controlChangeMessage);
 
         /// <summary>
         /// Send Program Change message
         /// </summary>
         /// <param name="programChangeMessage"></param>
         /// <returns>True if sent, false otherwise</returns>
-        bool Send(ProgramChangeMessage programChangeMessage);
+        bool Send(in ProgramChangeMessage programChangeMessage);
 
         /// <summary>
         /// Send Channel Pressure message
         /// </summary>
         /// <param name="channelPressureMessage"></param>
         /// <returns>True if sent, false otherwise</returns>
-        bool Send(ChannelPressureMessage channelPressureMessage);
+        bool Send(in ChannelPressureMessage channelPressureMessage);
 
         /// <summary>
         /// Send Pitch Bend message
         /// </summary>
         /// <param name="pitchBendMessage"></param>
         /// <returns>True if sent, false otherwise</returns>
-        bool Send(PitchBendMessage pitchBendMessage);
+        bool Send(in PitchBendMessage pitchBendMessage);
 
         /// <summary>
         /// Send Non-Registered Parameter Number message
         /// </summary>
         /// <param name="nrpnMessage"></param>
         /// <returns>True if sent, false otherwise</returns>
-        bool Send(NrpnMessage nrpnMessage);
+        bool Send(in NrpnMessage nrpnMessage);
     }
 }

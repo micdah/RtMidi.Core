@@ -29,7 +29,7 @@ namespace RtMidi.Core.Samples
                 Console.WriteLine($"Available API: {api}");
             
             // Listen to all available midi devices
-            void ControlChangeHandler(object sender, ControlChangeMessage msg)
+            void ControlChangeHandler(IMidiInputDevice sender, in ControlChangeMessage msg)
             {
                 if (!(sender is IMidiInputDevice inputDevice)) return;
                 

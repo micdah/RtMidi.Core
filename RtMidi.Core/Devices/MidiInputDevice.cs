@@ -24,17 +24,17 @@ namespace RtMidi.Core.Devices
             }
 
             // Set default NRPN mode
-            SetNrpnMode(NrpnMode.On);;
+            SetNrpnMode(NrpnMode.On);
         }
-
-        public event EventHandler<NoteOffMessage> NoteOff;
-        public event EventHandler<NoteOnMessage> NoteOn;
-        public event EventHandler<PolyphonicKeyPressureMessage> PolyphonicKeyPressure;
-        public event EventHandler<ControlChangeMessage> ControlChange;
-        public event EventHandler<ProgramChangeMessage> ProgramChange;
-        public event EventHandler<ChannelPressureMessage> ChannelPressure;
-        public event EventHandler<PitchBendMessage> PitchBend;
-        public event EventHandler<NrpnMessage> Nrpn;
+        
+        public event NoteOffMessageHandler NoteOff;
+        public event NoteOnMessageHandler NoteOn;
+        public event PolyphonicKeyPressureMessageHandler PolyphonicKeyPressure;
+        public event ControlChangeMessageHandler ControlChange;
+        public event ProgramChangeMessageHandler ProgramChange;
+        public event ChannelPressureMessageHandler ChannelPressure;
+        public event PitchBendMessageHandler PitchBend;
+        public event NrpnMessageHandler Nrpn;
 
         private void RtMidiInputDevice_Message(object sender, byte[] message)
         {
@@ -69,31 +69,31 @@ namespace RtMidi.Core.Devices
             {
                 case Midi.Status.NoteOffBitmask:
                     if (NoteOffMessage.TryDecode(message, out var noteOffMessage))
-                        NoteOff?.Invoke(this, noteOffMessage);
+                        NoteOff?.Invoke(this, in noteOffMessage);
                     break;
                 case Midi.Status.NoteOnBitmask:
                     if (NoteOnMessage.TryDecoce(message, out var noteOnMessage))
-                        NoteOn?.Invoke(this, noteOnMessage);
+                        NoteOn?.Invoke(this, in noteOnMessage);
                     break;
                 case Midi.Status.PolyphonicKeyPressureBitmask:
                     if (PolyphonicKeyPressureMessage.TryDecode(message, out var polyphonicKeyPressureMessage))
-                        PolyphonicKeyPressure?.Invoke(this, polyphonicKeyPressureMessage);
+                        PolyphonicKeyPressure?.Invoke(this, in polyphonicKeyPressureMessage);
                     break;
                 case Midi.Status.ControlChangeBitmask:
                     if (ControlChangeMessage.TryDecode(message, out var controlChangeMessage))
-                        _nrpnInterpreters[(int)controlChangeMessage.Channel].HandleControlChangeMessage(controlChangeMessage);
+                        _nrpnInterpreters[(int)controlChangeMessage.Channel].HandleControlChangeMessage(in controlChangeMessage);
                     break;
                 case Midi.Status.ProgramChangeBitmask:
                     if (ProgramChangeMessage.TryDecode(message, out var programChangeMessage))
-                        ProgramChange?.Invoke(this, programChangeMessage);
+                        ProgramChange?.Invoke(this, in programChangeMessage);
                     break;
                 case Midi.Status.ChannelPressureBitmask:
                     if (ChannelPressureMessage.TryDecode(message, out var channelPressureMessage))
-                        ChannelPressure?.Invoke(this, channelPressureMessage);
+                        ChannelPressure?.Invoke(this, in channelPressureMessage);
                     break;
                 case Midi.Status.PitchBendChange:
                     if (PitchBendMessage.TryDecode(message, out var pitchBendMessage))
-                        PitchBend?.Invoke(this, pitchBendMessage);
+                        PitchBend?.Invoke(this, in pitchBendMessage);
                     break;
                 default:
                     Log.Error("Unknown message type {Bitmask}", $"{status & 0b1111_0000:X2}");
@@ -115,16 +115,16 @@ namespace RtMidi.Core.Devices
             PitchBend = null;
         }
 
-        internal void OnControlChange(ControlChangeMessage e)
+        private void OnControlChange(in ControlChangeMessage e)
         {
-            ControlChange?.Invoke(this, e);
+            ControlChange?.Invoke(this, in e);
         }
 
-        internal void OnNrpn(NrpnMessage e)
+        private void OnNrpn(in NrpnMessage e)
         {
-            Nrpn?.Invoke(this, e);
+            Nrpn?.Invoke(this, in e);
         }
-
+        
         public void SetNrpnMode(NrpnMode nrpnMode)
         {
             foreach (var nrpnInterpreter in _nrpnInterpreters)

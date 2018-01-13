@@ -26,14 +26,14 @@ namespace RtMidi.Core.Tests
             _inputDeviceMock = new RtMidiInputDeviceMock();
             _sut = new MidiInputDevice(_inputDeviceMock, string.Empty);
 
-            _sut.NoteOff += (sender, e) => _noteOffMessages.Enqueue(e);
-            _sut.NoteOn += (sender, e) => _noteOnMessages.Enqueue(e);
-            _sut.PolyphonicKeyPressure += (sender, e) => _polyphonicKeyPressureMessages.Enqueue(e);
-            _sut.ControlChange += (sender, e) => _controlChangeMessages.Enqueue(e);
-            _sut.ProgramChange += (sender, e) => _programChangeMessages.Enqueue(e);
-            _sut.ChannelPressure += (sender, e) => _channelPressureMessages.Enqueue(e);
-            _sut.PitchBend += (sender, e) => _pitchBendMessages.Enqueue(e);
-            _sut.Nrpn += (sender, e) => _nrpnMessages.Enqueue(e);
+            _sut.NoteOff += (IMidiInputDevice sender, in NoteOffMessage e) => _noteOffMessages.Enqueue(e);
+            _sut.NoteOn += (IMidiInputDevice sender, in NoteOnMessage e) => _noteOnMessages.Enqueue(e);
+            _sut.PolyphonicKeyPressure += (IMidiInputDevice sender, in PolyphonicKeyPressureMessage e) => _polyphonicKeyPressureMessages.Enqueue(e);
+            _sut.ControlChange += (IMidiInputDevice sender, in ControlChangeMessage e) => _controlChangeMessages.Enqueue(e);
+            _sut.ProgramChange += (IMidiInputDevice sender, in ProgramChangeMessage e) => _programChangeMessages.Enqueue(e);
+            _sut.ChannelPressure += (IMidiInputDevice sender, in ChannelPressureMessage e) => _channelPressureMessages.Enqueue(e);
+            _sut.PitchBend += (IMidiInputDevice sender, in PitchBendMessage e) => _pitchBendMessages.Enqueue(e);
+            _sut.Nrpn += (IMidiInputDevice sender, in NrpnMessage e) => _nrpnMessages.Enqueue(e);
         }
 
         [Fact]
