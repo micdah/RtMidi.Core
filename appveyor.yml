@@ -5,7 +5,7 @@ branches:
 shallow_clone: true
 
 image: Visual Studio 2017
-version: '${APPVEYOR_REPO_TAG_NAME}'
+version: '%APPVEYOR_REPO_TAG_NAME%'
 configuration: Release
 
 init:
