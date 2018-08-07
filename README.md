@@ -16,6 +16,8 @@ MIDI support on both Winows (64-bit or 32-bit) and Mac OS X (64-bit) for .Net St
 * Program Change
 * Non-Registered Parameter Number (NRPN) (_used to send/receive 14-bit parameter and value_)
 
+See [changelog](CHANGELOG.md) for version history. 
+
 ## Example
 ```c#
 // List all available MIDI API's
