@@ -54,6 +54,6 @@ deploy:
   description: 'See [CHANGELOG.md] for changes'
   draft: false
   prerelease: false
-  artifact: /.*/.nupkg/
+  artifact: /.*\.nupkg/
   on:
     APPVEYOR_REPO_TAG: true
