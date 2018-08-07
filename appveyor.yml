@@ -47,3 +47,13 @@ deploy:
   artifact: /.*\.nupkg/
   on:
     APPVEYOR_REPO_TAG: true
+- provider: GitHub
+  auth_token:
+      secure: WTGOhyUBnlt3MpWqwOmbrFmqzhAwSPh8QDSKLPajo3xToZ4EgH1DTOacSE0SbWwp
+  release: $(APPVEYOR_REPO_TAG_NAME)
+  description: 'See [CHANGELOG.md] for changes'
+  draft: false
+  prerelease: false
+  artifact: /.*/.nupkg/
+  on:
+    APPVEYOR_REPO_TAG: true
