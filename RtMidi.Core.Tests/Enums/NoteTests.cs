@@ -13,7 +13,7 @@ namespace RtMidi.Core.Tests.Enums
         }
 
         [Fact]
-        public void SHould_Return_Empty_String_For_Undefined_Enum_Values()
+        public void Should_Return_Empty_String_For_Undefined_Enum_Values()
         {
             Assert.Equal(string.Empty, ((Note)12).DisplayName());
         }

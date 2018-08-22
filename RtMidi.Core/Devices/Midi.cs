@@ -24,6 +24,9 @@
             internal const byte ProgramChangeBitmask = 0b1100_0000;
             internal const byte ChannelPressureBitmask = 0b1101_0000;
             internal const byte PitchBendChange = 0b1110_0000;
+            internal const byte System = 0b1111_0000;
+            internal const byte SysExStart = 0b1111_0000;
+            internal const byte SysExEnd = 0b1111_0111;
         }
     }
 }

@@ -35,6 +35,7 @@ namespace RtMidi.Core.Devices
         public event ChannelPressureMessageHandler ChannelPressure;
         public event PitchBendMessageHandler PitchBend;
         public event NrpnMessageHandler Nrpn;
+        public event SysExMessageHandler SysEx;
 
         private void RtMidiInputDevice_Message(object sender, byte[] message)
         {
@@ -72,7 +73,7 @@ namespace RtMidi.Core.Devices
                         NoteOff?.Invoke(this, in noteOffMessage);
                     break;
                 case Midi.Status.NoteOnBitmask:
-                    if (NoteOnMessage.TryDecoce(message, out var noteOnMessage))
+                    if (NoteOnMessage.TryDecode(message, out var noteOnMessage))
                         NoteOn?.Invoke(this, in noteOnMessage);
                     break;
                 case Midi.Status.PolyphonicKeyPressureBitmask:
@@ -95,6 +96,21 @@ namespace RtMidi.Core.Devices
                     if (PitchBendMessage.TryDecode(message, out var pitchBendMessage))
                         PitchBend?.Invoke(this, in pitchBendMessage);
                     break;
+
+                case Midi.Status.System:
+                    switch (status)
+                    {
+                        case Midi.Status.SysExStart:
+                            if (SysExMessage.TryDecode(message, out var sysExMessage))
+                                SysEx?.Invoke(this, in sysExMessage);
+                            break;
+                        
+                        default:
+                            Log.Error("Unknown system message type {Status}", $"{status:X2}");
+                            break;
+                    }
+                    break;
+                
                 default:
                     Log.Error("Unknown message type {Bitmask}", $"{status & 0b1111_0000:X2}");
                     break;
@@ -113,6 +129,7 @@ namespace RtMidi.Core.Devices
             ProgramChange = null;
             ChannelPressure = null;
             PitchBend = null;
+            SysEx = null;
         }
 
         private void OnControlChange(in ControlChangeMessage e)

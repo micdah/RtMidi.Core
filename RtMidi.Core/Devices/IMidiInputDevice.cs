@@ -51,6 +51,11 @@ namespace RtMidi.Core.Devices
         /// </summary>
         /// <param name="mode">Mode</param>
         void SetNrpnMode(NrpnMode mode);
+
+        /// <summary>
+        /// SysEx data message event.
+        /// </summary>
+        event SysExMessageHandler SysEx;
     }
 
     public delegate void NoteOffMessageHandler(IMidiInputDevice sender, in NoteOffMessage msg);
@@ -68,4 +73,6 @@ namespace RtMidi.Core.Devices
     public delegate void PitchBendMessageHandler(IMidiInputDevice sender, in PitchBendMessage msg);
 
     public delegate void NrpnMessageHandler(IMidiInputDevice sender, in NrpnMessage msg);
+
+    public delegate void SysExMessageHandler(IMidiInputDevice sender, in SysExMessage msg);
 }

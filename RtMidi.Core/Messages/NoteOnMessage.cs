@@ -44,7 +44,7 @@ namespace RtMidi.Core.Messages
             };
         }
 
-        internal static bool TryDecoce(byte[] message, out NoteOnMessage msg)
+        internal static bool TryDecode(byte[] message, out NoteOnMessage msg)
         {
             if (message.Length != 3)
             {

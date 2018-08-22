@@ -36,5 +36,8 @@ namespace RtMidi.Core.Devices
 
         public bool Send(in NrpnMessage nrpnMessage)
             => nrpnMessage.Encode().All(msg => Send(in msg));
+        
+        public bool Send(in SysExMessage sysExMessage)
+            => _outputDevice.SendMessage(sysExMessage.Encode());
     }
 }
