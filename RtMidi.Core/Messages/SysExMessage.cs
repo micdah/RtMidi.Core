@@ -43,7 +43,7 @@ namespace RtMidi.Core.Messages
 
             msg = new SysExMessage
             (
-                StructHelper.StripSysEx(message)
+                message
             );
             return true;
         }

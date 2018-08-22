@@ -19,7 +19,13 @@ namespace RtMidi.Core.Messages
         }
 
         public static byte[] IsValidSysEx(byte[] data) {
-            for (int i = 1; i < data.Length - 1; i++)
+            if (data[0] == Midi.Status.SysExStart && data[data.Length - 1] == Midi.Status.SysExEnd) {
+                data = StripSysEx(data);
+            } else if (data[0] == Midi.Status.SysExStart || data[data.Length - 1] == Midi.Status.SysExEnd) {
+                throw new ArgumentException("SysEx message is improperly formatted");
+            }
+
+            for (int i = 0; i < data.Length; i++)
             {
                 if (data[i] == Midi.Status.SysExStart || data[i] == Midi.Status.SysExEnd)
                     throw new ArgumentException($"SysEx message data byte must not be {Midi.Status.SysExStart} or {Midi.Status.SysExEnd}");
