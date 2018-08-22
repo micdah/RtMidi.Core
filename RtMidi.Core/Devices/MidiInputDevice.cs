@@ -72,7 +72,7 @@ namespace RtMidi.Core.Devices
                         NoteOff?.Invoke(this, in noteOffMessage);
                     break;
                 case Midi.Status.NoteOnBitmask:
-                    if (NoteOnMessage.TryDecoce(message, out var noteOnMessage))
+                    if (NoteOnMessage.TryDecode(message, out var noteOnMessage))
                         NoteOn?.Invoke(this, in noteOnMessage);
                     break;
                 case Midi.Status.PolyphonicKeyPressureBitmask:
