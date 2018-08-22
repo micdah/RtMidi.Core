@@ -12,9 +12,7 @@ namespace RtMidi.Core.Messages
 
         public SysExMessage(byte[] data)
         {
-            StructHelper.IsValidSysEx(data);
-
-            Data = data;
+            Data = StructHelper.IsValidSysEx(data);
         }
 
         /// <summary>
@@ -24,7 +22,7 @@ namespace RtMidi.Core.Messages
 
         internal byte[] Encode()
         {
-            return Data;
+            return StructHelper.FormatSysEx(Data);
         }
 
         internal static bool TryDecode(byte[] message, out SysExMessage msg)
@@ -36,7 +34,8 @@ namespace RtMidi.Core.Messages
                 return false;
             }
 
-            if (message[0] != Midi.Status.SysExStart || message[message.Length - 1] != Midi.Status.SysExEnd) {
+            if (message[0] != Midi.Status.SysExStart || message[message.Length - 1] != Midi.Status.SysExEnd)
+            {
                 Log.Error("Not a valid SysEx message received for SysEx message", message.Length);
                 msg = default;
                 return false;
@@ -44,7 +43,7 @@ namespace RtMidi.Core.Messages
 
             msg = new SysExMessage
             (
-                message
+                StructHelper.StripSysEx(message)
             );
             return true;
         }

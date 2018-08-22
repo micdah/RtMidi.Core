@@ -18,17 +18,14 @@ namespace RtMidi.Core.Messages
                 throw new ArgumentOutOfRangeException(parameter, "Must be within 0-16383");
         }
 
-        public static void IsValidSysEx(byte[] data) {
-            if (data[0] != Midi.Status.SysExStart)
-                throw new ArgumentException($"SysEx message start byte must be {Midi.Status.SysExStart}");
-
-            for (int i = 1; i < data.Length - 1; i++) {
+        public static byte[] IsValidSysEx(byte[] data) {
+            for (int i = 1; i < data.Length - 1; i++)
+            {
                 if (data[i] == Midi.Status.SysExStart || data[i] == Midi.Status.SysExEnd)
                     throw new ArgumentException($"SysEx message data byte must not be {Midi.Status.SysExStart} or {Midi.Status.SysExEnd}");
             }
 
-            if (data[data.Length - 1] != Midi.Status.SysExEnd)
-                throw new ArgumentException($"SysEx message end byte must be {Midi.Status.SysExEnd}");
+            return data;
         }
 
         public static byte StatusByte(byte statusBitmask, Channel channel)
@@ -39,5 +36,29 @@ namespace RtMidi.Core.Messages
 
         public static byte DataByte(Key key)
             => (byte)(Midi.DataBitmask & (int)key);
+        
+        public static byte[] StripSysEx(byte[] data) {
+            byte[] stripped = new byte[data.Length - 2];
+            
+            for (int i = 1; i < data.Length - 1; i++)
+            {
+                stripped[i - 1] = data[i];
+            }
+
+            return stripped;
+        }
+
+        public static byte[] FormatSysEx(byte[] data) {
+            byte[] appended = new byte[data.Length + 2];
+            
+            appended[0] = Midi.Status.SysExStart;
+            for (int i = 0; i < data.Length; i++)
+            {
+                appended[i + 1] = data[i];
+            }
+            appended[appended.Length - 1] = Midi.Status.SysExEnd;
+
+            return appended;
+        }
     }
 }
