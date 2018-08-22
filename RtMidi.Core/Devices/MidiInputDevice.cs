@@ -96,11 +96,21 @@ namespace RtMidi.Core.Devices
                     if (PitchBendMessage.TryDecode(message, out var pitchBendMessage))
                         PitchBend?.Invoke(this, in pitchBendMessage);
                     break;
+
                 case Midi.Status.System:
-                    if (status == Midi.Status.SysExStart)
-                        if (SysExMessage.TryDecode(message, out var sysexMessage))
-                            SysEx?.Invoke(this, in sysexMessage);
+                    switch (status)
+                    {
+                        case Midi.Status.SysExStart:
+                            if (SysExMessage.TryDecode(message, out var sysExMessage))
+                                SysEx?.Invoke(this, in sysExMessage);
+                            break;
+                        
+                        default:
+                            Log.Error("Unknown system message type {Status}", $"{status:X2}");
+                            break;
+                    }
                     break;
+                
                 default:
                     Log.Error("Unknown message type {Bitmask}", $"{status & 0b1111_0000:X2}");
                     break;
