@@ -125,6 +125,20 @@ namespace RtMidi.Core.Tests
             })));
         }
 
+        [Fact]
+        public void Should_Send_SysExMessage()
+        {
+            byte[] syx = {0x7E, 0x7F, 0x06, 0x01}; // Universal Device Inquiry message
+            var sysExMessage = new SysExMessage(syx);            
+            _sut.Send(in sysExMessage);
+            Assert.True(_outputDeviceMock.Messages.TryDequeue(out var msg));
+
+            Assert.Equal(Midi.Status.SysExStart, msg[0]);
+            for (int i = 1; i < msg.Length - 1; i++)
+                Assert.Equal(syx[i - 1], msg[i]);
+            Assert.Equal(Midi.Status.SysExEnd, msg[msg.Length - 1]);
+        }
+
         private class RtMidiOutputDeviceMock : IRtMidiOutputDevice
         {
             public readonly Queue<byte[]> Messages = new Queue<byte[]>();

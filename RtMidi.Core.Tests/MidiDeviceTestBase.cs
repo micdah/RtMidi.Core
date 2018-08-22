@@ -105,5 +105,8 @@ namespace RtMidi.Core.Tests
                 StructHelper.DataByte(value & 0b0111_1111),
                 StructHelper.DataByte(value >> 7)
             };
+        
+        protected static byte[] SysExMessage(byte[] data)
+            => StructHelper.FormatSysEx(data);
     }
 }
