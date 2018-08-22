@@ -15,6 +15,7 @@ MIDI support on both Windows (64-bit or 32-bit) and Mac OS X (64-bit) for .Net S
 * Polyphonic Key Pressure
 * Program Change
 * Non-Registered Parameter Number (NRPN) (_used to send/receive 14-bit parameter and value_)
+* System Exclusive (SysEx)
 
 See [changelog](CHANGELOG.md) for version history. 
 
@@ -62,3 +63,9 @@ finally
 We are using a fork off [rtmidi](https://github.com/thestk/rtmidi) `master` branch with a few changes (_you can see a diff [here](https://github.com/thestk/rtmidi/compare/master...micdah:master) between our fork and official repository_) to make it possible to build on the platforms we are interested in and with changes to better support .Net P/Invoke.
 
 You can find our fork at [micdah/rtmidi](https://github.com/micdah/rtmidi).
+
+## Acknowledgements
+
+Special thanks to the contributors (_in alphabetical order_):
+
+- [mat1jaczyyy](https://github.com/mat1jaczyyy)

@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.48
+- Support for sending and receiving **SysEx** messages - thanks [mat1jaczyyy](https://github.com/mat1jaczyyy)
+
 ## 1.0.47
 
 First documented release with initial features and C# 7 `readonly struct` and `in` features to improve performance by
