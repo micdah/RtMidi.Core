@@ -59,5 +59,12 @@ namespace RtMidi.Core.Devices
         /// <param name="nrpnMessage"></param>
         /// <returns>True if sent, false otherwise</returns>
         bool Send(in NrpnMessage nrpnMessage);
+
+        /// <summary>
+        /// Send SysEx message
+        /// </summary>
+        /// <param name="sysExMessage"></param>
+        /// <returns>True if sent, false otherwise</returns>
+        bool Send(in SysExMessage sysExMessage);
     }
 }
