@@ -18,9 +18,11 @@ namespace RtMidi.Core.Messages
                 throw new ArgumentOutOfRangeException(parameter, "Must be within 0-16383");
         }
 
-        public static byte[] IsValidSysEx(byte[] data)
-        {
-            for (int i = 1; i < data.Length - 1; i++)
+        public static byte[] IsValidSysEx(byte[] data) {
+            if (data[0] == Midi.Status.SysExStart && data[data.Length - 1] == Midi.Status.SysExEnd)
+                data = StripSysEx(data);
+  
+            for (int i = 0; i < data.Length; i++)
             {
                 if (data[i] == Midi.Status.SysExStart || data[i] == Midi.Status.SysExEnd)
                     throw new ArgumentException(

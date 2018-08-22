@@ -20,6 +20,7 @@ namespace RtMidi.Core.Tests
         private readonly Queue<ChannelPressureMessage> _channelPressureMessages = new Queue<ChannelPressureMessage>();
         private readonly Queue<PitchBendMessage> _pitchBendMessages = new Queue<PitchBendMessage>();
         private readonly Queue<NrpnMessage> _nrpnMessages = new Queue<NrpnMessage>();
+        private readonly Queue<SysExMessage> _sysExMessages = new Queue<SysExMessage>();
         
         public MidiInputDeviceTests(ITestOutputHelper output) : base(output)
         {
@@ -34,6 +35,7 @@ namespace RtMidi.Core.Tests
             _sut.ChannelPressure += (IMidiInputDevice sender, in ChannelPressureMessage e) => _channelPressureMessages.Enqueue(e);
             _sut.PitchBend += (IMidiInputDevice sender, in PitchBendMessage e) => _pitchBendMessages.Enqueue(e);
             _sut.Nrpn += (IMidiInputDevice sender, in NrpnMessage e) => _nrpnMessages.Enqueue(e);
+            _sut.SysEx += (IMidiInputDevice sender, in SysExMessage e) => _sysExMessages.Enqueue(e);
         }
 
         [Fact]
@@ -354,6 +356,18 @@ namespace RtMidi.Core.Tests
                 // Verify there should be no more messages
                 Assert.False(_controlChangeMessages.TryDequeue(out var _));
             })));
+        }
+
+        [Fact]
+        public void Should_Fire_SysExMessage()
+        {
+            byte[] syx = {0x7E, 0x7F, 0x06, 0x02}; // Universal Device Inquiry Response
+            _inputDeviceMock.OnMessage(SysExMessage(syx));
+            Assert.True(_sysExMessages.TryDequeue(out var msg),
+                $"Expected SysEx message for {string.Join(", ", syx)}");
+            
+            for (int i = 0; i < msg.Data.Length; i++)
+                Assert.Equal(syx[i], msg.Data[i]);
         }
     }
 }
