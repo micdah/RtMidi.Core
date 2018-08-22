@@ -6,7 +6,7 @@
 [![NuGet](https://img.shields.io/nuget/v/RtMidi.Core.svg)](https://www.nuget.org/packages/RtMidi.Core/)
 
 
-MIDI support on both Winows (64-bit or 32-bit) and Mac OS X (64-bit) for .Net Standard 2.0 with support for both input and output midi devices, and support the following midi messages:
+MIDI support on both Windows (64-bit or 32-bit) and Mac OS X (64-bit) for .Net Standard 2.0 with support for both input and output midi devices, and support the following midi messages:
 
 * Channel Pressure
 * Control Change
