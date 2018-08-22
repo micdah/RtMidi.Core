@@ -18,6 +18,19 @@ namespace RtMidi.Core.Messages
                 throw new ArgumentOutOfRangeException(parameter, "Must be within 0-16383");
         }
 
+        public static void IsValidSysEx(byte[] data) {
+            if (data[0] != Midi.Status.SysExStart)
+                throw new ArgumentException($"SysEx message start byte must be {Midi.Status.SysExStart}");
+
+            for (int i = 1; i < data.Length - 1; i++) {
+                if (data[i] == Midi.Status.SysExStart || data[i] == Midi.Status.SysExEnd)
+                    throw new ArgumentException($"SysEx message data byte must not be {Midi.Status.SysExStart} or {Midi.Status.SysExEnd}");
+            }
+
+            if (data[data.Length - 1] != Midi.Status.SysExEnd)
+                throw new ArgumentException($"SysEx message end byte must be {Midi.Status.SysExEnd}");
+        }
+
         public static byte StatusByte(byte statusBitmask, Channel channel)
             => (byte)(statusBitmask | (Midi.ChannelBitmask & (int)channel));
 

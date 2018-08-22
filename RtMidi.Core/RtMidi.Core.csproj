@@ -39,9 +39,13 @@
     <Folder Include="Unmanaged\" />
     <Folder Include="Unmanaged\API\" />
     <Folder Include="Unmanaged\Devices\" />
-    <Folder Include="Devices\Infos\" />
     <Folder Include="Unmanaged\Devices\Infos\" />
+    <Folder Include="Devices\" />
+    <Folder Include="Devices\Infos\" />
     <Folder Include="Devices\Nrpn\" />
+    <Folder Include="Enums\" />
+    <Folder Include="Enums\Core" />
+    <Folder Include="Messages\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="2.6.0" />
