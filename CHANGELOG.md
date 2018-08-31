@@ -1,6 +1,11 @@
 # Changelog
 
+## 1.0.48.1
+
+- Bug fix for receiving **SysEx** messages - thanks [mat1jaczyyy](https://github.com/mat1jaczyyy)  
+
 ## 1.0.48
+
 - Support for sending and receiving **SysEx** messages - thanks [mat1jaczyyy](https://github.com/mat1jaczyyy)
 
 ## 1.0.47
