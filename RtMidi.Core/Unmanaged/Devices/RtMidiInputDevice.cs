@@ -27,6 +27,10 @@ namespace RtMidi.Core.Unmanaged.Devices
                 handle = RtMidiC.Input.CreateDefault();
                 CheckForError(handle);
 
+                Log.Debug("Setting types to ignore");
+                RtMidiC.Input.IgnoreTypes(handle, false, true, true);
+                CheckForError(handle);
+
                 Log.Debug("Setting input callback");
                 RtMidiC.Input.SetCallback(handle, _rtMidiCallbackDelegate, IntPtr.Zero);
                 CheckForError(handle);
