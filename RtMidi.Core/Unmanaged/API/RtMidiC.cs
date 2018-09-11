@@ -35,9 +35,10 @@ namespace RtMidi.Core.Unmanaged.API
         /// Otherwise, fill the given apis array with the RtMidi::Api values.
         /// </summary>
         /// <param name="apis">An array or a null value.</param>
-        internal static int GetCompiledApi(IntPtr /* RtMidiApi * */ apis) => Is64Bit
-            ? RtMidiC64.GetCompiledApi(apis)
-            : RtMidiC32.GetCompiledApi(apis);
+        /// <param name="apisSize">Number of elements pointed to by <paramref name="apis"/></param>
+        internal static int GetCompiledApi(IntPtr /* RtMidiApi * */ apis, uint apisSize) => Is64Bit
+            ? RtMidiC64.GetCompiledApi(apis, apisSize)
+            : RtMidiC32.GetCompiledApi(apis, apisSize);
 
         /// <summary>
         /// Report an error.

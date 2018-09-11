@@ -22,15 +22,14 @@ namespace RtMidi.Core.Unmanaged
             try
             {
                 // Get number of API's
-                var nullPtr = IntPtr.Zero;
-                var count = RtMidiC.GetCompiledApi(nullPtr);
-                if (count == 0)
+                var count = RtMidiC.GetCompiledApi(IntPtr.Zero, 0);
+                if (count <= 0)
                     return new RtMidiApi[0];
 
                 // Get array of available API's
                 var enumSize = RtMidiC.Utility.SizeofRtMidiApi();
                 apisPtr = Marshal.AllocHGlobal(count * enumSize);
-                RtMidiC.GetCompiledApi(apisPtr);
+                RtMidiC.GetCompiledApi(apisPtr, (uint)count);
 
                 // Convert to managed enum types
                 switch (enumSize)
