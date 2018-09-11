@@ -20,7 +20,7 @@ MIDI support on both Windows (64-bit or 32-bit) and Mac OS X (64-bit) for .Net S
 See [changelog](CHANGELOG.md) for version history. 
 
 ## Example
-```c#
+```cs
 // List all available MIDI API's
 foreach (var api in MidiDeviceManager.Default.GetAvailableMidiApis())
     Console.WriteLine($"Available API: {api}");
