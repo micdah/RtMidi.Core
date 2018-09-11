@@ -35,14 +35,21 @@ $ brew install autoconf automake
 
 ### Windows (64 bit)
 
-1. From the root of the repository, navigate to `rtmidi/msw/`
+1. From the root of the repository, navigate to `msw/`
 1. Open the solution file `rtmidilib.sln`
 1. Change configuration to _**Export**_
 1. Change target framework to _**x64**_
 1. Build solution
-1. Copy dll from `rtmidi/msw/x64/Export` to the _RtMidi.Core_ project folder
-
-**TODO** Document how to compile for _x86_
+1. Copy newly compiled `dll` file for x64 into the _RtMidi.Core_ project:
+    ```bash
+    $ cp msw/x64/Export/rtmidilib.dll ~/git/RtMidi.Core/RtMidi.Core/librtmidi.dylib
+    ```
+1. Change target framework to _**Win32**_
+1. Build solution
+1. Copy newly compiled `dll` file for x86 into the _RtMidi.Core_ project:
+    ```bash
+    $ cp msw/Export/rtmidilib.dll ~/git/RtMidi.Core/RtMidi.Core/rtmidi32.dll
+    ```
 
 #### Pre-requisites
 
