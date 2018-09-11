@@ -48,9 +48,14 @@ namespace RtMidi.Core.Samples
                     inputDevice.Open();
                 }
 
-                Console.WriteLine("Press any key to stop...");
-                Console.ReadKey();
-                
+                Console.WriteLine("Press 'q' key to stop...");
+                while (true)
+                {
+                    if (Console.ReadKey().Key == ConsoleKey.Q)
+                    {
+                        break;
+                    }
+                }
             }
             finally
             {
