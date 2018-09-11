@@ -24,7 +24,7 @@ namespace RtMidi.Core.Unmanaged
                 // Get number of API's
                 var nullPtr = IntPtr.Zero;
                 var count = RtMidiC.GetCompiledApi(nullPtr);
-                if (count == 0)
+                if (count <= 0)
                     return new RtMidiApi[0];
 
                 // Get array of available API's
