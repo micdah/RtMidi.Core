@@ -13,7 +13,7 @@ Guides on how to compile the runtime-dependent library binary.
 ### OS X
 
 1. Open terminal and navigate to the root of the repository
-1. Compile project: 
+n1. Compile project: 
     ```bash
     $ ./autogen.sh --no-configure
     $ ./configure
@@ -26,10 +26,10 @@ Guides on how to compile the runtime-dependent library binary.
 
 #### Pre-requisites
 
-Requires `automake` and `autoconf` to be installed, which is easily done using Homebrew:
+Requires `automake`, `autoconf` and `libtool` to be installed, which is easily done using Homebrew:
 
 ```bash
-$ brew install autoconf automake
+$ brew install autoconf automake libtool
 ```
 
 
