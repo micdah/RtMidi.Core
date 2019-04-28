@@ -7,9 +7,9 @@ namespace RtMidi.Core.Tests
     {
         public bool IsOpen => true;
 
-        public event EventHandler<byte[]> Message;
+        public event EventHandler<RtMidiReceivedEventArgs> Message;
 
-        public void OnMessage(byte[] message) => Message?.Invoke(this, message);
+        public void OnMessage(byte[] message) => Message?.Invoke(this, new RtMidiReceivedEventArgs(0, message));
 
         public void Close()
         {

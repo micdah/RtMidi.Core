@@ -6,14 +6,23 @@ namespace RtMidi.Core.Messages
     /// <summary>
     /// This message is most often sent by pressing down on the key after it "bottoms out".
     /// </summary>
-    public readonly struct PolyphonicKeyPressureMessage
+    public readonly struct PolyphonicKeyPressureMessage: IMessage
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<PolyphonicKeyPressureMessage>();
 
         public PolyphonicKeyPressureMessage(Channel channel, Key key, int pressure)
         {
             StructHelper.IsWithin7BitRange(nameof(pressure), pressure);
-
+            Timestamp = 0;
+            Channel = channel;
+            Key = key;
+            Pressure = pressure;
+        }
+        
+        public PolyphonicKeyPressureMessage(double timestamp, Channel channel, Key key, int pressure)
+        {
+            StructHelper.IsWithin7BitRange(nameof(pressure), pressure);
+            Timestamp = timestamp;
             Channel = channel;
             Key = key;
             Pressure = pressure;
@@ -33,6 +42,11 @@ namespace RtMidi.Core.Messages
         /// Pressure value (0-127)
         /// </summary>
         public int Pressure { get; }
+        
+        /// <summary>
+        /// The timestamp when this message was received
+        /// </summary>
+        public double Timestamp { get; }
 
         internal byte[] Encode()
         {
@@ -44,7 +58,7 @@ namespace RtMidi.Core.Messages
             };
         }
 
-        internal static bool TryDecode(byte[] message, out PolyphonicKeyPressureMessage msg) 
+        internal static bool TryDecode(double timestamp, byte[] message, out PolyphonicKeyPressureMessage msg) 
         {
             if (message.Length != 3)
             {
@@ -55,6 +69,7 @@ namespace RtMidi.Core.Messages
 
             msg = new PolyphonicKeyPressureMessage
             (
+                timestamp,
                 (Channel) (Midi.ChannelBitmask & message[0]),
                 (Key) (Midi.DataBitmask & message[1]),
                 Midi.DataBitmask & message[2]
@@ -64,7 +79,7 @@ namespace RtMidi.Core.Messages
 
         public override string ToString()
         {
-            return $"{nameof(Channel)}: {Channel}, {nameof(Key)}: {Key}, {nameof(Pressure)}: {Pressure}";
+            return $"{nameof(Timestamp)}: {Timestamp}, {nameof(Channel)}: {Channel}, {nameof(Key)}: {Key}, {nameof(Pressure)}: {Pressure}";
         }
     }
 }

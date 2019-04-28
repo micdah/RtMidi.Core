@@ -47,6 +47,31 @@ namespace RtMidi.Core.Devices
         event NrpnMessageHandler Nrpn;
 
         /// <summary>
+        /// Clock event
+        /// </summary>
+        event ClockMessageHandler Clock;
+
+        /// <summary>
+        /// Start event
+        /// </summary>
+        event StartMessageHandler Start;
+
+        /// <summary>
+        /// Stop event
+        /// </summary>
+        event StopMessageHandler Stop;
+
+        /// <summary>
+        /// Continue event
+        /// </summary>
+        event ContinueMessageHandler Continue;
+
+        /// <summary>
+        /// Song Position Pointer event
+        /// </summary>
+        event SongPositionPointerMessageHandler SongPositionPointer;
+        
+        /// <summary>
         /// Set NRPN interpretation mode
         /// </summary>
         /// <param name="mode">Mode</param>
@@ -75,4 +100,14 @@ namespace RtMidi.Core.Devices
     public delegate void NrpnMessageHandler(IMidiInputDevice sender, in NrpnMessage msg);
 
     public delegate void SysExMessageHandler(IMidiInputDevice sender, in SysExMessage msg);
+    
+    public delegate void ClockMessageHandler(IMidiInputDevice sender, in ClockMessage msg);
+    
+    public delegate void StartMessageHandler(IMidiInputDevice sender, in StartMessage msg);
+    
+    public delegate void StopMessageHandler(IMidiInputDevice sender, in StopMessage msg);
+    
+    public delegate void ContinueMessageHandler(IMidiInputDevice sender, in ContinueMessage msg);
+    
+    public delegate void SongPositionPointerMessageHandler(IMidiInputDevice sender, in SongPositionPointerMessage msg);
 }

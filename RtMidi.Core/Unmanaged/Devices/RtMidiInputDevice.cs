@@ -16,7 +16,7 @@ namespace RtMidi.Core.Unmanaged.Devices
             _rtMidiCallbackDelegate = HandleRtMidiCallback;
         }
 
-        public event EventHandler<byte[]> Message;
+        public event EventHandler<RtMidiReceivedEventArgs> Message;
 
         protected override IntPtr CreateDevice()
         {
@@ -28,7 +28,7 @@ namespace RtMidi.Core.Unmanaged.Devices
                 CheckForError(handle);
 
                 Log.Debug("Setting types to ignore");
-                RtMidiC.Input.IgnoreTypes(handle, false, true, true);
+                RtMidiC.Input.IgnoreTypes(handle, false, false, false);
                 CheckForError(handle);
 
                 Log.Debug("Setting input callback");
@@ -72,7 +72,7 @@ namespace RtMidi.Core.Unmanaged.Devices
                     Marshal.Copy(messagePtr, message, 0, size);
 
                     // Invoke message handlers
-                    messageHandlers.Invoke(this, message);
+                    messageHandlers.Invoke(this, new RtMidiReceivedEventArgs(timestamp, message));
                 }
             }
             catch (Exception e)

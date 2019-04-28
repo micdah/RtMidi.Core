@@ -105,7 +105,7 @@ namespace RtMidi.Core.Devices.Nrpn
 
         private void SendNrpn()
         {
-            if (NrpnMessage.TryDecode(_messages, out var msg))
+            if (NrpnMessage.TryDecode(0, _messages, out var msg))
             {
                 _onNrpn(in msg);
             }

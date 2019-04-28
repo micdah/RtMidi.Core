@@ -6,12 +6,19 @@ namespace RtMidi.Core.Messages
     /// <summary>
     /// This message contains System Exclusive raw data sent from the device to the host.
     /// </summary>
-    public readonly struct SysExMessage
+    public readonly struct SysExMessage: IMessage
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<SysExMessage>();
 
         public SysExMessage(byte[] data)
         {
+            Timestamp = 0;
+            Data = StructHelper.IsValidSysEx(data);
+        }
+        
+        public SysExMessage(double timestamp, byte[] data)
+        {
+            Timestamp = timestamp;
             Data = StructHelper.IsValidSysEx(data);
         }
 
@@ -19,13 +26,18 @@ namespace RtMidi.Core.Messages
         /// SysEx Data Array
         /// </summary>
         public byte[] Data { get; }
+        
+        /// <summary>
+        /// The timestamp when this message was received
+        /// </summary>
+        public double Timestamp { get; }
 
         internal byte[] Encode()
         {
             return StructHelper.FormatSysEx(Data);
         }
 
-        internal static bool TryDecode(byte[] message, out SysExMessage msg)
+        internal static bool TryDecode(double timestamp, byte[] message, out SysExMessage msg)
         {
             if (message.Length <= 1)
             {
@@ -43,6 +55,7 @@ namespace RtMidi.Core.Messages
 
             msg = new SysExMessage
             (
+                timestamp,
                 message
             );
             return true;
@@ -50,7 +63,7 @@ namespace RtMidi.Core.Messages
 
         public override string ToString()
         {
-            return $"{nameof(Data)}: {string.Join(", ", Data)}";
+            return $"{nameof(Timestamp)}: {Timestamp}, {nameof(Data)}: {string.Join(", ", Data)}";
         }
     }
 }

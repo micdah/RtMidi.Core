@@ -9,14 +9,24 @@ namespace RtMidi.Core.Messages
     /// This message is different from polyphonic after-touch. Use this message to send the 
     /// single greatest pressure value (of all the current depressed keys)
     /// </summary>
-    public readonly struct ChannelPressureMessage
+    public readonly struct ChannelPressureMessage: IMessage
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<ChannelPressureMessage>();
 
+        public ChannelPressureMessage(double timestamp, Channel channel, int pressure)
+        {
+            StructHelper.IsWithin7BitRange(nameof(pressure), pressure);
+
+            Timestamp = timestamp;
+            Channel = channel;
+            Pressure = pressure;
+        }
+        
         public ChannelPressureMessage(Channel channel, int pressure)
         {
             StructHelper.IsWithin7BitRange(nameof(pressure), pressure);
 
+            Timestamp = 0;
             Channel = channel;
             Pressure = pressure;
         }
@@ -30,6 +40,11 @@ namespace RtMidi.Core.Messages
         /// Pressure value (0-127)
         /// </summary>
         public int Pressure { get; }
+        
+        /// <summary>
+        /// The timestamp when this message was received
+        /// </summary>
+        public double Timestamp { get; }
 
         internal byte[] Encode()
         {
@@ -40,7 +55,7 @@ namespace RtMidi.Core.Messages
             };
         }
 
-        internal static bool TryDecode(byte[] message, out ChannelPressureMessage msg)
+        internal static bool TryDecode(double timestamp, byte[] message, out ChannelPressureMessage msg)
         {
             if (message.Length != 2)
             {
@@ -51,6 +66,7 @@ namespace RtMidi.Core.Messages
 
             msg = new ChannelPressureMessage
             (
+                timestamp,
                 (Channel) (Midi.ChannelBitmask & message[0]),
                 Midi.DataBitmask & message[1]
             );
@@ -59,7 +75,7 @@ namespace RtMidi.Core.Messages
 
         public override string ToString()
         {
-            return $"{nameof(Channel)}: {Channel}, {nameof(Pressure)}: {Pressure}";
+            return $"{nameof(Timestamp)}: {Timestamp}, {nameof(Channel)}: {Channel}, {nameof(Pressure)}: {Pressure}";
         }
     }
 }

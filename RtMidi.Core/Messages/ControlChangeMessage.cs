@@ -9,7 +9,7 @@ namespace RtMidi.Core.Messages
     /// This message is sent when a controller value changes. Controllers 
     /// include devices such as pedals and levers. 
     /// </summary>
-    public readonly struct ControlChangeMessage
+    public readonly struct ControlChangeMessage: IMessage
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<ControlChangeMessage>();
 
@@ -20,6 +20,19 @@ namespace RtMidi.Core.Messages
             
             Channel = channel;
             Control = control;
+            Timestamp = 0;
+            ControlFunction = ControlFunction.Undefined.OrValueIfDefined(control);
+            Value = value;
+        }
+        
+        public ControlChangeMessage(double timestamp, Channel channel, int control, int value)
+        {
+            StructHelper.IsWithin7BitRange(nameof(control), control);
+            StructHelper.IsWithin7BitRange(nameof(value), value);
+            
+            Channel = channel;
+            Control = control;
+            Timestamp = timestamp;
             ControlFunction = ControlFunction.Undefined.OrValueIfDefined(control);
             Value = value;
         }
@@ -38,6 +51,11 @@ namespace RtMidi.Core.Messages
         /// Control value (0-127)
         /// </summary>
         public int Value { get; }
+        
+        /// <summary>
+        /// The timestamp when this message was received
+        /// </summary>
+        public double Timestamp { get; }
 
         /// <summary>
         /// Control function (as defined by https://www.midi.org/specifications/item/table-3-control-change-messages-data-bytes-2)
@@ -54,7 +72,7 @@ namespace RtMidi.Core.Messages
             };
         }
 
-        internal static bool TryDecode(byte[] message, out ControlChangeMessage msg)
+        internal static bool TryDecode(double timestamp, byte[] message, out ControlChangeMessage msg)
         {
             if (message.Length != 3)
             {
@@ -66,6 +84,7 @@ namespace RtMidi.Core.Messages
             var control = Midi.DataBitmask & message[1];
             msg = new ControlChangeMessage
             (
+                timestamp,
                 (Channel) (Midi.ChannelBitmask & message[0]),
                 control,
                 Midi.DataBitmask & message[2]
@@ -75,7 +94,7 @@ namespace RtMidi.Core.Messages
 
         public override string ToString()
         {
-            return $"{nameof(Channel)}: {Channel}, {nameof(Control)}: {Control}, {nameof(Value)}: {Value}, {nameof(ControlFunction)}: {ControlFunction}";
+            return $"{nameof(Timestamp)}: {Timestamp}, {nameof(Channel)}: {Channel}, {nameof(Control)}: {Control}, {nameof(Value)}: {Value}, {nameof(ControlFunction)}: {ControlFunction}";
         }
     }
 }

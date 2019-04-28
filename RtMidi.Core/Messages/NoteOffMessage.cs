@@ -6,14 +6,23 @@ namespace RtMidi.Core.Messages
     /// <summary>
     /// This message is sent when a note is released (ended). 
     /// </summary>
-    public readonly struct NoteOffMessage
+    public readonly struct NoteOffMessage: IMessage
     {
         private static readonly ILogger Log = Serilog.Log.ForContext<NoteOffMessage>();
 
         public NoteOffMessage(Channel channel, Key key, int velocity)
         {
             StructHelper.IsWithin7BitRange(nameof(velocity), velocity);
-
+            Timestamp = 0;
+            Channel = channel;
+            Key = key;
+            Velocity = velocity;
+        }
+        
+        public NoteOffMessage(double timestamp, Channel channel, Key key, int velocity)
+        {
+            StructHelper.IsWithin7BitRange(nameof(velocity), velocity);
+            Timestamp = timestamp;
             Channel = channel;
             Key = key;
             Velocity = velocity;
@@ -33,6 +42,11 @@ namespace RtMidi.Core.Messages
         /// Velocity value (0-127)
         /// </summary>
         public int Velocity { get; }
+        
+        /// <summary>
+        /// The timestamp when this message was received
+        /// </summary>
+        public double Timestamp { get; }
 
         internal byte[] Encode()
         {
@@ -44,7 +58,7 @@ namespace RtMidi.Core.Messages
             };
         }
 
-        internal static bool TryDecode(byte[] message, out NoteOffMessage msg) 
+        internal static bool TryDecode(double timestamp, byte[] message, out NoteOffMessage msg) 
         {
             if (message.Length != 3)
             {
@@ -55,6 +69,7 @@ namespace RtMidi.Core.Messages
 
             msg = new NoteOffMessage
             (
+                timestamp,
                 (Channel) (Midi.ChannelBitmask & message[0]),
                 (Key) (Midi.DataBitmask & message[1]),
                 Midi.DataBitmask & message[2]
@@ -64,7 +79,7 @@ namespace RtMidi.Core.Messages
 
         public override string ToString()
         {
-            return $"{nameof(Channel)}: {Channel}, {nameof(Key)}: {Key}, {nameof(Velocity)}: {Velocity}";
+            return $"{nameof(Timestamp)}: {Timestamp}, {nameof(Channel)}: {Channel}, {nameof(Key)}: {Key}, {nameof(Velocity)}: {Velocity}";
         }
     }
 }

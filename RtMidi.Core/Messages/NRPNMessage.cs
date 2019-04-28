@@ -10,13 +10,23 @@ namespace RtMidi.Core.Messages
     /// Change messages and allows 14-bit values to be used, rather than the
     /// normal 7-bit values in regular midi messages.
     /// </summary>
-    public readonly struct NrpnMessage
+    public readonly struct NrpnMessage: IMessage
     {
         public NrpnMessage(Channel channel, int parameter, int value)
         {
             StructHelper.IsWithin14BitRange(nameof(parameter), parameter);
             StructHelper.IsWithin14BitRange(nameof(value), value);
-
+            Timestamp = 0;
+            Channel = channel;
+            Parameter = parameter;
+            Value = value;
+        }
+        
+        public NrpnMessage(double timestamp, Channel channel, int parameter, int value)
+        {
+            StructHelper.IsWithin14BitRange(nameof(parameter), parameter);
+            StructHelper.IsWithin14BitRange(nameof(value), value);
+            Timestamp = timestamp;
             Channel = channel;
             Parameter = parameter;
             Value = value;
@@ -36,6 +46,11 @@ namespace RtMidi.Core.Messages
         /// 14-bit Parameter value
         /// </summary>
         public int Value { get; }
+        
+        /// <summary>
+        /// The timestamp when this message was received
+        /// </summary>
+        public double Timestamp { get; }
 
         /// <summary>
         /// Determine if the array of Control Change messges represent a full or partial 
@@ -83,7 +98,7 @@ namespace RtMidi.Core.Messages
             };
         }
 
-        internal static bool TryDecode(ControlChangeMessage[] messages, out NrpnMessage msg)
+        internal static bool TryDecode(double timestamp, ControlChangeMessage[] messages, out NrpnMessage msg)
         {
             if (messages.Length != 4)
             {
@@ -101,6 +116,7 @@ namespace RtMidi.Core.Messages
 
             msg = new NrpnMessage
             (
+                timestamp,
                 messages[0].Channel,
                 (messages[0].Value & Midi.DataBitmask) << 7 | (messages[1].Value & Midi.DataBitmask),
                 (messages[2].Value & Midi.DataBitmask) << 7 | (messages[3].Value & Midi.DataBitmask)
@@ -110,7 +126,7 @@ namespace RtMidi.Core.Messages
 
         public override string ToString()
         {
-            return $"{nameof(Channel)}: {Channel}, {nameof(Parameter)}: {Parameter}, {nameof(Value)}: {Value}";
+            return $"{nameof(Timestamp)}: {Timestamp}, {nameof(Channel)}: {Channel}, {nameof(Parameter)}: {Parameter}, {nameof(Value)}: {Value}";
         }
     }
 }

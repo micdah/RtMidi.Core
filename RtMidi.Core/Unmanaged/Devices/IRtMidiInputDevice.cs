@@ -9,6 +9,6 @@ namespace RtMidi.Core.Unmanaged.Devices
         /// <summary>
         /// MIDI message was received
         /// </summary>
-        event EventHandler<byte[]> Message;
+        event EventHandler<RtMidiReceivedEventArgs> Message;
     }
 }

@@ -27,6 +27,12 @@
             internal const byte System = 0b1111_0000;
             internal const byte SysExStart = 0b1111_0000;
             internal const byte SysExEnd = 0b1111_0111;
+            internal const byte SongPositionPointer = 0b1111_0010;
+            internal const byte Clock = 0b1111_1000;
+            internal const byte Start = 0b1111_1010;
+            internal const byte Continue = 0b1111_1011;
+            internal const byte Stop = 0b1111_1100;
+            
         }
     }
 }
