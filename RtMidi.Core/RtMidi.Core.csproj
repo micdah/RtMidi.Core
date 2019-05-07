@@ -14,6 +14,12 @@
     <PackageTags>midi netstandard netcore</PackageTags>
     <Copyright>Copyright 2017 (c) Michael Dahl. All Rights reserved.</Copyright>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="librtmidi.dylib">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
