@@ -1,8 +1,5 @@
 # Changelog
 
-## 1.0.50
-* Pulled updates for `rtmidi` from [upstream](https://github.com/thestk/rtmidi)
-
 ## 1.0.49
 
 * Pulled updates for `rtmidi` from [upstream](https://github.com/thestk/rtmidi) and compiled new unmanaged binaries for
