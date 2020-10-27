@@ -27,6 +27,7 @@ dotnet_csproj:
   package_version: '{version}'
 
 build:
+  project: RtMidi.Core.sln
   verbosity: minimal
   publish_nuget: true
   publish_nuget_symbols: true
