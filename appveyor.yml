@@ -4,7 +4,7 @@ branches:
 
 shallow_clone: true
 
-image: Previous Visual Studio 2017
+image: Visual Studio 2019
 version: 0.0.{build}
 configuration: Release
 
@@ -50,7 +50,7 @@ deploy:
     APPVEYOR_REPO_TAG: true
 - provider: GitHub
   auth_token:
-      secure: WTGOhyUBnlt3MpWqwOmbrFmqzhAwSPh8QDSKLPajo3xToZ4EgH1DTOacSE0SbWwp
+      secure: JlS9lzaU37F/w2AHRctvvHjCc4fQHxplh1kc88R0Bhnwlo4gflswnmzQouKxaENg
   release: $(APPVEYOR_REPO_TAG_NAME)
   description: 'See [Changelog](CHANGELOG.md) for changes'
   draft: false
