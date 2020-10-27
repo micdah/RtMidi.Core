@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.51
+* Added missing System Common Messages:
+  - MIDI Time Code Quarter Frame
+  - Song Position Pointer
+  - Song Select
+  - Tune Request
+
 ## 1.0.50
 * Pulled updates for `rtmidi` from [upstream](https://github.com/thestk/rtmidi)
 
