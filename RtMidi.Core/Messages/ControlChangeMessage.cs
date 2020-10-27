@@ -58,7 +58,7 @@ namespace RtMidi.Core.Messages
         {
             if (message.Length != 3)
             {
-                Log.Error("Incorrect number of btyes ({Length}) received for Control Change message", message.Length);
+                Log.Error("Incorrect number of bytes ({Length}) received for Control Change message", message.Length);
                 msg = default;
                 return false;
             }

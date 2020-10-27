@@ -6,6 +6,11 @@ namespace RtMidi.Core.Messages
 {
     internal static class StructHelper
     {
+        public static void IsWithin3BitRange(string parameter, int value)
+        {
+            if (value < 0 || value > 7)
+                throw new ArgumentOutOfRangeException(parameter, "Must be within 0-7");
+        }
         public static void IsWithin7BitRange(string parameter, int value)
         {
             if (value < 0 || value > 127)

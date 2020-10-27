@@ -66,5 +66,33 @@ namespace RtMidi.Core.Devices
         /// <param name="sysExMessage"></param>
         /// <returns>True if sent, false otherwise</returns>
         bool Send(in SysExMessage sysExMessage);
+
+        /// <summary>
+        /// Send MIDI Time Code Quarter Frame message
+        /// </summary>
+        /// <param name="midiTimeCodeQuarterFrameMessage"></param>
+        /// <returns>True if sent, false otherwise</returns>
+        bool Send(in MidiTimeCodeQuarterFrameMessage midiTimeCodeQuarterFrameMessage);
+
+        /// <summary>
+        /// Send Song Position Pointer message
+        /// </summary>
+        /// <param name="songPositionPointerMessage"></param>
+        /// <returns>True if sent, false otherwise</returns>
+        bool Send(in SongPositionPointerMessage songPositionPointerMessage);
+
+        /// <summary>
+        /// Send Song Select message
+        /// </summary>
+        /// <param name="songSelectMessage"></param>
+        /// <returns>True if sent, false otherwise</returns>
+        bool Send(in SongSelectMessage songSelectMessage);
+
+        /// <summary>
+        /// Send Tune Request message
+        /// </summary>
+        /// <param name="tuneRequestMessage"></param>
+        /// <returns>True if sent, false otherwise</returns>
+        bool Send(in TuneRequestMessage tuneRequestMessage);
     }
 }

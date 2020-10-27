@@ -39,5 +39,17 @@ namespace RtMidi.Core.Devices
         
         public bool Send(in SysExMessage sysExMessage)
             => _outputDevice.SendMessage(sysExMessage.Encode());
+
+        public bool Send(in MidiTimeCodeQuarterFrameMessage midiTimeCodeQuarterFrameMessage)
+            => _outputDevice.SendMessage(midiTimeCodeQuarterFrameMessage.Encode());
+
+        public bool Send(in SongPositionPointerMessage songPositionPointerMessage)
+            => _outputDevice.SendMessage(songPositionPointerMessage.Encode());
+
+        public bool Send(in SongSelectMessage songSelectMessage)
+            => _outputDevice.SendMessage(songSelectMessage.Encode());
+
+        public bool Send(in TuneRequestMessage tuneRequestMessage)
+            => _outputDevice.SendMessage(tuneRequestMessage.Encode());
     }
 }

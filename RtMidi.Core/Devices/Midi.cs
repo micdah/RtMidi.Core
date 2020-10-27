@@ -26,6 +26,10 @@
             internal const byte PitchBendChange = 0b1110_0000;
             internal const byte System = 0b1111_0000;
             internal const byte SysExStart = 0b1111_0000;
+            internal const byte MidiTimeCodeQuarterFrame = 0b1111_0001;
+            internal const byte SongPositionPointer = 0b1111_0010;
+            internal const byte SongSelect = 0b1111_0011;
+            internal const byte TuneRequest = 0b1111_0110;
             internal const byte SysExEnd = 0b1111_0111;
         }
     }

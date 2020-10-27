@@ -36,6 +36,10 @@ namespace RtMidi.Core.Devices
         public event PitchBendMessageHandler PitchBend;
         public event NrpnMessageHandler Nrpn;
         public event SysExMessageHandler SysEx;
+        public event MidiTimeCodeQuarterFrameHandler MidiTimeCodeQuarterFrame;
+        public event SongPositionPointerHandler SongPositionPointer;
+        public event SongSelectHandler SongSelect;
+        public event TuneRequestHandler TuneRequest;
 
         private void RtMidiInputDevice_Message(object sender, byte[] message)
         {
@@ -104,7 +108,22 @@ namespace RtMidi.Core.Devices
                             if (SysExMessage.TryDecode(message, out var sysExMessage))
                                 SysEx?.Invoke(this, in sysExMessage);
                             break;
-                        
+                        case Midi.Status.MidiTimeCodeQuarterFrame:
+                            if (MidiTimeCodeQuarterFrameMessage.TryDecode(message, out var timeCodeQuarterFrameMessage))
+                                MidiTimeCodeQuarterFrame?.Invoke(this, in timeCodeQuarterFrameMessage);
+                            break;
+                        case Midi.Status.SongPositionPointer:
+                            if (SongPositionPointerMessage.TryDecode(message, out var songPositionPointerMessage))
+                                SongPositionPointer?.Invoke(this, in songPositionPointerMessage);
+                            break;
+                        case Midi.Status.SongSelect:
+                            if (SongSelectMessage.TryDecode(message, out var songSelectMessage))
+                                SongSelect?.Invoke(this, in songSelectMessage);
+                            break;
+                        case Midi.Status.TuneRequest:
+                            if (TuneRequestMessage.TryDecode(message, out var tuneRequestMessage))
+                                TuneRequest?.Invoke(this, in tuneRequestMessage);
+                            break;
                         default:
                             Log.Error("Unknown system message type {Status}", $"{status:X2}");
                             break;
