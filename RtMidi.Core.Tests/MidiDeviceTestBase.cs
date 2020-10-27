@@ -55,7 +55,7 @@ namespace RtMidi.Core.Tests
         protected static byte[] NoteOffMessage(Channel channel, Key key = Key.Key0, int velocity = 0)
             => new[]
             {
-            StructHelper.StatusByte(Midi.Status.NoteOffBitmask, channel),
+                StructHelper.StatusByte(Midi.Status.NoteOffBitmask, channel),
                 StructHelper.DataByte(key),
                 StructHelper.DataByte(velocity)
             };
@@ -105,8 +105,36 @@ namespace RtMidi.Core.Tests
                 StructHelper.DataByte(value & 0b0111_1111),
                 StructHelper.DataByte(value >> 7)
             };
-        
+
         protected static byte[] SysExMessage(byte[] data)
             => StructHelper.FormatSysEx(data);
+
+        protected static byte[] MidiTimeCodeQuarterFrameMessage(int messageType, int values)
+            => new[]
+            {
+                Midi.Status.MidiTimeCodeQuarterFrame,
+                StructHelper.DataByte((messageType << 3) | values)
+            };
+
+        protected static byte[] SongPositionPointerMessage(int midiBeats)
+            => new[]
+            {
+                Midi.Status.SongPositionPointer,
+                StructHelper.DataByte(midiBeats),
+                StructHelper.DataByte(midiBeats >> 7)
+            };
+
+        protected static byte[] SongSelectMessage(int song)
+            => new[]
+            {
+                Midi.Status.SongSelect,
+                StructHelper.DataByte(song)
+            };
+
+        protected static byte[] TuneRequestMessage()
+            => new[]
+            {
+                Midi.Status.TuneRequest
+            };
     }
 }

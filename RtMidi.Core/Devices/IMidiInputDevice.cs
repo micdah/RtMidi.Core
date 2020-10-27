@@ -1,6 +1,5 @@
-﻿using RtMidi.Core.Messages;
-using System;
-using RtMidi.Core.Devices.Nrpn;
+﻿using RtMidi.Core.Devices.Nrpn;
+using RtMidi.Core.Messages;
 
 namespace RtMidi.Core.Devices
 {
@@ -56,6 +55,26 @@ namespace RtMidi.Core.Devices
         /// SysEx data message event.
         /// </summary>
         event SysExMessageHandler SysEx;
+
+        /// <summary>
+        /// MIDI Time Code Quarter Frame event
+        /// </summary>
+        event MidiTimeCodeQuarterFrameHandler MidiTimeCodeQuarterFrame;
+
+        /// <summary>
+        /// Song Position Pointer event
+        /// </summary>
+        event SongPositionPointerHandler SongPositionPointer;
+
+        /// <summary>
+        /// Song Select event
+        /// </summary>
+        event SongSelectHandler SongSelect;
+
+        /// <summary>
+        /// Tune Request event
+        /// </summary>
+        event TuneRequestHandler TuneRequest;
     }
 
     public delegate void NoteOffMessageHandler(IMidiInputDevice sender, in NoteOffMessage msg);
@@ -75,4 +94,12 @@ namespace RtMidi.Core.Devices
     public delegate void NrpnMessageHandler(IMidiInputDevice sender, in NrpnMessage msg);
 
     public delegate void SysExMessageHandler(IMidiInputDevice sender, in SysExMessage msg);
+    
+    public delegate void MidiTimeCodeQuarterFrameHandler(IMidiInputDevice sender, in MidiTimeCodeQuarterFrameMessage msg);
+
+    public delegate void SongPositionPointerHandler(IMidiInputDevice sender, in SongPositionPointerMessage msg);
+
+    public delegate void SongSelectHandler(IMidiInputDevice sender, in SongSelectMessage msg);
+
+    public delegate void TuneRequestHandler(IMidiInputDevice sender, in TuneRequestMessage msg);
 }

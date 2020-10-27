@@ -138,6 +138,54 @@ namespace RtMidi.Core.Tests
                 Assert.Equal(syx[i - 1], msg[i]);
             Assert.Equal(Midi.Status.SysExEnd, msg[msg.Length - 1]);
         }
+        
+        [Fact]
+        public void Should_Send_MidiTimeCodeQuarterFrameMessage()
+        {
+            AllInRange(0, 7, messageType => AllInRange(0, 7, values =>
+            {
+                var midiTimeCodeQuarterFrameMessage = new MidiTimeCodeQuarterFrameMessage(messageType, values);
+                _sut.Send(in midiTimeCodeQuarterFrameMessage);
+                Assert.True(_outputDeviceMock.Messages.TryDequeue(out var msg));
+                Assert.Equal(MidiTimeCodeQuarterFrameMessage(messageType, values), msg);
+            }));
+        }
+
+        [Fact]
+        public void Should_Send_SongPositionPointerMessage()
+        {
+            AllInRange(0, 16383, midiBeats =>
+            {
+                var songPositionPointerMessage = new SongPositionPointerMessage(midiBeats);
+                _sut.Send(in songPositionPointerMessage);
+
+                Assert.True(_outputDeviceMock.Messages.TryDequeue(out var msg));
+                Assert.Equal(SongPositionPointerMessage(midiBeats), msg);
+            });
+        }
+
+        [Fact]
+        public void Should_Send_SongSelectMessage()
+        {
+            AllInRange(0, 127, song =>
+            {
+                var songSelectMessage = new SongSelectMessage(song);
+                _sut.Send(in songSelectMessage);
+
+                Assert.True(_outputDeviceMock.Messages.TryDequeue(out var msg));
+                Assert.Equal(SongSelectMessage(song), msg);
+            });
+        }
+
+        [Fact]
+        public void Should_Send_TuneRequestMessage()
+        {
+            var tuneRequestMessage = new TuneRequestMessage();
+            _sut.Send(in tuneRequestMessage);
+
+            Assert.True(_outputDeviceMock.Messages.TryDequeue(out var msg));
+            Assert.Equal(TuneRequestMessage(), msg);
+        }
 
         private class RtMidiOutputDeviceMock : IRtMidiOutputDevice
         {

@@ -21,6 +21,10 @@ namespace RtMidi.Core.Tests
         private readonly Queue<PitchBendMessage> _pitchBendMessages = new Queue<PitchBendMessage>();
         private readonly Queue<NrpnMessage> _nrpnMessages = new Queue<NrpnMessage>();
         private readonly Queue<SysExMessage> _sysExMessages = new Queue<SysExMessage>();
+        private readonly Queue<MidiTimeCodeQuarterFrameMessage> _midiTimeCodeQuarterFrameMessages = new Queue<MidiTimeCodeQuarterFrameMessage>();
+        private readonly Queue<SongPositionPointerMessage> _songPositionPointerMessages = new Queue<SongPositionPointerMessage>();
+        private readonly Queue<SongSelectMessage> _songSelectMessages = new Queue<SongSelectMessage>();
+        private readonly Queue<TuneRequestMessage> _tuneRequestMessages = new Queue<TuneRequestMessage>();
         
         public MidiInputDeviceTests(ITestOutputHelper output) : base(output)
         {
@@ -36,6 +40,10 @@ namespace RtMidi.Core.Tests
             _sut.PitchBend += (IMidiInputDevice sender, in PitchBendMessage e) => _pitchBendMessages.Enqueue(e);
             _sut.Nrpn += (IMidiInputDevice sender, in NrpnMessage e) => _nrpnMessages.Enqueue(e);
             _sut.SysEx += (IMidiInputDevice sender, in SysExMessage e) => _sysExMessages.Enqueue(e);
+            _sut.MidiTimeCodeQuarterFrame += (IMidiInputDevice sender, in MidiTimeCodeQuarterFrameMessage e) => _midiTimeCodeQuarterFrameMessages.Enqueue(e);
+            _sut.SongPositionPointer += (IMidiInputDevice sender, in SongPositionPointerMessage e) => _songPositionPointerMessages.Enqueue(e);
+            _sut.SongSelect += (IMidiInputDevice sender, in SongSelectMessage e) => _songSelectMessages.Enqueue(e);
+            _sut.TuneRequest += (IMidiInputDevice sender, in TuneRequestMessage e) => _tuneRequestMessages.Enqueue(e);
         }
 
         [Fact]
@@ -368,6 +376,52 @@ namespace RtMidi.Core.Tests
             
             for (int i = 0; i < msg.Data.Length; i++)
                 Assert.Equal(syx[i], msg.Data[i]);
+        }
+
+        [Fact]
+        public void Should_Fire_MidiTimeCodeQuarterFrameMessages()
+        {
+            AllInRange(0, 7, messageType => 
+                AllInRange(0,7, values =>
+                {
+                    _inputDeviceMock.OnMessage(MidiTimeCodeQuarterFrameMessage(messageType, values));
+
+                    Assert.True(_midiTimeCodeQuarterFrameMessages.TryDequeue(out var msg));
+                    Assert.Equal(messageType, msg.MessageType);
+                    Assert.Equal(values, msg.Values);
+                }));
+        }
+
+        [Fact]
+        public void Should_Fire_SongPositionPointerMessages()
+        {
+            AllInRange(0, 16383, midiBeats =>
+            {
+                _inputDeviceMock.OnMessage(SongPositionPointerMessage(midiBeats));
+
+                Assert.True(_songPositionPointerMessages.TryDequeue(out var msg));
+                Assert.Equal(midiBeats, msg.MidiBeats);
+            });
+        }
+
+        [Fact]
+        public void Should_Fire_SongSelectMessages()
+        {
+            AllInRange(0, 127, song =>
+            {
+                _inputDeviceMock.OnMessage(SongSelectMessage(song));
+
+                Assert.True(_songSelectMessages.TryDequeue(out var msg));
+                Assert.Equal(song, msg.Song);
+            });
+        }
+
+        [Fact]
+        public void Should_Fire_TuneRequestMessage()
+        {
+            _inputDeviceMock.OnMessage(TuneRequestMessage());
+
+            Assert.True(_tuneRequestMessages.TryDequeue(out var _));
         }
     }
 }

@@ -37,7 +37,7 @@ namespace RtMidi.Core.Messages
             return new[]
             {
                 StructHelper.StatusByte(Midi.Status.PitchBendChange, Channel),
-                StructHelper.DataByte(Value & 0b0111_1111),
+                StructHelper.DataByte(Value),
                 StructHelper.DataByte(Value >> 7)
             };
         }
