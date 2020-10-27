@@ -4,7 +4,7 @@ branches:
 
 shallow_clone: true
 
-image: Visual Studio 2019
+image: Previous Visual Studio 2017
 version: 0.0.{build}
 configuration: Release
 
