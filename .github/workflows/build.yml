@@ -1,0 +1,40 @@
+name: CI Build
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+
+      - name: Bump version and push tag
+        id: bump_version
+        uses: anothrNick/github-tag-action@1.67.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+          WITH_V: true
+          DRY_RUN: true
+
+      - name: Setup .net
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0
+
+      - name: Restore NuGet
+        run: dotnet restore --locked-mode
+
+      - name: Run tests
+        run: dotnet test --no-restore
+
+      - name: Build package
+        run: dotnet pack --no-restore --version-suffix ${{ steps.bump_version.outputs.tag }} --configuration Release RtMidi.Core/RtMidi.Core.csproj

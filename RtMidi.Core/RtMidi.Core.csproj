@@ -1,53 +1,53 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>7.2</LangVersion>
-    <PackageId>RtMidi.Core</PackageId>
-    <PackageVersion>1.0.39-alpha-3</PackageVersion>
-    <Authors>Michael Dahl</Authors>
-    <Description>Cross-platform MIDI library for .Net Standard built on top of RtMIdi with included support for Windows x64 and macOS</Description>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/micdah/RtMidi.Core</PackageProjectUrl>
-    <PackageIconUrl>https://github.com/micdah/RtMidi.Core/raw/master/icon.png</PackageIconUrl>
-    <PackageTags>midi netstandard netcore</PackageTags>
-    <Copyright>Copyright 2017 (c) Michael Dahl. All Rights reserved.</Copyright>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Include="librtmidi.dylib">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PackagePath>build\</PackagePath>
-      <Pack>true</Pack>
-    </None>
-    <None Include="rtmidi.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PackagePath>build\</PackagePath>
-      <Pack>true</Pack>
-    </None>
-    <None Include="rtmidi32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PackagePath>build\</PackagePath>
-      <Pack>true</Pack>
-    </None>
-    <None Include="RtMidi.Core.targets">
-      <PackagePath>build\</PackagePath>
-      <Pack>true</Pack>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Unmanaged\" />
-    <Folder Include="Unmanaged\API\" />
-    <Folder Include="Unmanaged\Devices\" />
-    <Folder Include="Unmanaged\Devices\Infos\" />
-    <Folder Include="Devices\" />
-    <Folder Include="Devices\Infos\" />
-    <Folder Include="Devices\Nrpn\" />
-    <Folder Include="Enums\" />
-    <Folder Include="Enums\Core" />
-    <Folder Include="Messages\" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Serilog" Version="2.8.0" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>7.2</LangVersion>
+        <PackageId>RtMidi.Core</PackageId>
+        <Authors>Michael Dahl</Authors>
+        <Description>Cross-platform MIDI library for .Net Standard built on top of RtMIdi with included support for Windows x64 and macOS</Description>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+        <PackageProjectUrl>https://github.com/micdah/RtMidi.Core</PackageProjectUrl>
+        <PackageIconUrl>https://github.com/micdah/RtMidi.Core/raw/master/icon.png</PackageIconUrl>
+        <PackageTags>midi netstandard netcore</PackageTags>
+        <Copyright>Copyright 2023 (c) Michael Dahl. All Rights reserved.</Copyright>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="librtmidi.dylib">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>build\</PackagePath>
+            <Pack>true</Pack>
+        </None>
+        <None Include="rtmidi.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>build\</PackagePath>
+            <Pack>true</Pack>
+        </None>
+        <None Include="rtmidi32.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackagePath>build\</PackagePath>
+            <Pack>true</Pack>
+        </None>
+        <None Include="RtMidi.Core.targets">
+            <PackagePath>build\</PackagePath>
+            <Pack>true</Pack>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Unmanaged\"/>
+        <Folder Include="Unmanaged\API\"/>
+        <Folder Include="Unmanaged\Devices\"/>
+        <Folder Include="Unmanaged\Devices\Infos\"/>
+        <Folder Include="Devices\"/>
+        <Folder Include="Devices\Infos\"/>
+        <Folder Include="Devices\Nrpn\"/>
+        <Folder Include="Enums\"/>
+        <Folder Include="Enums\Core"/>
+        <Folder Include="Messages\"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Serilog" Version="2.8.0"/>
+    </ItemGroup>
 </Project>
