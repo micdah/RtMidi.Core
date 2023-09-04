@@ -53,8 +53,7 @@ namespace RtMidi.Core.Messages
                 return false;
             }
 
-            msg = new NoteOnMessage
-            (
+            msg = new(
                 (Channel) (Midi.ChannelBitmask & message[0]),
                 (Key) (Midi.DataBitmask & message[1]),
                 Midi.DataBitmask & message[2]

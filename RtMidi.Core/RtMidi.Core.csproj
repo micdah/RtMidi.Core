@@ -2,7 +2,7 @@
     <PropertyGroup>
         <OutputType>Library</OutputType>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>7.2</LangVersion>
+        <LangVersion>latest</LangVersion>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <PackageId>RtMidi.Core</PackageId>
         <PackageVersion>1.0.52</PackageVersion>

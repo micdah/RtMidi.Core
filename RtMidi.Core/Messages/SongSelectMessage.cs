@@ -37,7 +37,7 @@ namespace RtMidi.Core.Messages
                 return false;
             }
 
-            msg = new SongSelectMessage(Midi.DataBitmask & message[1]);
+            msg = new(Midi.DataBitmask & message[1]);
             return true;
         }
     }

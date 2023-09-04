@@ -44,7 +44,7 @@ namespace RtMidi.Core.Tests.Messages
                     ControlFunction.NonRegisteredParameterNumberLSB,
                     ControlFunction.DataEntryMSB,
                     ControlFunction.LSBForControl6DataEntry);
-                msgs[i] = new ControlChangeMessage(Channel.Channel2, msgs[i].Control, msgs[i].Value);
+                msgs[i] = new(Channel.Channel2, msgs[i].Control, msgs[i].Value);
 
                 // Test
                 Assert.False(NrpnMessage.IsExpectedControls(msgs));
@@ -56,7 +56,7 @@ namespace RtMidi.Core.Tests.Messages
             var msgs = new ControlChangeMessage[controlFunctions.Length];
             for (var i = 0; i < controlFunctions.Length; i++)
             {
-                msgs[i] = new ControlChangeMessage(channel, (int)controlFunctions[i], 0);
+                msgs[i] = new(channel, (int)controlFunctions[i], 0);
             }
             return msgs;
         }

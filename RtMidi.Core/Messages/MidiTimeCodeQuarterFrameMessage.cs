@@ -48,7 +48,7 @@ namespace RtMidi.Core.Messages
             var data = Midi.DataBitmask & message[1];
             var messageType = data >> 3;
             var values = data & 0b0000_0111;
-            msg = new MidiTimeCodeQuarterFrameMessage(messageType, values);
+            msg = new(messageType, values);
             return true;
         }
     }

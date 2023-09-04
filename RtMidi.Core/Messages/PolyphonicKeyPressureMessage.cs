@@ -44,17 +44,16 @@ namespace RtMidi.Core.Messages
             };
         }
 
-        internal static bool TryDecode(byte[] message, out PolyphonicKeyPressureMessage msg) 
+        internal static bool TryDecode(byte[] message, out PolyphonicKeyPressureMessage msg)
         {
             if (message.Length != 3)
             {
-                Log.Error("Incorrect nuber of bytes ({Length}) received for Polyphonic Key Pressure message", message.Length);
+                Log.Error("Incorrect number of bytes ({Length}) received for Polyphonic Key Pressure message", message.Length);
                 msg = default;
                 return false;
             }
 
-            msg = new PolyphonicKeyPressureMessage
-            (
+            msg = new(
                 (Channel) (Midi.ChannelBitmask & message[0]),
                 (Key) (Midi.DataBitmask & message[1]),
                 Midi.DataBitmask & message[2]

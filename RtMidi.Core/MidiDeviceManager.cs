@@ -23,7 +23,7 @@ namespace RtMidi.Core
         /// </summary>
         public static MidiDeviceManager Default => DefaultHolder.Value;
 
-        private static readonly Lazy<MidiDeviceManager> DefaultHolder = new Lazy<MidiDeviceManager>(() => new MidiDeviceManager());
+        private static readonly Lazy<MidiDeviceManager> DefaultHolder = new(() => new());
 
         private readonly RtMidiDeviceManager _rtDeviceManager;
         private bool _disposed;

@@ -39,7 +39,7 @@ namespace RtMidi.Core.Messages
                 return false;
             }
 
-            msg = new SongPositionPointerMessage(
+            msg = new(
                 // Data byte 1 = LSB
                 (Midi.DataBitmask & message[1]) |
                 // Data byte 2 = MSB

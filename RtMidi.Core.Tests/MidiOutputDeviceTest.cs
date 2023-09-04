@@ -15,7 +15,7 @@ namespace RtMidi.Core.Tests
 
         public MidiOutputDeviceTest(ITestOutputHelper output) : base(output)
         {
-            _outputDeviceMock = new RtMidiOutputDeviceMock();
+            _outputDeviceMock = new();
             _sut = new MidiOutputDevice(_outputDeviceMock, string.Empty);
         }
 
@@ -189,7 +189,7 @@ namespace RtMidi.Core.Tests
 
         private class RtMidiOutputDeviceMock : IRtMidiOutputDevice
         {
-            public readonly Queue<byte[]> Messages = new Queue<byte[]>();
+            public readonly Queue<byte[]> Messages = new();
 
             public bool IsOpen => true;
 

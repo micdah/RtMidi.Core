@@ -24,7 +24,7 @@ namespace RtMidi.Core.Messages
                 return false;
             }
 
-            msg = new TuneRequestMessage();
+            msg = new();
             return true;
         }
     }

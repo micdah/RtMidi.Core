@@ -51,8 +51,7 @@ namespace RtMidi.Core.Messages
                 return false;
             }
 
-            msg = new PitchBendMessage
-            (
+            msg = new(
                 (Channel) (Midi.ChannelBitmask & message[0]),
                 // Data byte 1 = LSB
                 (Midi.DataBitmask & message[1]) |

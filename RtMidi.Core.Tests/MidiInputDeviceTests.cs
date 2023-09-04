@@ -12,38 +12,38 @@ namespace RtMidi.Core.Tests
     {
         private readonly RtMidiInputDeviceMock _inputDeviceMock;
         private readonly MidiInputDevice _sut;
-        private readonly Queue<NoteOffMessage> _noteOffMessages = new Queue<NoteOffMessage>();
-        private readonly Queue<NoteOnMessage> _noteOnMessages = new Queue<NoteOnMessage>();
-        private readonly Queue<PolyphonicKeyPressureMessage> _polyphonicKeyPressureMessages = new Queue<PolyphonicKeyPressureMessage>();
-        private readonly Queue<ControlChangeMessage> _controlChangeMessages = new Queue<ControlChangeMessage>();
-        private readonly Queue<ProgramChangeMessage> _programChangeMessages = new Queue<ProgramChangeMessage>();
-        private readonly Queue<ChannelPressureMessage> _channelPressureMessages = new Queue<ChannelPressureMessage>();
-        private readonly Queue<PitchBendMessage> _pitchBendMessages = new Queue<PitchBendMessage>();
-        private readonly Queue<NrpnMessage> _nrpnMessages = new Queue<NrpnMessage>();
-        private readonly Queue<SysExMessage> _sysExMessages = new Queue<SysExMessage>();
-        private readonly Queue<MidiTimeCodeQuarterFrameMessage> _midiTimeCodeQuarterFrameMessages = new Queue<MidiTimeCodeQuarterFrameMessage>();
-        private readonly Queue<SongPositionPointerMessage> _songPositionPointerMessages = new Queue<SongPositionPointerMessage>();
-        private readonly Queue<SongSelectMessage> _songSelectMessages = new Queue<SongSelectMessage>();
-        private readonly Queue<TuneRequestMessage> _tuneRequestMessages = new Queue<TuneRequestMessage>();
-        
+        private readonly Queue<NoteOffMessage> _noteOffMessages = new();
+        private readonly Queue<NoteOnMessage> _noteOnMessages = new();
+        private readonly Queue<PolyphonicKeyPressureMessage> _polyphonicKeyPressureMessages = new();
+        private readonly Queue<ControlChangeMessage> _controlChangeMessages = new();
+        private readonly Queue<ProgramChangeMessage> _programChangeMessages = new();
+        private readonly Queue<ChannelPressureMessage> _channelPressureMessages = new();
+        private readonly Queue<PitchBendMessage> _pitchBendMessages = new();
+        private readonly Queue<NrpnMessage> _nrpnMessages = new();
+        private readonly Queue<SysExMessage> _sysExMessages = new();
+        private readonly Queue<MidiTimeCodeQuarterFrameMessage> _midiTimeCodeQuarterFrameMessages = new();
+        private readonly Queue<SongPositionPointerMessage> _songPositionPointerMessages = new();
+        private readonly Queue<SongSelectMessage> _songSelectMessages = new();
+        private readonly Queue<TuneRequestMessage> _tuneRequestMessages = new();
+
         public MidiInputDeviceTests(ITestOutputHelper output) : base(output)
         {
-            _inputDeviceMock = new RtMidiInputDeviceMock();
-            _sut = new MidiInputDevice(_inputDeviceMock, string.Empty);
+            _inputDeviceMock = new();
+            _sut = new(_inputDeviceMock, string.Empty);
 
-            _sut.NoteOff += (IMidiInputDevice sender, in NoteOffMessage e) => _noteOffMessages.Enqueue(e);
-            _sut.NoteOn += (IMidiInputDevice sender, in NoteOnMessage e) => _noteOnMessages.Enqueue(e);
-            _sut.PolyphonicKeyPressure += (IMidiInputDevice sender, in PolyphonicKeyPressureMessage e) => _polyphonicKeyPressureMessages.Enqueue(e);
-            _sut.ControlChange += (IMidiInputDevice sender, in ControlChangeMessage e) => _controlChangeMessages.Enqueue(e);
-            _sut.ProgramChange += (IMidiInputDevice sender, in ProgramChangeMessage e) => _programChangeMessages.Enqueue(e);
-            _sut.ChannelPressure += (IMidiInputDevice sender, in ChannelPressureMessage e) => _channelPressureMessages.Enqueue(e);
-            _sut.PitchBend += (IMidiInputDevice sender, in PitchBendMessage e) => _pitchBendMessages.Enqueue(e);
-            _sut.Nrpn += (IMidiInputDevice sender, in NrpnMessage e) => _nrpnMessages.Enqueue(e);
-            _sut.SysEx += (IMidiInputDevice sender, in SysExMessage e) => _sysExMessages.Enqueue(e);
-            _sut.MidiTimeCodeQuarterFrame += (IMidiInputDevice sender, in MidiTimeCodeQuarterFrameMessage e) => _midiTimeCodeQuarterFrameMessages.Enqueue(e);
-            _sut.SongPositionPointer += (IMidiInputDevice sender, in SongPositionPointerMessage e) => _songPositionPointerMessages.Enqueue(e);
-            _sut.SongSelect += (IMidiInputDevice sender, in SongSelectMessage e) => _songSelectMessages.Enqueue(e);
-            _sut.TuneRequest += (IMidiInputDevice sender, in TuneRequestMessage e) => _tuneRequestMessages.Enqueue(e);
+            _sut.NoteOff += (IMidiInputDevice _, in NoteOffMessage e) => _noteOffMessages.Enqueue(e);
+            _sut.NoteOn += (IMidiInputDevice _, in NoteOnMessage e) => _noteOnMessages.Enqueue(e);
+            _sut.PolyphonicKeyPressure += (IMidiInputDevice _, in PolyphonicKeyPressureMessage e) => _polyphonicKeyPressureMessages.Enqueue(e);
+            _sut.ControlChange += (IMidiInputDevice _, in ControlChangeMessage e) => _controlChangeMessages.Enqueue(e);
+            _sut.ProgramChange += (IMidiInputDevice _, in ProgramChangeMessage e) => _programChangeMessages.Enqueue(e);
+            _sut.ChannelPressure += (IMidiInputDevice _, in ChannelPressureMessage e) => _channelPressureMessages.Enqueue(e);
+            _sut.PitchBend += (IMidiInputDevice _, in PitchBendMessage e) => _pitchBendMessages.Enqueue(e);
+            _sut.Nrpn += (IMidiInputDevice _, in NrpnMessage e) => _nrpnMessages.Enqueue(e);
+            _sut.SysEx += (IMidiInputDevice _, in SysExMessage e) => _sysExMessages.Enqueue(e);
+            _sut.MidiTimeCodeQuarterFrame += (IMidiInputDevice _, in MidiTimeCodeQuarterFrameMessage e) => _midiTimeCodeQuarterFrameMessages.Enqueue(e);
+            _sut.SongPositionPointer += (IMidiInputDevice _, in SongPositionPointerMessage e) => _songPositionPointerMessages.Enqueue(e);
+            _sut.SongSelect += (IMidiInputDevice _, in SongSelectMessage e) => _songSelectMessages.Enqueue(e);
+            _sut.TuneRequest += (IMidiInputDevice _, in TuneRequestMessage e) => _tuneRequestMessages.Enqueue(e);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace RtMidi.Core.Tests
         }
 
         [Fact]
-        public void Should_Fire_NoteOffMessages() 
+        public void Should_Fire_NoteOffMessages()
         {
             AllEnums<Channel>(channel => AllEnums<Key>(key => AllInRange(0,127, velocity =>
             {
@@ -100,9 +100,9 @@ namespace RtMidi.Core.Tests
         }
 
         [Fact]
-        public void Should_Fire_PolyphonicKeyPressureMessages() 
+        public void Should_Fire_PolyphonicKeyPressureMessages()
         {
-            AllEnums<Channel>(channel => AllEnums<Key>(key => AllInRange(0,127, pressure => 
+            AllEnums<Channel>(channel => AllEnums<Key>(key => AllInRange(0,127, pressure =>
             {
                 _inputDeviceMock.OnMessage(PolyphonicKeyPressureMessage(channel, key, pressure));
                 Assert.True(_polyphonicKeyPressureMessages.TryDequeue(out var msg),
@@ -126,7 +126,7 @@ namespace RtMidi.Core.Tests
                 {
                     _inputDeviceMock.OnMessage(ControlChangeMessage(channel, 0, value));
                 }
-                
+
                 Assert.True(_controlChangeMessages.TryDequeue(out var msg),
                     $"Expected Control Change message for channel={channel} control={control} value={value}");
 
@@ -193,7 +193,7 @@ namespace RtMidi.Core.Tests
                 var valueMsb = value >> 7;
                 var valueLsb = value & Midi.DataBitmask;
 
-                _inputDeviceMock.OnMessage(ControlChangeMessage(channel, 
+                _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
                     (int) ControlFunction.NonRegisteredParameterNumberMSB, parameterMsb));
                 Assert.False(_controlChangeMessages.TryDequeue(out var _));
 
@@ -217,7 +217,7 @@ namespace RtMidi.Core.Tests
         }
 
         [Fact]
-        public void Should_Fire_NRPNMessage_And_ControlChange() 
+        public void Should_Fire_NRPNMessage_And_ControlChange()
         {
             _sut.SetNrpnMode(NrpnMode.OnSendControlChange);
 
@@ -230,7 +230,7 @@ namespace RtMidi.Core.Tests
 
                 _inputDeviceMock.OnMessage(ControlChangeMessage(channel,
                     (int)ControlFunction.NonRegisteredParameterNumberMSB, parameterMsb));
-                
+
                 Assert.True(_controlChangeMessages.TryDequeue(out var ccParamMsb));
                 Assert.Equal(channel, ccParamMsb.Channel);
                 Assert.Equal(ControlFunction.NonRegisteredParameterNumberMSB, ccParamMsb.ControlFunction);
@@ -371,9 +371,26 @@ namespace RtMidi.Core.Tests
         {
             byte[] syx = {0x7E, 0x7F, 0x06, 0x02}; // Universal Device Inquiry Response
             _inputDeviceMock.OnMessage(SysExMessage(syx));
+
             Assert.True(_sysExMessages.TryDequeue(out var msg),
                 $"Expected SysEx message for {string.Join(", ", syx)}");
-            
+
+            for (int i = 0; i < msg.Data.Length; i++)
+                Assert.Equal(syx[i], msg.Data[i]);
+        }
+
+        [Fact]
+        public void Should_Fire_SysExMessage_Truncated()
+        {
+            byte[] syx = {0x7E, 0x7F, 0x06, 0x02}; // Universal Device Inquiry Response
+            var bytes = SysExMessage(syx);
+            _inputDeviceMock.OnMessage(bytes[0..2]);
+            _inputDeviceMock.OnMessage(bytes[2..4]);
+            _inputDeviceMock.OnMessage(bytes[4..]);
+
+            Assert.True(_sysExMessages.TryDequeue(out var msg),
+                $"Expected SysEx message for {string.Join(", ", syx)}");
+
             for (int i = 0; i < msg.Data.Length; i++)
                 Assert.Equal(syx[i], msg.Data[i]);
         }
@@ -381,7 +398,7 @@ namespace RtMidi.Core.Tests
         [Fact]
         public void Should_Fire_MidiTimeCodeQuarterFrameMessages()
         {
-            AllInRange(0, 7, messageType => 
+            AllInRange(0, 7, messageType =>
                 AllInRange(0,7, values =>
                 {
                     _inputDeviceMock.OnMessage(MidiTimeCodeQuarterFrameMessage(messageType, values));
