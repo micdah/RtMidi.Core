@@ -37,8 +37,4 @@ jobs:
         run: dotnet test --no-restore
 
       - name: Build package
-        run: dotnet pack --no-restore \
-          -p:PackageVersion=${{ steps.bump_version.outputs.tag }}\
-          --configuration Release\
-          --include-symbols\
-          RtMidi.Core/RtMidi.Core.csproj
+        run: dotnet pack --no-restore -p:PackageVersion=${{ steps.bump_version.outputs.tag }} --configuration Release --include-symbols RtMidi.Core/RtMidi.Core.csproj
