@@ -5,7 +5,7 @@
         <LangVersion>7.2</LangVersion>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <PackageId>RtMidi.Core</PackageId>
-        <PackageVersion>1.0.52-beta-3</PackageVersion>
+        <PackageVersion>1.0.52</PackageVersion>
         <Authors>Michael Dahl</Authors>
         <Description>Cross-platform MIDI library for .Net Standard built on top of RtMIdi with included support for Windows x64 and macOS</Description>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

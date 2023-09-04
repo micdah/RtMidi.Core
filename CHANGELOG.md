@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.52
+* Added Linux support - thanks [abirke](https://github.com/abirke)
+
 ## 1.0.51
 * Added missing System Common Messages:
   - MIDI Time Code Quarter Frame
