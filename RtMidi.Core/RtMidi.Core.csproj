@@ -6,6 +6,7 @@
         <PackageId>RtMidi.Core</PackageId>
         <Authors>Michael Dahl</Authors>
         <Description>Cross-platform MIDI library for .Net Standard built on top of RtMIdi with included support for Windows x64 and macOS</Description>
+        <PackageVersion>1.0.52-beta-1</PackageVersion>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageReleaseNotes>Initial release</PackageReleaseNotes>
         <PackageProjectUrl>https://github.com/micdah/RtMidi.Core</PackageProjectUrl>
