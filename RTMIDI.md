@@ -13,7 +13,7 @@ Guides on how to compile the runtime-dependent library binary.
 ### OS X
 
 1. Open terminal and navigate to the root of the repository
-n1. Compile project: 
+1. Compile project:
     ```bash
     $ ./autogen.sh --no-configure
     $ ./configure
@@ -59,3 +59,17 @@ Requires Visual Studio 2017 (_or newer_) with the following components installed
 * Individual components:
   * Windows 8.1 SDK
   * Windows Universal CRT SDK
+
+### Linux
+
+1. Open terminal and navigate to the root of the repository
+1. Compile project:
+    ```bash
+    $ ./autogen.sh
+    $ ./configure
+    $ make
+    ```
+1. Copy the newly compiled `so` file into the _RtMidi.Core_ project:
+    ```bash
+    $ cp .libs/librtmidi.so ~/git/RtMidi.Core/RtMidi.Core/librtmidi.so
+    ```

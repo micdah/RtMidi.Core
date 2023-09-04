@@ -27,13 +27,18 @@ namespace RtMidi.Core.Samples
             // List all available MIDI API's
             foreach (var api in MidiDeviceManager.Default.GetAvailableMidiApis())
                 Console.WriteLine($"Available API: {api}");
-            
+
             // Listen to all available midi devices
             void ControlChangeHandler(IMidiInputDevice sender, in ControlChangeMessage msg)
             {
                 Console.WriteLine($"[{sender.Name}] ControlChange: Channel:{msg.Channel} Control:{msg.Control} Value:{msg.Value}");
-            } 
-            
+            }
+
+            void NoteOnHandler(IMidiInputDevice sender, in NoteOnMessage msg)
+            {
+                Console.WriteLine($"[{sender.Name}] NoteOn: Channel:{msg.Channel} Key:{msg.Key} Velocity:{msg.Velocity}");
+            }
+
             var devices = new List<IMidiInputDevice>();
             try
             {
@@ -43,8 +48,9 @@ namespace RtMidi.Core.Samples
 
                     var inputDevice = inputDeviceInfo.CreateDevice();
                     devices.Add(inputDevice);
-                    
+
                     inputDevice.ControlChange += ControlChangeHandler;
+                    inputDevice.NoteOn += NoteOnHandler;
                     inputDevice.Open();
                 }
 
