@@ -73,11 +73,11 @@ namespace RtMidi.Core.Devices
         {
             if (_sysExBuffer != null)
             {
+                _sysExBuffer.AddRange(message);
+
                 // Check for end of SysEx
                 if (message[message.Length - 1] == Midi.Status.SysExEnd)
                 {
-                    _sysExBuffer.AddRange(message);
-
                     try
                     {
                         if (SysExMessage.TryDecode(_sysExBuffer.ToArray(), out var sysExMessage))
@@ -87,10 +87,6 @@ namespace RtMidi.Core.Devices
                     {
                         _sysExBuffer = null;
                     }
-                }
-                else
-                {
-                    _sysExBuffer.AddRange(message);
                 }
             }
 
