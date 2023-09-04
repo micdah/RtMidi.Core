@@ -2,7 +2,7 @@
 
 ![icon](https://github.com/micdah/RtMidi.Core/raw/master/icon.png)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/tfn3a8lhmiyla5ox/branch/master?svg=true)](https://ci.appveyor.com/project/MichaelDahl/rtmidi-core/branch/master)
+![Build status](https://github.com/micdah/RtMidi.Core/actions/workflows/build.yml/badge.svg)
 [![NuGet](https://img.shields.io/nuget/v/RtMidi.Core.svg)](https://www.nuget.org/packages/RtMidi.Core/)
 
 
