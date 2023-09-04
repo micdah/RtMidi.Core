@@ -64,8 +64,7 @@ namespace RtMidi.Core.Messages
             }
 
             var control = Midi.DataBitmask & message[1];
-            msg = new ControlChangeMessage
-            (
+            msg = new(
                 (Channel) (Midi.ChannelBitmask & message[0]),
                 control,
                 Midi.DataBitmask & message[2]

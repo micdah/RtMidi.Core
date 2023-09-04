@@ -49,8 +49,7 @@ namespace RtMidi.Core.Messages
                 return false;
             }
 
-            msg = new ChannelPressureMessage
-            (
+            msg = new(
                 (Channel) (Midi.ChannelBitmask & message[0]),
                 Midi.DataBitmask & message[1]
             );

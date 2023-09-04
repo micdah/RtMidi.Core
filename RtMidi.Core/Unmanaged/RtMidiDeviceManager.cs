@@ -9,7 +9,7 @@ namespace RtMidi.Core.Unmanaged
     {
         public static RtMidiDeviceManager Default => DefaultHolder.Value;
 
-        public static readonly Lazy<RtMidiDeviceManager> DefaultHolder = new Lazy<RtMidiDeviceManager>(() => new RtMidiDeviceManager());
+        public static readonly Lazy<RtMidiDeviceManager> DefaultHolder = new(() => new());
 
         private readonly RtMidiInputDevice _defaultInputDevice;
         private readonly RtMidiOutputDevice _defaultOutputDevice;
@@ -21,8 +21,8 @@ namespace RtMidi.Core.Unmanaged
              * These are used exlusively to get number of available ports for the given
              * type of device (input/output) as well as to provide port names
              */
-            _defaultInputDevice = new RtMidiInputDevice(0);
-            _defaultOutputDevice = new RtMidiOutputDevice(0);
+            _defaultInputDevice = new(0);
+            _defaultOutputDevice = new(0);
         }
 
         ~RtMidiDeviceManager() 
@@ -39,7 +39,7 @@ namespace RtMidi.Core.Unmanaged
             {
                 for (uint port = 0; port < _defaultInputDevice.GetPortCount(); port++)
                 {
-                    yield return new RtMidiInputDeviceInfo(port, _defaultInputDevice.GetPortName(port));
+                    yield return new(port, _defaultInputDevice.GetPortName(port));
                 }
             }
         }
@@ -53,7 +53,7 @@ namespace RtMidi.Core.Unmanaged
             {
                 for (uint port = 0; port < _defaultOutputDevice.GetPortCount(); port++) 
                 {
-                    yield return new RtMidiOutputDeviceInfo(port, _defaultOutputDevice.GetPortName(port));
+                    yield return new(port, _defaultOutputDevice.GetPortName(port));
                 }
             }
         }

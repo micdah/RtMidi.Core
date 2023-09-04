@@ -7,7 +7,7 @@ namespace RtMidi.Core.Enums.Core
     internal static class EnumExtensions
     {
         private static readonly ConcurrentDictionary<(Type EnumType, string EnumName), EnumDisplayNameAttribute> Cache =
-            new ConcurrentDictionary<(Type EnumType, string EnumName), EnumDisplayNameAttribute>();
+            new();
 
         public static EnumDisplayNameAttribute GetDisplayNameAttribute<TEnum>(TEnum enumValue)
             where TEnum : struct

@@ -99,8 +99,7 @@ namespace RtMidi.Core.Messages
                 return false;
             }
 
-            msg = new NrpnMessage
-            (
+            msg = new(
                 messages[0].Channel,
                 (messages[0].Value & Midi.DataBitmask) << 7 | (messages[1].Value & Midi.DataBitmask),
                 (messages[2].Value & Midi.DataBitmask) << 7 | (messages[3].Value & Midi.DataBitmask)

@@ -36,13 +36,12 @@ namespace RtMidi.Core.Messages
 
             if (message[0] != Midi.Status.SysExStart || message[message.Length - 1] != Midi.Status.SysExEnd)
             {
-                Log.Error("Not a valid SysEx message received for SysEx message", message.Length);
+                Log.Error("Not a valid SysEx message received for SysEx message");
                 msg = default;
                 return false;
             }
 
-            msg = new SysExMessage
-            (
+            msg = new(
                 message
             );
             return true;

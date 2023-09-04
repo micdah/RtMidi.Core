@@ -13,7 +13,7 @@ namespace RtMidi.Core.Tests
 
         public MidiDeviceTests(ITestOutputHelper output) : base(output)
         {
-            _rtMidiDevice = new Mock<IRtMidiDevice>();
+            _rtMidiDevice = new();
             _sut = new MidiDeviceMock(_rtMidiDevice.Object, string.Empty);
         }
 

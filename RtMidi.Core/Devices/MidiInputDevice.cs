@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using RtMidi.Core.Messages;
 using RtMidi.Core.Unmanaged.Devices;
 using Serilog;
@@ -11,6 +12,7 @@ namespace RtMidi.Core.Devices
         private static readonly ILogger Log = Serilog.Log.ForContext<MidiInputDevice>();
         private readonly IRtMidiInputDevice _inputDevice;
         private readonly NrpnInterpreter[] _nrpnInterpreters;
+        private List<byte> _sysExBuffer;
 
         public MidiInputDevice(IRtMidiInputDevice rtMidiInputDevice, string name) : base(rtMidiInputDevice, name)
         {
@@ -20,13 +22,13 @@ namespace RtMidi.Core.Devices
             _nrpnInterpreters = new NrpnInterpreter[16];
             for (var i = 0; i < 16; i++)
             {
-                _nrpnInterpreters[i] = new NrpnInterpreter(OnControlChange, OnNrpn);
+                _nrpnInterpreters[i] = new(OnControlChange, OnNrpn);
             }
 
             // Set default NRPN mode
             SetNrpnMode(NrpnMode.On);
         }
-        
+
         public event NoteOffMessageHandler NoteOff;
         public event NoteOnMessageHandler NoteOn;
         public event PolyphonicKeyPressureMessageHandler PolyphonicKeyPressure;
@@ -49,7 +51,7 @@ namespace RtMidi.Core.Devices
                 return;
             }
 
-            if (message.Length == 0) 
+            if (message.Length == 0)
             {
                 Log.Error("Received empty message from device");
                 return;
@@ -57,7 +59,7 @@ namespace RtMidi.Core.Devices
 
             // TODO Decode and propagate midi events on separate thread as not to block receiving thread
 
-            try 
+            try
             {
                 Decode(message);
             }
@@ -69,6 +71,29 @@ namespace RtMidi.Core.Devices
 
         private void Decode(byte[] message)
         {
+            if (_sysExBuffer != null)
+            {
+                // Check for end of SysEx
+                if (message[message.Length - 1] == Midi.Status.SysExEnd)
+                {
+                    _sysExBuffer.AddRange(message);
+
+                    try
+                    {
+                        if (SysExMessage.TryDecode(_sysExBuffer.ToArray(), out var sysExMessage))
+                            SysEx?.Invoke(this, in sysExMessage);
+                    }
+                    finally
+                    {
+                        _sysExBuffer = null;
+                    }
+                }
+                else
+                {
+                    _sysExBuffer.AddRange(message);
+                }
+            }
+
             byte status = message[0];
             switch (status & 0b1111_0000)
             {
@@ -86,7 +111,8 @@ namespace RtMidi.Core.Devices
                     break;
                 case Midi.Status.ControlChangeBitmask:
                     if (ControlChangeMessage.TryDecode(message, out var controlChangeMessage))
-                        _nrpnInterpreters[(int)controlChangeMessage.Channel].HandleControlChangeMessage(in controlChangeMessage);
+                        _nrpnInterpreters[(int) controlChangeMessage.Channel]
+                            .HandleControlChangeMessage(in controlChangeMessage);
                     break;
                 case Midi.Status.ProgramChangeBitmask:
                     if (ProgramChangeMessage.TryDecode(message, out var programChangeMessage))
@@ -105,11 +131,21 @@ namespace RtMidi.Core.Devices
                     switch (status)
                     {
                         case Midi.Status.SysExStart:
-                            if (SysExMessage.TryDecode(message, out var sysExMessage))
-                                SysEx?.Invoke(this, in sysExMessage);
+                            // Check if message is truncated
+                            if (message[message.Length - 1] == Midi.Status.SysExEnd)
+                            {
+                                if (SysExMessage.TryDecode(message, out var sysExMessage))
+                                    SysEx?.Invoke(this, in sysExMessage);
+                            }
+                            else
+                            {
+                                _sysExBuffer = new(message);
+                            }
+
                             break;
                         case Midi.Status.MidiTimeCodeQuarterFrame:
-                            if (MidiTimeCodeQuarterFrameMessage.TryDecode(message, out var timeCodeQuarterFrameMessage))
+                            if (MidiTimeCodeQuarterFrameMessage.TryDecode(message,
+                                    out var timeCodeQuarterFrameMessage))
                                 MidiTimeCodeQuarterFrame?.Invoke(this, in timeCodeQuarterFrameMessage);
                             break;
                         case Midi.Status.SongPositionPointer:
@@ -128,18 +164,19 @@ namespace RtMidi.Core.Devices
                             Log.Error("Unknown system message type {Status}", $"{status:X2}");
                             break;
                     }
+
                     break;
-                
+
                 default:
                     Log.Error("Unknown message type {Bitmask}", $"{status & 0b1111_0000:X2}");
                     break;
             }
         }
-        
+
         protected override void Disposing()
         {
             _inputDevice.Message -= RtMidiInputDevice_Message;
-            
+
             // Clear all subscribers
             NoteOff = null;
             NoteOn = null;
@@ -160,7 +197,7 @@ namespace RtMidi.Core.Devices
         {
             Nrpn?.Invoke(this, in e);
         }
-        
+
         public void SetNrpnMode(NrpnMode nrpnMode)
         {
             foreach (var nrpnInterpreter in _nrpnInterpreters)
