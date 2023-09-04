@@ -30,5 +30,5 @@ jobs:
       - name: Build package
         run: dotnet pack --no-restore --configuration Release --include-symbols RtMidi.Core/RtMidi.Core.csproj
 
-#      - name: Push to nuget.org
-#        run: dotnet nuget push --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json RtMidi.Core/bin/Release/*.nupkg
+      - name: Push to nuget.org
+        run: dotnet nuget push --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json RtMidi.Core/bin/Release/*.nupkg
