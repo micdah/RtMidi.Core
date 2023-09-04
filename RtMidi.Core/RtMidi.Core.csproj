@@ -3,17 +3,19 @@
         <OutputType>Library</OutputType>
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>7.2</LangVersion>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <PackageId>RtMidi.Core</PackageId>
+        <PackageVersion>1.0.52-beta-3</PackageVersion>
         <Authors>Michael Dahl</Authors>
         <Description>Cross-platform MIDI library for .Net Standard built on top of RtMIdi with included support for Windows x64 and macOS</Description>
-        <PackageVersion>1.0.52-beta-1</PackageVersion>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageReleaseNotes>Initial release</PackageReleaseNotes>
         <PackageProjectUrl>https://github.com/micdah/RtMidi.Core</PackageProjectUrl>
-        <PackageIconUrl>https://github.com/micdah/RtMidi.Core/raw/master/icon.png</PackageIconUrl>
+        <PackageIcon>icon.png</PackageIcon>
         <PackageTags>midi netstandard netcore</PackageTags>
         <Copyright>Copyright 2023 (c) Michael Dahl. All Rights reserved.</Copyright>
-        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
     <ItemGroup>
         <None Include="librtmidi.dylib">
@@ -35,6 +37,8 @@
             <PackagePath>build\</PackagePath>
             <Pack>true</Pack>
         </None>
+        <None Include="..\icon.png" Pack="true" PackagePath="\"/>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
     <ItemGroup>
         <Folder Include="Unmanaged\"/>
