@@ -68,4 +68,5 @@ You can find our fork at [micdah/rtmidi](https://github.com/micdah/rtmidi).
 
 Special thanks to the contributors (_in alphabetical order_):
 
+- [abirke](https://github.com/abirke)
 - [mat1jaczyyy](https://github.com/mat1jaczyyy)
