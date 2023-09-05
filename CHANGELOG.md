@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.53
+* Support receiving truncated `SysEx` messages
+  
+  This can happen when a MIDI device sends a large amount of data using a `SysEx` message, which is then delivered in
+  multiple batches - now such messages can be received and reconstituted into a single `SysEx` message.
+
 ## 1.0.52
 * Added Linux support - thanks [abirke](https://github.com/abirke)
 
