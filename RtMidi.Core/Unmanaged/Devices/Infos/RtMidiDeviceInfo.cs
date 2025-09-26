@@ -9,6 +9,7 @@ namespace RtMidi.Core.Unmanaged.Devices.Infos
         {
             Port = port;
 
+            // RtMidi may add port number to end of name on Windows to ensure uniqueness
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                {
                 Name = name.EndsWith(port.ToString())
