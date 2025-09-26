@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace RtMidi.Core.Unmanaged.Devices.Infos
 {
@@ -7,7 +8,14 @@ namespace RtMidi.Core.Unmanaged.Devices.Infos
         internal RtMidiDeviceInfo(uint port, string name)
         {
             Port = port;
-            Name = name;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+               {
+                Name = name.EndsWith(port.ToString())
+                ? name.Substring(0, name.LastIndexOf(port.ToString(), StringComparison.Ordinal) - 1)
+                : name;
+            }
+            else { Name = name; }
         }
 
         public uint Port { get; }
